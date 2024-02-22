@@ -74,5 +74,5 @@ This section has moved here: [https://facebook.github.io/create-react-app/docs/t
 
 Run the following commands:
 
-### `docker build -t demo .`
-### `docker run -p 3000:3000 demo`
+### `docker build -t frontend .`
+### `docker run -d -p 3000:3000 --rm --name [container_name] -v $PWD:/app -v /app/node_modules frontend`
