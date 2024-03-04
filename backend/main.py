@@ -75,7 +75,7 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 @app.post("/post-image/", response_model=schemas.Image)
 def post_image(image: UploadFile, db: Session = Depends(get_db)):
-    return crud.postImage(db=db, image=image)
+    return crud.postImage(file=image, db=db)
 
 
 @app.get("/get-image/", response_model=schemas.Image)
