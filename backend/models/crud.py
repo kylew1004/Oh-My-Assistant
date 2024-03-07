@@ -2,6 +2,10 @@ from sqlalchemy.orm import Session
 
 import shutil
 from . import models, schemas
+import os
+import boto3
+import uuid
+from fastapi import UploadFile
 
 
 def get_user(db: Session, user_id: int):
@@ -37,20 +41,24 @@ def create_user_item(db: Session, item: schemas.ItemCreate, user_id: int):
     return db_item
 
 
-def postImage(db: Session, image: schemas.Image):
-    image_path = f"/images/{image.filename}"
-    copied_image_path = "/images/" + "copied_" + f"{image.filename}"
-    with open(image_path, "wb") as buffer:
-        shutil.copyfileobj(image.file, buffer)
-        shutil.copyfile(image_path, copied_image_path)
-    db_image = models.Image(image_path=image_path)
+def postImage(file: UploadFile, db: Session):
+    s3 = boto3.client(
+        's3',
+        aws_access_key_id=os.environ.get("AWS_S3_ACCESS_KEY_ID"),
+        aws_secret_access_key=os.environ.get("AWS_S3_SECRET_ACCESS_KEY"),
+        region_name=os.environ.get("AWS_S3_REGION")
+    )
+    file_name = f"{uuid.uuid4()}__{file.filename}"
+
+    s3.upload_fileobj(file.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=file_name)
+    file_path = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/{file_name}"
+    
+
+    db_image = models.Image(image_path=file_path)
     db.add(db_image)
     db.commit()
     db.refresh(db_image)
-    db_image = models.Image(image_path=copied_image_path)
-    db.add(db_image)
-    db.commit()
-    db.refresh(db_image)
+
     return db_image
 
 

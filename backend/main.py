@@ -5,10 +5,27 @@ from sqlalchemy.orm import Session
 
 from models import crud, models, schemas
 from models.database import SessionLocal, engine
+from fastapi.middleware.cors import CORSMiddleware
 
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 # Dependency
@@ -57,12 +74,11 @@ def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
 
 
 @app.post("/post-image/", response_model=schemas.Image)
-def post_image(image: UploadFile = File(...), db: Session = Depends(get_db)):
-    return crud.postImage(db=db, image=image)
+def post_image(image: UploadFile, db: Session = Depends(get_db)):
+    return crud.postImage(file=image, db=db)
 
 
 @app.get("/get-image/", response_model=schemas.Image)
 def get_image(db: Session = Depends(get_db)):
     image = crud.getImage(db)
-    print("this is the image", image)
     return image
