@@ -11,6 +11,14 @@ class Image(BaseModel):
         orm_mode = True
 
 
+class EmailPasswordRequestForm(BaseModel):
+    userEmail: str
+    userPassword: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 class UserBase(BaseModel):
     userEmail: str
 

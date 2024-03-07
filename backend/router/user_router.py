@@ -11,6 +11,19 @@ from auth.jwt import create_access_token
 
 api_user = APIRouter(prefix="/api/user")
 
+ACCES_TOKEN_EXPIRE_MINUTES = 60*24
+
+
+@api_user.post('/login', response_model=schemas.Token)
+def login_for_access_token(from_data: schemas.EmailPasswordRequestForm , db: Session = Depends(get_db)):
+    user = crud.get_user_by_email(db, userEmail=from_data.userEmail)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    if not pwd_context.verify(from_data.userPassword, user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    access_token = create_access_token(user.userEmail, datetime.utcnow() + timedelta(minutes=ACCES_TOKEN_EXPIRE_MINUTES))
+    return {"access_token": access_token, "token_type": "bearer"}
+
 
 @api_user.post("/create", response_model=schemas.User, status_code=200)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
