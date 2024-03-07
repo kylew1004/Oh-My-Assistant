@@ -41,6 +41,8 @@ services:
     ports:
       - 3000:3000
     volumes:
+      # - ${PWD}:/frontend
+      - /frontend/node_modules
       - ./frontend/:/frontend/
     expose:
       - 3000
