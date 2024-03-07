@@ -92,8 +92,8 @@ export default function Welcome() {
   
   
     //manage the token returned 
-    //const resData = await response.json();
-    const token = 'adsfsd';//resData.token;
+    const resData = await response.json();
+    const token = resData.token;
   
     //쿠키를 쓰는 옵션도 있음
     localStorage.setItem('token',token);
