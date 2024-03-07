@@ -71,7 +71,7 @@ export default function Welcome() {
     //   ok: true,
     // }
 
-    const response = await fetch('http://localhost:8080/'+'api/user/login',{
+    const response = await fetch('http://localhost:8000/'+'api/user/login',{
       method:'POST',
       headers:{
         'Content-Type' : 'application/json'
@@ -92,8 +92,8 @@ export default function Welcome() {
   
   
     //manage the token returned 
-    //const resData = await response.json();
-    const token = 'adsfsd';//resData.token;
+    const resData = await response.json();
+    const token = resData.access_token;
   
     //쿠키를 쓰는 옵션도 있음
     localStorage.setItem('token',token);
