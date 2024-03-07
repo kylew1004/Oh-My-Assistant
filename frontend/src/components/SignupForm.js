@@ -25,45 +25,41 @@ export default function SignupForm() {
     // }
 
     return (
-        <Form method="post" >
+        <Form method="post" className="flex flex-col w-5/6 h-full" >
 
-        <div className="control-row w-full my-5">
-          <div className="control p-1 flex flex-col">
-            <label className="w-1/4 text-yellow-500 mb-3" htmlFor="name">Nickname</label>
-            <input className=" h-12 rounded-lg bg-blue-200 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500" type="text" id="name" name="name" required/>
-          </div>
+        <div className="control-row w-full">
+            <input className=" h-16 w-full p-4 rounded-lg bg-gray-50 text-gray-700 text-lg  focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" type="text" id="name" name="name" placeholder="Nickname" required/>
         </div>
         
-        <div className="control-row w-full my-5">
-        <div className="control p-1 flex flex-col">
-          <label className="w-1/4 text-yellow-500 mb-3" htmlFor="email">Email</label>
-          <input className="h-12 rounded-lg bg-blue-200 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500" id="email" type="email" name="email" required />
-        </div>
+        {/* <div className="control-row w-full my-5">
+          <input className="h-16 w-full rounded-lg p-4 bg-gray-50 text-gray-700 text-lg  focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="email" type="email" name="email" placeholder="Email Address" required />
+        </div> */}
+        <div className="flex flex-row control-row h-16 w-full my-5 rounded-lg bg-gray-50 text-gray-700 text-lg ">
+            <input className="h-16 w-full p-4 rounded-lg focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 bg-gray-50 m-auto placeholder-gray-400" id="email" type="email" name="email" placeholder="Email Address" required />
+            <button className="h-8 my-auto mx-3 bg-[#5748B9] text-gray-50 rounded-full px-3 text-sm" type="button">Verify</button>
         </div>
     
-        <div className="control-row flex flex-row w-full my-5">
-        <div className="control-row w-full mr-2">
-          <div className="control p-1 flex flex-col">
-            <label className="w-1/4 text-yellow-500 mb-3" htmlFor="password">Pasword</label>
-            <input className="h-12 rounded-lg bg-blue-200 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500" type="password" id="password" name="password" required/>
+        <div className="control-row flex flex-row w-full ">
+          <div className="control-row w-1/2 mr-2">
+            <div className="control flex flex-col">
+              <input className="h-16 w-[202px] rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" type="password" id="password" name="password" placeholder="Password" required/>
+            </div>
           </div>
-        </div>
   
-        <div className="control-row w-full">
-          <div className="control p-1 flex flex-col">
-            <label className="w-1/4 text-yellow-500 mb-3" htmlFor="confirm-password">Confirm&nbsp;&nbsp;Password</label>
-            <input className=" h-12 rounded-lg bg-blue-200 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500" type="password" id="confirm-password" name="confirm-password" required/>
-          </div>
+          <div className="control-row w-1/2">
+            <div className="control flex flex-col">
+              <input className=" h-16  w-[202px] rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required/>
+            </div>
             <div className='control-error'>{pwNotEqual && <p>Passwords must match.</p>}</div>
           </div>
         </div>
 
-  
-        <p className="form-actions flex justify-end h-full w-full">
-          <button type="submit" className="button h-12 my-12 w-1/2 bg-yellow-500 rounded-full float-right text-black">
+          <button type="submit" className="button m-auto my-6 h-12 w-1/2  bg-gradient-to-r from-[#F6C443] to-[#F3AC58] rounded-full text-black">
             Sign up
           </button>
-        </p>
+
+  
+
       </Form>
       
     );

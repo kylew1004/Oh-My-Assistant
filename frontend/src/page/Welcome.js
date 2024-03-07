@@ -1,6 +1,9 @@
 import {useSearchParams, Link, useActionData, useNavigation, json, redirect} from 'react-router-dom';
 import SignupForm from '../components/SignupForm.js';
 import LoginForm from '../components/LoginForm.js';
+import logoImg from '../assets/logo.png';
+import WelcomeSlide from '../components/WelcomeSlide.js';
+import { loginRequest, signupRequest } from '../util/http.js';
 
 
 
@@ -8,31 +11,39 @@ export default function Welcome() {
     const [searchParams, setSearchParams] = useSearchParams();
     const isLogin = searchParams.get('mode')==='login';
 
-    const active = !isLogin ? 'left-[23px] bg-yellow-500' : 'right-[23px] bg-green-500';
+    const active = !isLogin ? 'left-[23px]  bg-gradient-to-r from-[#F6C443] to-[#F3AC58]' : 'right-[23px]  bg-gradient-to-l from-[#F6C443] to-[#F3AC58]';
     const inactive = !isLogin ? 'right' : 'left';
 
 
     return (
     <div className="welcome-bg flex justify-center items-center h-screen">
-        <div className="px-10 py-5 flex flex-col shadow-xl justify-center items-center rounded-3xl bg-blue-950 gap-5">
-        <h2 className="py-20 text-6xl text-yellow-500">SERVICE NAME</h2>
-        <p className="form-actions h-14 relative flex justify-end w-full">
-          <Link to={`?mode=${isLogin ? "signup" : "login"}`} className={`button h-14 w-1/2 absolute ${inactive}-[23px] bg-gray-300 text-gray-500 rounded-full float-left`}>
-            {isLogin ? "Sign up" : "Log in "}
-          </Link>
-          <Link to={`?mode=${isLogin ? "login" : "signup"}`}  className={`button h-14 w-1/2 absolute ${active} text-black rounded-full float-right`}>
-            {isLogin ? "Log in" : "Sign up"}
-          </Link>
+        <WelcomeSlide />
+
+        <div className=" py-10 h-[730px] w-[500px] flex flex-col shadow-xl justify-center items-center rounded-r-3xl bg-gray-50/20 gap-5">
+          <div className="h-10 flex flex-row mx-auto mb-5">
+              <img src={logoImg} className="h-6 w-auto mt-1" />
+              <h2 className="text-2xl text-blue-950">&nbsp;SERVICE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+            </div>
           
-        </p>
-        <hr className="border-0 h-[0.3px] w-full px-3 bg-gray-200 my-5"/>
-
-        
-        {isLogin ? <LoginForm /> : <SignupForm />}
-        
-
+          <div className="h-[500px] w-full flex flex-col">
+            <h2 className="text-3xl text-gray-800 mx-auto mb-1 ">Welcome!</h2>
+            <p className="text-2xl text-gray-700 mx-auto mb-10">Sign up to start the service.</p>
             
+            <p className="form-actions h-14 relative flex justify-end w-full mb-3 ">
+              <Link to={`?mode=${isLogin ? "signup" : "login"}`} className={`button flex h-14 w-1/2 absolute ${inactive}-[23px] bg-gray-300 text-gray-500 rounded-full float-left`}>
+                <label className="font-bold m-auto">{isLogin ? "Sign up" : "Log in"}</label>
+              </Link>
+              <Link to={`?mode=${isLogin ? "login" : "signup"}`}  className={`button flex h-14 w-1/2 absolute ${active} text-black rounded-full float-right`}>
+                <label className="font-bold m-auto">{isLogin ? "Log in" : "Sign up"}</label>
+              </Link>
+            </p>
+            <hr className=" h-[0.9px] w-5/6 mx-auto px-3 bg-blue-950 my-7"/>
+
+          </div>
+
+          {isLogin ? <LoginForm /> : <SignupForm />} 
         </div>
+
 
     </div>
       
