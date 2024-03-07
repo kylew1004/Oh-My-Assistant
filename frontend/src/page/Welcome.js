@@ -93,7 +93,7 @@ export default function Welcome() {
   
     //manage the token returned 
     const resData = await response.json();
-    const token = resData.token;
+    const token = resData.access_token;
   
     //쿠키를 쓰는 옵션도 있음
     localStorage.setItem('token',token);
