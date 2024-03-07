@@ -1,8 +1,8 @@
 export default function InputPanel({imageUrl, isFetching, handleChange, handleSubmit}){
 
-    return  <div className="w-2/5 h-5/6 relative shadow-xl mx-auto space-y-5 bg-white bg-opacity-90 border-violet-300 rounded-3xl p-5 py-10">
+    return  <div className="w-5/6 h-full my-auto relative shadow-xl space-y-5 bg-white bg-opacity-90  border-#7264a9 rounded-3xl p-5 py-10 mx-8">
         <h2 className="text-black">Add Image</h2>
-        <label className="border-gray-300 inline-block px-3 py-2 cursor-pointer">
+        <label className="create-new border-gray-300 inline-block px-3 py-2 cursor-pointer">
             <input className="hidden" type="file" onChange={handleChange} />
             Upload file
         </label>

@@ -1,16 +1,13 @@
-const URL = "";
+const URL = "http://localhost:8000";
 
 export async function fetchOutput() {
 
-    const response = await fetch('/get-image',{
-        method: 'POST',
-        body: {},
-    });
+    const response = await fetch(`${URL}/get-image`);
     const resData = await response.json();
 
-    if(!response.ok) {
-        throw new Error('Failed to load image');
-    }
+    // if(!response.ok) {
+    //     throw new Error('Failed to load image');
+    // }
    
     return resData["image_path"];
 
@@ -21,20 +18,21 @@ export async function fetchOutput() {
 }
 
 export async function postInput(image) {
-    const formData = new FormData();
+    console.log(image);
+    let formData = new FormData();
     formData.append('image', image);
 
-    const response = await fetch('/post-image',{
+    const response = await fetch(`${URL}/post-image`,{
         method: 'POST',
-        body: formData,
-        headers: {'Content-Type': 'multipart/form-data'}
+        body: formData//{image},
+        // header: {'Content-Type':'multipart/form-data'},
     });
 
     const resData = await response.json();
 
-    if(!response.ok){
-        throw new Error('Failed to send image');
-    }
+    // if(!response.ok){
+    //     throw new Error('Failed to send image');
+    // }
 
     return resData.message;
 
