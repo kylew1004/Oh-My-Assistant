@@ -3,7 +3,7 @@ import SignupForm from '../components/SignupForm.js';
 import LoginForm from '../components/LoginForm.js';
 import logoImg from '../assets/logo.png';
 import WelcomeSlide from '../components/WelcomeSlide.js';
-import { loginRequest, signupRequest } from '../util/http.js';
+import { postLogin, postSignup } from '../util/http.js';
 
 
 
@@ -59,61 +59,36 @@ export default function Welcome() {
     }
   
     const data = await request.formData();
-    let authData;
+    let result;
     if(mode=='login'){
-      authData = {
+      const authData = {
         userEmail: data.get('email'),
         userPassword:data.get('password'),
       }
 
+      result = await postLogin(authData);
+
     }else{
-      authData = {
+      const authData = {
         userNickname: data.get('name'),
         userEmail: data.get('email'),
         userPw:data.get('password'),
       }
 
+      result = await postSignup(authData);
     }
   
+    if(!result.error){
+      //쿠키를 쓰는 옵션도 있음
+      localStorage.setItem('token',result);
+      const expiration = new Date();
+      expiration.setHours(expiration.getHours()+1);
+      localStorage.setItem('expiration', expiration.toISOString());
     
-    //!!!API call!!!
-    // let response = {
-    //   status: 200,
-    //   ok: true,
-    // }
+    
+      return redirect('/assets');
+      
+    }
 
-    const response = await fetch('http://localhost:8000/'+'api/user/login',{
-      method:'POST',
-      headers:{
-        'Content-Type' : 'application/json'
-      },
-      body: JSON.stringify(authData)
-    });
-    ////////////////
-    
-  
-    //handle response
-    if(response.status===422 || response.status ==401){
-      return response;
-    }
-  
-    if(!response.ok){
-      throw json({message: 'Could not athenticate user.'},{status:500});
-    }
-  
-  
-    //manage the token returned 
-    const resData = await response.json();
-    const token = resData.access_token;
-  
-    //쿠키를 쓰는 옵션도 있음
-    localStorage.setItem('token',token);
-    const expiration = new Date();
-    expiration.setHours(expiration.getHours()+1);
-    localStorage.setItem('expiration', expiration.toISOString());
-  
-  
-    return redirect('/assets');
-  
-  
+    return result;
   }
