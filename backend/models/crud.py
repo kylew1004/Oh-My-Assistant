@@ -5,11 +5,19 @@ from . import models, schemas
 import os
 import boto3
 import uuid
+from jose import jwt, JWTError
 from fastapi import UploadFile
 from datetime import datetime
 from passlib.context import CryptContext
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+from auth.token import Settings
+from auth.oauth import get_current_user
+from models.database import get_db
+
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+settings = Settings()
 
 def get_user(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
@@ -18,9 +26,23 @@ def get_user(db: Session, user_id: int):
 def get_user_by_email(db: Session, userEmail: str):
     return db.query(models.User).filter(models.User.userEmail == userEmail).first()
 
+def get_webtoon_by_webtoon_name_and_userId(db: Session, webtoon_name: str, user_id: int):
+    return db.query(models.Webtoon).filter(models.Webtoon.webtoonName == webtoon_name,
+                                           models.Webtoon.userId == user_id
+                                           ).first()
 
-def get_users(db: Session, skip: int = 0, limit: int = 100):
-    return db.query(models.User).offset(skip).limit(limit).all()
+def get_webtoon_list_by_user_id(db: Session, userId: int):
+    return db.query(models.Webtoon).filter(models.Webtoon.userId == userId).all()
+
+def create_webtoon(db: Session, webtoon: schemas.WebtoonCreate, user: schemas.TokenData):
+    db_webtoon = models.Webtoon(webtoonName=webtoon.webtoonName,
+                                userId=user['userId'],
+                                createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                                )
+    db.add(db_webtoon)
+    db.commit()
+    db.refresh(db_webtoon)
+    return db_webtoon
 
 
 def create_user(db: Session, user: schemas.UserCreate):

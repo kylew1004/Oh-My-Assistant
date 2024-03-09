@@ -19,7 +19,9 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    userEmail: str 
+    userEmail: str
+    userId: int
+    userNickname: str
 
 class UserBase(BaseModel):
     userEmail: str
@@ -41,16 +43,16 @@ class WebtoonBase(BaseModel):
 
 
 class WebtoonCreate(WebtoonBase):
-    webtoon_name: str
+    webtoonName: str
 
 class Webtoon(WebtoonBase):
-    webtoon_id: int
-    webtoon_created_at: datetime
-    user_id: int
+    id: int
+    createdAt: datetime
+    userId: int
 
     class Config:
         orm_mode = True 
-
+        
 
 class ContentImgBase(BaseModel):
     webtoon_id: int
