@@ -27,13 +27,15 @@ def get_user_by_email(db: Session, userEmail: str):
     return db.query(models.User).filter(models.User.userEmail == userEmail).first()
 
 def get_webtoon_by_webtoon_name(db: Session, webtoon_name: str):
-    return db.query(models.Webtoon).filter(models.Webtoon.webtoon_name == webtoon_name).first()
+    return db.query(models.Webtoon).filter(models.Webtoon.webtoonName == webtoon_name).first()
 
+def get_webtoon_list_by_user_id(db: Session, userId: int):
+    return db.query(models.Webtoon).filter(models.Webtoon.userId == userId).all()
 
 def create_webtoon(db: Session, webtoon: schemas.WebtoonCreate, user: schemas.TokenData):
-    db_webtoon = models.Webtoon(webtoon_name=webtoon.webtoon_name,
-                                user_id=user['userId'],
-                                webtoon_created_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    db_webtoon = models.Webtoon(webtoonName=webtoon.webtoonName,
+                                userId=user['userId'],
+                                createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                                 )
     db.add(db_webtoon)
     db.commit()

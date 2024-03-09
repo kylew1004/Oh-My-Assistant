@@ -43,12 +43,12 @@ class WebtoonBase(BaseModel):
 
 
 class WebtoonCreate(WebtoonBase):
-    webtoon_name: str
+    webtoonName: str
 
 class Webtoon(WebtoonBase):
-    webtoon_id: int
-    webtoon_created_at: datetime
-    user_id: int
+    id: int
+    userId: int
+    createdAt: datetime
 
     class Config:
         orm_mode = True 
