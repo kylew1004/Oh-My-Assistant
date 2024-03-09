@@ -47,12 +47,12 @@ class WebtoonCreate(WebtoonBase):
 
 class Webtoon(WebtoonBase):
     id: int
-    userId: int
     createdAt: datetime
+    userId: int
 
     class Config:
         orm_mode = True 
-
+        
 
 class ContentImgBase(BaseModel):
     webtoon_id: int

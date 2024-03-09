@@ -21,11 +21,30 @@ api_webtoon = APIRouter(prefix="/api/webtoon")
 
 @api_webtoon.post('/create')
 def create_webtoon(request: schemas.WebtoonCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
-    db_webtoon = crud.get_webtoon_by_webtoon_name(db, webtoon_name=request.webtoonName)
+    db_webtoon = crud.get_webtoon_by_webtoon_name_and_userId(db, webtoon_name=request.webtoonName, user_id=current_user['userId'])
     if db_webtoon:
         raise HTTPException(status_code=400, detail="Bad Request: Webtoon already registered")
     return crud.create_webtoon(db, webtoon=request, user=current_user)
 
 @api_webtoon.get('/list')
 def read_webtoon_list(db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
-    return crud.get_webtoon_list_by_user_id(db, current_user['userId'])
+    webtoons = crud.get_webtoon_list_by_user_id(db, current_user['userId'])
+    formatted_webtoons = []
+    for webtoon in webtoons:
+        formatted_webtoons.append({
+            "id":webtoon.id,
+            "userId":webtoon.userId,
+            "webtoonName":webtoon.webtoonName,
+            "createdAt":webtoon.createdAt
+        })
+    return {"webtoonList":formatted_webtoons}
+
+@api_webtoon.delete('/delete/{webtoon_name}')
+def delete_webtoon(request: schemas.WebtoonCreate, db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
+    db_webtoon = crud.get_webtoon_by_webtoon_name_and_userId(db, webtoon_name=request.webtoonName, user_id=current_user['userId'])
+    if db_webtoon:
+        db.delete(db_webtoon)
+        db.commit()
+        return {"message": "Webtoon deleted successfully"}
+    else:
+        raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
