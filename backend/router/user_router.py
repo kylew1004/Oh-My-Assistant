@@ -22,6 +22,13 @@ settings = Settings()
 api_user = APIRouter(prefix="/api/user")
 ACCESS_TOKEN_EXPIRE_MINUTES = 60*24
 
+@api_user.post('/email-check')
+def check_email(request: schemas.UserBase , db: Session = Depends(get_db)):
+    user = crud.get_user_by_email(db, userEmail=request.userEmail)
+    if user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return request
+
 @api_user.post('/login', response_model=schemas.Token)
 def login_for_access_token(from_data: schemas.EmailPasswordRequestForm , db: Session = Depends(get_db)):
     user = crud.get_user_by_email(db, userEmail=from_data.userEmail)
