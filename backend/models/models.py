@@ -28,7 +28,6 @@ class User(Base):
     userEmail = Column(String(30), unique=True, index=True)
     userNickname = Column(String(30), unique=True, index=True)
     hashed_password = Column(String(100))
-    is_active = Column(Boolean, default=True)
 
     webtoon = relationship("Webtoon", back_populates="user")
     
