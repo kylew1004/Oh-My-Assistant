@@ -10,7 +10,6 @@ class Image(BaseModel):
     class Config:
         orm_mode = True
 
-
 class EmailPasswordRequestForm(BaseModel):
     userEmail: str
     userPassword: str
@@ -18,6 +17,9 @@ class EmailPasswordRequestForm(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+
+class TokenData(BaseModel):
+    userEmail: str 
 
 class UserBase(BaseModel):
     userEmail: str
@@ -27,27 +29,24 @@ class UserCreate(UserBase):
     userPw: str
     userNickname: str
 
-
 class User(UserBase):
     id: int
-    is_active: bool
 
     class Config:
         orm_mode = True
 
 
 class WebtoonBase(BaseModel):
-    webtoon_name: str
-    user_id: int
-    webtoon_created_at: str
-    #webtoon_created_at: datetime
+    pass
 
 
 class WebtoonCreate(WebtoonBase):
-    pass
+    webtoon_name: str
 
 class Webtoon(WebtoonBase):
     webtoon_id: int
+    webtoon_created_at: datetime
+    user_id: int
 
     class Config:
         orm_mode = True 

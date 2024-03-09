@@ -7,6 +7,7 @@ from models.database import SessionLocal, engine
 from fastapi.middleware.cors import CORSMiddleware
 
 from router import user_router
+from router import webtoon_router
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -28,5 +29,5 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 app.include_router(user_router.api_user)
+app.include_router(webtoon_router.api_webtoon)
