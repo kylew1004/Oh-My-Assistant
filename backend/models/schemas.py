@@ -19,7 +19,9 @@ class Token(BaseModel):
     token_type: str
 
 class TokenData(BaseModel):
-    userEmail: str 
+    userEmail: str
+    userId: int
+    userNickname: str
 
 class UserBase(BaseModel):
     userEmail: str
