@@ -25,13 +25,16 @@ app.include_router(router)
 def main():
     content = """
     <body>
-    <form action="/background/inference" enctype="multipart/form-data" method="post">
-    <input name="content_images" type="file">
-    <input type="submit">
-    <form action="/background/train" enctype="multipart/form-data" method="post">
-    <input name="style_images" type="file">
-    <input type="submit">
-    </form>
+        <form action="/api/model/background" enctype="multipart/form-data" method="post">
+        생성하기
+            <input name="content_image" type="file">
+            <input type="submit">
+        </form>
+        <form action="/api/model/background/train" enctype="multipart/form-data" method="post">
+        학습하기
+            <input name="style_images" type="file" multiple>
+            <input type="submit">
+        </form>
     </body>
     """
     return HTMLResponse(content=content)
