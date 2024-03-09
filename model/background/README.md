@@ -23,3 +23,11 @@
 - [x]: FastAPI 서버 만들기
 - [x]: FastAPI가 띄워질 때, 모델 불러오기 
 - [x]: Config 설정
+
+## 작업사항
+- app/main.py - 서버를 실행합니다. index로 간단한 form 양식이 주어집니다.
+- app/api.py - 모델의 학습에 관련한 API를 작성합니다.
+- app/config.py - 이 부분만 수정하여 사용하는 모델과 모델의 학습 경로를 결정합니다.
+- app/database.py - API 요청에 대한 결과로 주어지는 데이터의 형태를 결정합니다.
+- app/model.py - 모델이 실제 동작하는 코드를 작성합니다.
+- app/schemas.py - API 요청과 응답의 형태를 결정합니다.
