@@ -39,17 +39,11 @@ export default function SignupForm() {
             <button className="h-8 my-auto mx-3 bg-[#5748B9] text-gray-50 rounded-full px-3 text-sm" type="button">Verify</button>
         </div>
     
-        <div className="control-row flex flex-row w-full ">
-          <div className="control-row w-1/2 mr-2">
-            <div className="control flex flex-col">
-              <input className="h-16 w-[202px] rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" type="password" id="password" name="password" placeholder="Password" required/>
-            </div>
-          </div>
-  
-          <div className="control-row w-1/2">
-            <div className="control flex flex-col">
-              <input className=" h-16  w-[202px] rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required/>
-            </div>
+        <div className="flex flex-row w-full gap-3">
+   
+          <input className="h-16 w-[190px] rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" type="password" id="password" name="password" placeholder="Password" required/>
+          <div className=" w-2/5">
+              <input className=" h-16  w-[190px] rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required/>
             <div className='control-error'>{pwNotEqual && <p>Passwords must match.</p>}</div>
           </div>
         </div>

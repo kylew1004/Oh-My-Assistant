@@ -18,8 +18,8 @@ export default function WelcomeSlide(){
     }
 
 
-    return <div className="px-10 py-5 h-[730px] w-[500px] flex flex-col shadow-xl justify-center items-center rounded-l-3xl bg-gray-50/20 gap-5">
-    <div className="flex flex-col h-[700px] w-[470px] w3-content w3-display-container bg-gradient-to-tl from-[#5748B9] to-[#624F77] rounded-3xl">
+    return <div className="px-10 py-5 h-[680px] w-[470px] flex flex-col shadow-xl justify-center items-center rounded-l-3xl bg-gray-50/20 gap-5">
+    <div className="flex flex-col h-[700px] w-[440px] w3-content w3-display-container bg-gradient-to-tl from-[#5748B9] to-[#624F77] rounded-3xl">
         <div className="flex flex-row my-auto">
             <div className={`w3-left mr-auto ml-5 ${towards==3 ? 'text-white/0 cursor-default hover:cursor-default' : 'text-white cursor-pointer hover:cursor-pointer' }`} onClick={towards==1 ? handleClick : ()=>{}}>&#10094;</div>
             <div className="m-auto text-white">

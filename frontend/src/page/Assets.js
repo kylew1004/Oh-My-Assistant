@@ -17,11 +17,11 @@ export default function Assets(){
 
     return <div className="flex flex-col  w-full h-full">
 
-            <div className="relative flex justify-center items-center w-full m-auto">
-                <Link to={`?mode=${inactive}`} className={ `button h-14 w-1/6 absolute left-1/2 transform -translate-x${active==="Characters"?"":"-"}-3/4 bg-gray-300 text-gray-500 rounded-full`}>
+            <div className="relative flex justify-center items-center w-full m-auto py-3">
+                <Link to={`?mode=${inactive}`} className={ `button h-12 w-[160px] absolute left-1/2 transform -translate-x${active==="Characters"?"":"-"}-3/4 bg-gray-300 text-gray-500 rounded-full`}>
                     <p className="font-bold text-center pt-3">{inactive}</p>
                 </Link>
-                <Link to={`?mode=${active}`} className={`button h-14 w-1/6 absolute left-1/2 transform -translate-x-${active==="Characters"?"-":""}3/4 bg-yellow-500 text-black rounded-full`}>
+                <Link to={`?mode=${active}`} className={`button h-12 w-[160px] absolute left-1/2 transform -translate-x-${active==="Characters"?"-":""}3/4 bg-yellow-500 text-black rounded-full`}>
                 <p className="font-bold text-center pt-3">{active}</p>
                 </Link>
                 {/* <button className="button h-14 w-1/6 absolute left-1/2 transform -translate-x--3/4 bg-gray-300 text-gray-500 rounded-full">
