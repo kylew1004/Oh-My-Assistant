@@ -8,6 +8,7 @@ from model import get_pipe, generate, patch_pipeline, train
 from config import config, train_config
 
 from PIL import Image
+import shutil
 import io
 import os 
 import urllib.request 
@@ -16,9 +17,11 @@ router = APIRouter()
 
 @router.post("/api/model/background/train")
 def background_train(style_images: List[UploadFile] = File(...)) -> None:
+    # clear dir
+    shutil.rmtree(os.path.join(train_config.data_dir, train_config.model_name))
+    
     # make dir
     os.makedirs(os.path.join(train_config.data_dir, train_config.model_name), exist_ok=True)
-    # os.makedirs(train_config.model_dir, exist_ok=True)
     
     # load & save style image
     for i, style_image in enumerate(style_images):
