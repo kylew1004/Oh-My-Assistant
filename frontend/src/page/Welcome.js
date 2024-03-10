@@ -61,10 +61,9 @@ export default function Welcome() {
     const data = await request.formData();
     let result;
     if(mode=='login'){
-      const authData = {
-        username: data.get('email'),
-        password:data.get('password'),
-      }
+      const authData = new FormData();
+      authData.append('username', data.get('email'));
+      authData.append('password', data.get('password'));
 
       result = await postLogin(authData);
 
