@@ -97,14 +97,27 @@ def generate(pipe, content_image,
     
     torch.manual_seed(seed) # 동일 조건 동일 결과 보장
     
-    if prompt:
-        image = pipe(prompt=prompt, 
-                     image=init_image, strength=strength, guidance_scale=guidance_scale).images[0]
-    else:
-        image = pipe(prompt="style of <s1><s2>", 
-                     image=init_image, strength=strength, guidance_scale=guidance_scale).images[0]
+    generated_images = []
+    for _ in range(3): 
+        if prompt:
+            generated_images.append(
+                pipe(prompt=f"{prompt}, style of <s1><s2>", image=init_image, strength=0.55, guidance_scale=guidance_scale).images[0]
+            )
+        else:
+            generated_images.append(
+                pipe(prompt="style of <s1><s2>", image=init_image, strength=0.55, guidance_scale=guidance_scale).images[0]
+            )
+    for _ in range(3): 
+        if prompt:
+            generated_images.append(
+                pipe(prompt=f"{prompt}, style of <s1><s2>", image=init_image, strength=0.45, guidance_scale=guidance_scale).images[0]
+            )
+        else:
+            generated_images.append(
+                pipe(prompt="style of <s1><s2>", image=init_image, strength=0.45, guidance_scale=guidance_scale).images[0]
+            )
         
-    return image 
+    return generated_images 
 
     
 def main():

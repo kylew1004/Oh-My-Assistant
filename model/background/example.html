@@ -1,16 +1,21 @@
 <html>
+
 <head>
 </head>
+
 <body>
-	<form action="http://{Server-Public-IP-Address}:8000/api/model/background" enctype="multipart/form-data" method="post">
-	생성하기
-    	<input name="content_image" type="file">
-    	<input type="submit">
+	<form action="http://{Server-Public-IP-Address}:8000/api/model/background" enctype="multipart/form-data"
+		method="post">
+		생성하기
+		<input name="content_image" type="file">
+		<input type="submit">
 	</form>
-    	<form action="http://{Server-Public-IP-Address}:8000/api/model/background/train" enctype="multipart/form-data" method="post">
-	학습하기
-    	<input name="style_images" type="file" multiple>
-    	<input type="submit">
-    	</form>
+	<form action="http://{Server-Public-IP-Address}:8000/api/model/background/train" enctype="multipart/form-data"
+		method="post">
+		학습하기
+		<input name="style_images" type="file" multiple>
+		<input type="submit">
+	</form>
 </body>
+
 </html>
