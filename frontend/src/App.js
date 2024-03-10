@@ -5,8 +5,8 @@ import Welcome, {action as authAction} from "./page/Welcome.js";
 import {action as logoutAction} from './page/Logout.js';
 import Assets from './page/Assets.js';
 import RootLayout from "./components/Root.js";
-import StyleTransfer, {action as saveAssetAction} from './page/StyleTransfer.js';
-import PoseTransfer from './page/PoseTransfer.js';
+import StyleTransfer, {action as saveBackgroundAssetAction} from './page/StyleTransfer.js';
+import PoseTransfer, {action as savePoseAssetAction} from './page/PoseTransfer.js';
 import CreateNew from './page/CreateNew.js';
 import Train from './page/Train.js';
 
@@ -34,12 +34,12 @@ const router = createBrowserRouter([
           {
             path: 'styleTransfer',
             element: <StyleTransfer />,
-            action: saveAssetAction,
+            action: saveBackgroundAssetAction,
           },
           {
             path: 'poseTransfer',
             element: <PoseTransfer />,
-            // action: authAction,
+            action: savePoseAssetAction,
           },
 
         ]
