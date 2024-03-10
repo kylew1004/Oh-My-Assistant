@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import {redirect} from 'react-router-dom';
 
 import OutputPanel from '../components/OutputPanel.js';
 import InputPanel from '../components/InputPanel.js';
@@ -71,3 +72,21 @@ function StyleTransfer() {
 }
  
 export default StyleTransfer;
+
+
+export async function action({request}){
+  // const data = await request.formData();
+  // let result;
+  // if(mode=='login'){
+  //   const authData = {
+  //     userEmail: data.get('email'),
+  //     userPassword:data.get('password'),
+  //   }
+
+  //   result = await postLogin(authData);
+
+  // }
+
+  window.location.reload();
+  return null;
+}

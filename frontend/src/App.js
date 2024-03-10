@@ -5,7 +5,7 @@ import Welcome, {action as authAction} from "./page/Welcome.js";
 import {action as logoutAction} from './page/Logout.js';
 import Assets from './page/Assets.js';
 import RootLayout from "./components/Root.js";
-import StyleTransfer from './page/StyleTransfer.js';
+import StyleTransfer, {action as saveAssetAction} from './page/StyleTransfer.js';
 import PoseTransfer from './page/PoseTransfer.js';
 import CreateNew from './page/CreateNew.js';
 import Train from './page/Train.js';
@@ -34,7 +34,7 @@ const router = createBrowserRouter([
           {
             path: 'styleTransfer',
             element: <StyleTransfer />,
-            // action: authAction,
+            action: saveAssetAction,
           },
           {
             path: 'poseTransfer',
