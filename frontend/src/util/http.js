@@ -157,6 +157,12 @@ export async function postStyleTransfer(data){
 
 export async function postPoseTransfer(data){
 
+    //dummy
+    const resData = {
+        postImageUrl : "https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
+    }
+    return resData.postImageUrl.split(" ");
+
 }
 
 export async function postWebtoon(data){
