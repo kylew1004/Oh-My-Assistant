@@ -1,40 +1,51 @@
 import React, { useState } from "react";
 
-import OutputPanel from '../components/OutputPanel.js';
-import InputPanel from '../components/InputPanel.js';
+import OutputPanel from '../components/OutputPanel2.js';
+import InputPanel from '../components/InputPanel2.js';
 
-import { fetchOutput, postInput } from '../util/http.js';
+import { postPoseTransfer } from '../util/http.js';
  
 function PoseTransfer() {
-    const [file, setFile] = useState();
+    const [character, setCharacter] = useState();
+    const [pose, setPose] = useState();
+
     const [outputUrl, setOutputUrl] = useState();
     const [isFetching, setIsFetching] = useState(false);
     const [errorFetching, setErrorFetching] = useState();
 
-    let fileUrl=null;
-    if(file) {fileUrl = URL.createObjectURL(file);}
+    let characterUrl=null;
+    if(character) {characterUrl = URL.createObjectURL(character);}
+    let poseUrl=null;
+    if(pose) {poseUrl = URL.createObjectURL(character);}
 
-    function handleChange(e) {
+    function handleCharacter(e) {
         console.log(e.target.files[0]);
-        setFile(e.target.files[0]);
+        setCharacter(e.target.files[0]);
         setErrorFetching(null);
-        setIsFetching(false);
-        
+        setIsFetching(false);   
     }
 
+    function handlePose(e) {
+      console.log(e.target.files[0]);
+      setPose(e.target.files[0]);
+      setErrorFetching(null);
+      setIsFetching(false);   
+  }
+
     async function handleSubmit(){
-      if(file){
+      if(character && pose){
         //send data to backend
         setErrorFetching(null);
         setIsFetching(true);
 
-        postInput(file)
-          .then(() =>{
-            return fetchOutput();
-          })
-          .then(imgUrl =>{
-            console.log(imgUrl);
-            setOutputUrl(imgUrl);
+        const data = new FormData();
+        data.append('poseImage', pose);
+        data.append('characterImage', character);
+
+        postPoseTransfer(data)
+          .then(imgArray =>{
+            console.log(imgArray);
+            setOutputUrl(imgArray);
             setErrorFetching(null);
             setIsFetching(false);
           })
@@ -55,12 +66,20 @@ function PoseTransfer() {
  
     return (
         <>
-        {/* <header className="flex font-sans flex-row items-center justify-center p-16">
-          <h2>Style Transfer demo</h2>
-        </header> */}
+        <header className="flex font-sans flex-row items-center justify-center pt-5 pb-3">
+          <h2 className="text-gray-600">CHARACTER POSE TRANSFER</h2>
+          {/* <button>Back</button> */}
+        </header>
+        <hr className="bg-gray-700 h-[0.4px] w-11/12 mx-auto" />
 
-        <div className="flex font-sans flex-row items-center justify-center h-screen md:mb-16">
-          <InputPanel imageUrl={fileUrl} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit}/>
+        <div className="overflow-scroll h-full">
+          <InputPanel 
+            characterUrl={characterUrl}
+            poseUrl={poseUrl} 
+            isFetching={isFetching} 
+            handleCharacter={handleCharacter} 
+            handlePose={handlePose} 
+            handleSubmit={handleSubmit}/>
           <OutputPanel imageUrl={outputUrl} isFetching={isFetching} error={errorFetching} />    
         </div>
         </>
@@ -68,3 +87,21 @@ function PoseTransfer() {
 }
  
 export default PoseTransfer;
+
+
+export async function action({request}){
+  // const data = await request.formData();
+  // let result;
+  // if(mode=='login'){
+  //   const authData = {
+  //     userEmail: data.get('email'),
+  //     userPassword:data.get('password'),
+  //   }
+
+  //   result = await postLogin(authData);
+
+  // }
+
+  window.location.reload();
+  return null;
+}
