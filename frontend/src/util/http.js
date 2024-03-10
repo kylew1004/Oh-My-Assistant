@@ -105,7 +105,7 @@ export async function postSignup(authData){
     }catch(e){
         if(e.error) return e;
         else return {error: 'Could not create user.',
-        status:'unkown'}
+        status:'unknown'}
     }
 
 
