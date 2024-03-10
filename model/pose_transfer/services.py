@@ -1,5 +1,3 @@
-import schemas as _schemas
-
 from diffusers import StableDiffusionPipeline
 import os
 from dotenv import load_dotenv
@@ -54,17 +52,17 @@ class AnimateAnyone:
 
             
     def parse_args(self):
-        self.args.source_path = '/data/ephemeral/data/webtoon/001.png'
-        self.args.target_path = '/data/ephemeral/data/webtoon/002.png'
+        # self.args.source_path = '/data/ephemeral/data/webtoon/001.png'
+        # self.args.target_path = '/data/ephemeral/data/webtoon/002.png'
 
-        self.args.pretrained_base_model_path = '/data/ephemeral/Moore-AnimateAnyone/pretrained_weights/stable-diffusion-v1-5/'
-        self.args.pretrained_vae_path = '/data/ephemeral/Moore-AnimateAnyone/pretrained_weights/sd-vae-ft-mse'
-        self.args.pretrained_image_encoder_path = '/data/ephemeral/Moore-AnimateAnyone/pretrained_weights/image_encoder'
-        self.args.pretrained_denoising_unet_path = '/data/ephemeral/Moore-AnimateAnyone/pretrained_weights/denoising_unet.pth'
-        self.args.pretrained_reference_unet_path = '/data/ephemeral/Moore-AnimateAnyone/pretrained_weights/reference_unet.pth'
-        self.args.pretrained_pose_guider_path = '/data/ephemeral/Moore-AnimateAnyone/pretrained_weights/pose_guider.pth'
-        self.args.pretrained_motion_module_path = '/data/ephemeral/Moore-AnimateAnyone/pretrained_weights/motion_module.pth'
-        self.args.inference_config_path = '/data/ephemeral/Moore-AnimateAnyone/configs/inference/inference_v2.yaml'
+        self.args.pretrained_base_model_path = '/dev/pretrained_weights/stable-diffusion-v1-5/'
+        self.args.pretrained_vae_path = '/dev/pretrained_weights/sd-vae-ft-mse'
+        self.args.pretrained_image_encoder_path = '/dev/pretrained_weights/image_encoder'
+        self.args.pretrained_denoising_unet_path = '/dev/pretrained_weights/denoising_unet.pth'
+        self.args.pretrained_reference_unet_path = '/dev/pretrained_weights/reference_unet.pth'
+        self.args.pretrained_pose_guider_path = '/dev/pretrained_weights/pose_guider.pth'
+        self.args.pretrained_motion_module_path = '/dev/pretrained_weights/motion_module.pth'
+        self.args.inference_config_path = '/home/solee/doraemon_web/model/pose_transfer/configs/inference/inference_v2.yaml'
 
         self.args.seed = 42
         self.args.weight_dtype = 'fp16'
@@ -110,7 +108,6 @@ class AnimateAnyone:
         self.pose_guider.load_state_dict(
             torch.load(self.args.pretrained_pose_guider_path, map_location="cpu"),
         )
-
 
     @torch.inference_mode()
     def inference_img2img(self, source, target):
