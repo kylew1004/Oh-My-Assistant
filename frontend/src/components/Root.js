@@ -29,14 +29,16 @@ function RootLayout() {
 //   },[token, submit])
 
   return (
-    <>
+    <div className="flex flex-row">
       <Menu />
-      <div className="flex flex-col w-5/6 h-screen">
+      <div className="flex flex-col w-full h-screen overflow-scroll no-scrollbar">
          {/* {navigation.state === 'loading' && <p>Loading...</p>} */}
         <Panel />
-        <Outlet />
+        {/* <div className=""> */}
+          <Outlet />
+        {/* </div> */}
       </div>
-    </>
+    </div>
   );
 }
 
