@@ -6,14 +6,24 @@ from schemas import GenerationRequest, GenerationResponse   # 통신에 활용�
 from database import GenerationResult
 from model import get_pipe, generate, patch_pipeline, train
 from config import config, train_config
+from env import env
 
 from PIL import Image
 import shutil
 import io
 import os 
 import urllib.request 
+import uuid 
+import boto3
+
 
 router = APIRouter()
+s3 = boto3.client(
+        's3',
+        aws_access_key_id=env.access_key_id,
+        aws_secret_access_key=env.access_key,
+        region_name=env.region
+    )
 
 @router.post("/api/model/background/train")
 def background_train(style_images: List[UploadFile] = File(...)) -> None:
@@ -52,21 +62,27 @@ def background_inference(content_image: UploadFile = File(...)) -> GenerationRes
     
     # load content image
     request_object_content = content_image.file.read()
-    print(type(request_object_content))
     content = io.BytesIO(request_object_content)
 
     # generate
     generated_images = generate(pipe, content)
 
     # save(upload image to AWS S3)
-    file_names = []
-    for i, img in enumerate(generated_images):
-        file_name = f"results/result{i}.jpg" 
-        img.save(file_name)
-        file_names.append(file_name)
-    
+    background_file_paths = []
+    for i, img in enumerate(generated_images):        
+        background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
+
+        # 이미지를 BytesIO 객체에 저장
+        img_byte_arr = io.BytesIO()
+        img.save(img_byte_arr, format='jpeg')
+        img_byte_arr.seek(0)
+
+        s3.upload_fileobj(img_byte_arr, Bucket=env.bucket, Key=f"background/{background_file_name}")
+        background_file_path = f"https://{env.bucket}.s3.{env.region}.amazonaws.com/background/{background_file_name}"
+        background_file_paths.append(background_file_path)
+        
     # convert to response format
-    generated_result = GenerationResult(result = ",".join(file_names))
+    generated_result = GenerationResult(result = " ".join(background_file_paths))
     
     return GenerationResponse(
         id = generated_result.id,
