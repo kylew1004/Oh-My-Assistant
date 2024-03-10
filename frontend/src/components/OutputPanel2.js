@@ -1,10 +1,12 @@
-import {useState, useEffect} from 'react';
+import { useState } from 'react';
 import spinner from '../assets/loading.gif';
 import Error from './Error.js';
 import SaveAssetModal from './SaveAssetModal.js';
 
 export default function OutputPanel({imageUrl, isFetching, error}){
     const [isModal, setIsModal] = useState(false);
+    let urlArray;
+    if(imageUrl) urlArray = imageUrl.split(" ");
 
     let styling = "h-full w-full object-contain mx-auto"
     if(isFetching) {
@@ -22,7 +24,7 @@ export default function OutputPanel({imageUrl, isFetching, error}){
 
 
     return  <>
-            <SaveAssetModal open={isModal} handleClose={handleClose} />
+            <SaveAssetModal open={isModal} handleClose={handleClose} images={imageUrl}/>
         
        
 
@@ -30,7 +32,7 @@ export default function OutputPanel({imageUrl, isFetching, error}){
             {error ? <Error message={error.message} /> : 
             <span className=" h-full w-[55%] flex border rounded-lg p-3 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
             {isFetching ? <img className={styling} src={imageUrl}/> 
-                : (imageUrl && <img className={styling} src={imageUrl[0]}/>) }
+                : (imageUrl && <img className={styling} src={urlArray[0]}/>) }
             
             </span>}
 
@@ -38,7 +40,7 @@ export default function OutputPanel({imageUrl, isFetching, error}){
                 <p className="text-black text-lg font-bold">Process Image</p>
                 <span className=" h-full w-full flex border rounded-lg p-3 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
                 {isFetching ? <img className={styling} src={imageUrl}/> 
-                    : (imageUrl && <img className={styling} src={imageUrl[1]}/>) }
+                    : (imageUrl && <img className={styling} src={urlArray[1]}/>) }
                 
                 </span>
                 {/* <DownloadBtn imageUrl={imageUrl} isFetching={isFetching}/> */}

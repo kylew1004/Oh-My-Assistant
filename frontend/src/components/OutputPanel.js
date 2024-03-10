@@ -9,6 +9,14 @@ export default function OutputPanel({imageUrl, isFetching, error}){
     const [selected, setSelected] = useState([]);
     const [isModal, setIsModal] = useState(false);
 
+    let selectedStr;
+    if(selected.length>0){
+        selectedStr = selected.reduce((accumulator, currentValue) => {
+            return accumulator + currentValue + " ";
+          }, "");  
+        selectedStr = selectedStr.slice(0, -1);
+    } 
+
     let styling = "h-full w-full object-contain mx-auto"
     if(isFetching) {
         imageUrl=spinner;
@@ -49,7 +57,7 @@ export default function OutputPanel({imageUrl, isFetching, error}){
     }
 
     return  <>
-            <SaveAssetModal open={isModal} handleClose={handleClose} />
+            <SaveAssetModal open={isModal} handleClose={handleClose} images={selectedStr}/>
         
        
 

@@ -1,7 +1,7 @@
 import { useRef, useEffect } from 'react';
 import { Form } from 'react-router-dom';
 
-const SaveAssetModal = function Modal({ open, handleClose }) {
+const SaveAssetModal = function Modal({ open, handleClose, images }) {
   const dialog = useRef();
 
   useEffect(()=>{
@@ -26,6 +26,8 @@ const SaveAssetModal = function Modal({ open, handleClose }) {
             <label className="font-bold mb-3">Description(optional)</label>
             <textarea className="rounded-lg bg-gray-300 h-[120px] text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" rows="10" id="description" name="description" placeholder="Enter description here"/>
         </div>
+
+        <input id="image" name="images" type="text" value={images} hidden />
 
         <button  className="button mx-auto h-12 my-6 w-full  bg-yellow-500 rounded-full text-black font-bold">
         Create Asset
