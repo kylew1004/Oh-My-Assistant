@@ -53,7 +53,6 @@ def background_inference(content_image: UploadFile = File(...)) -> GenerationRes
     if not result:
         generated_result = GenerationResult(result = "Error: There is no trained model.")
         return GenerationResponse(
-            id = generated_result.id,
             result = generated_result.result
         )
 
@@ -85,7 +84,6 @@ def background_inference(content_image: UploadFile = File(...)) -> GenerationRes
     generated_result = GenerationResult(result = " ".join(background_file_paths))
     
     return GenerationResponse(
-        id = generated_result.id,
         result = generated_result.result
     )
     

@@ -13,5 +13,4 @@ class GenerationRequest(BaseModel):
     
     
 class GenerationResponse(BaseModel):
-    id: int 
     result: str
