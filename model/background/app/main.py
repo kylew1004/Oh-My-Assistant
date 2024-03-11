@@ -28,8 +28,12 @@ def main():
         <form action="/api/model/background" enctype="multipart/form-data" method="post">
         생성하기
             <input name="content_image" type="file">
+            <br>
+            학습한 모델 경로
+            <input name="model_path" type="text" value="" style="width:500px">
             <input type="submit">
         </form>
+        <hr>
         <form action="/api/model/background/train" enctype="multipart/form-data" method="post">
         학습하기
             <input name="style_images" type="file" multiple>
