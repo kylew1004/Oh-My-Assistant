@@ -1,14 +1,15 @@
 import React, { useState } from "react";
 import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import {tokenLoader, checkAuthLoader} from './util/auth';
-import Welcome, {action as authAction} from "./page/Welcome.js";
+import Welcome, {action as authAction, loader as authLoader} from "./page/Welcome.js";
 import {action as logoutAction} from './page/Logout.js';
-import Assets from './page/Assets.js';
+import Assets, {loader as assetsLoader} from './page/Assets.js';
 import RootLayout, {loader as rootLoader} from "./components/Root.js";
 import StyleTransfer, {action as saveBackgroundAssetAction} from './page/StyleTransfer.js';
 import PoseTransfer, {action as savePoseAssetAction} from './page/PoseTransfer.js';
 import CreateNew from './page/CreateNew.js';
 import Train from './page/Train.js';
+import Panel from './components/Panel.js';
 
  
 const router = createBrowserRouter([
@@ -20,35 +21,44 @@ const router = createBrowserRouter([
     // loader: tokenLoader,
     loader: rootLoader,
     children: [
-      { index: true, element: <Assets /> },
+      { index: true, element: <p>no webtoon selected</p> },
       {
-        path: 'assets',
-        element: <Assets />,
-        // action: authAction
-      },
-      {
-        path: 'createNew',
-        element: <Outlet />,
-        // action: authAction,
+        path:':webtoonName',
+        element: <>
+          <Panel />
+          <Outlet />
+        </>,
         children:[
-          { index: true, element: <CreateNew /> },
+          // { index: true, element: <Assets /> },
           {
-            path: 'styleTransfer',
-            element: <StyleTransfer />,
-            action: saveBackgroundAssetAction,
+            path: 'assets',
+            element: <Assets />,
+            loader: assetsLoader,
           },
           {
-            path: 'poseTransfer',
-            element: <PoseTransfer />,
-            action: savePoseAssetAction,
+            path: 'createNew',
+            element: <Outlet />,
+            // action: authAction,
+            children:[
+              { index: true, element: <CreateNew /> },
+              {
+                path: 'styleTransfer',
+                element: <StyleTransfer />,
+              },
+              {
+                path: 'poseTransfer',
+                element: <PoseTransfer />,
+              },
+    
+            ]
+          },
+          {
+            path: 'train',
+            element: <Train />,
+            // action: authAction,
           },
 
         ]
-      },
-      {
-        path: 'train',
-        element: <Train />,
-        // action: authAction,
       },
       {
         path: 'logout',
@@ -60,8 +70,8 @@ const router = createBrowserRouter([
     path: '/auth',
     element: <Welcome />,
     // errorElement: <ErrorPage />,
-    action: authAction
-
+    action: authAction,
+    loader: authLoader,
   },
 ]);
 
