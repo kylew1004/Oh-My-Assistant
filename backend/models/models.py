@@ -70,7 +70,7 @@ class PoseImg(Base):
     characterImgUrl = Column(String(255), index=True)
     poseImgUrl = Column(String(255), index=True)
     createdAt = Column(DateTime, index=True)
-    assetName = Column(String(50), index=True)
+    assetName = Column(String(50), index=True, unique=True)
     description = Column(String(255), index=True)
 
     webtoon = relationship("Webtoon", back_populates="pose_img")

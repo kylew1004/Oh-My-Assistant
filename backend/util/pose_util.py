@@ -40,6 +40,12 @@ def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile,
               webtoonName: str, assetName: str, description: str, db: Session,
               user_id: int):
     
+    if db.query(models.PoseImg).join(models.Webtoon, models.PoseImg.webtoonId == models.Webtoon.id)\
+        .filter(models.Webtoon.webtoonName == webtoonName, models.PoseImg.assetName == assetName, 
+                models.Webtoon.userId == user_id).first():
+
+        raise HTTPException(status_code=400, detail="Bad Request: Asset already exists")
+    
     originalCharacterImgName = f"{uuid.uuid4()}__{originalCharacterImg.filename}"
     originalPoseImgName = f"{uuid.uuid4()}__{originalPoseImg.filename}"
     characterImageName = f"{uuid.uuid4()}__{characterImage.filename}"
