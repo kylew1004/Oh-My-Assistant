@@ -52,10 +52,10 @@ def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile,
     characterImageName = f"{uuid.uuid4()}__{characterImage.filename}"
     poseImageName = f"{uuid.uuid4()}__{poseImage.filename}"
     
-    s3.upload_fileobj(originalCharacterImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=originalCharacterImgName)
-    s3.upload_fileobj(originalPoseImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=originalPoseImgName)
-    s3.upload_fileobj(characterImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=characterImageName)
-    s3.upload_fileobj(poseImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=poseImageName)
+    s3.upload_fileobj(originalCharacterImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{originalCharacterImgName}")
+    s3.upload_fileobj(originalPoseImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{originalPoseImgName}")
+    s3.upload_fileobj(characterImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"pose/{characterImageName}")
+    s3.upload_fileobj(poseImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"pose/{poseImageName}")
     
     originalCharacterImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalCharacterImgName}"
     originalPoseImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalPoseImgName}"
