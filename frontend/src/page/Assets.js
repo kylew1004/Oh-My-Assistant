@@ -1,8 +1,10 @@
-import { Link, useSearchParams } from 'react-router-dom';
-import {useEffect} from 'react';
+import { Link, useSearchParams, defer, useLoaderData, Await } from 'react-router-dom';
+import {useEffect, Suspense} from 'react';
+import { getStyleAssets, getPoseAssets } from '../util/http';
 
 export default function Assets(){
     const [searchParams, setSearchParams] = useSearchParams();
+    const {scenes, characters} = useLoaderData();
 
     useEffect(() => {
         if (!searchParams.get('mode')) {
@@ -35,10 +37,28 @@ export default function Assets(){
 
 
             <div className="bg-white bg-opacity-30 m-auto rounded-xl justify-center items-center w-11/12 h-5/6 mt-0">
+                <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
+                        <Await resolve={active=="Scenes" ? scenes : characters}>
+                            {(loadedAssets) => loadedAssets.map(asset=> <div className="flex flex-col pl-3 p-1">
+                                <Link to={`/`} className="text-white text-md pb-1  w-full text-left hover:bg-gray-950" >{asset}</Link>
+                            </div>)}
+                        </Await>
+                </Suspense>
 
                 
             </div>
 
     
 </div>
+}
+
+export function loader({params}){
+    const data={
+        webtoonName: params.webtoonName,
+    }
+
+    return defer({
+        scenes: getStyleAssets(data),
+        characters: getPoseAssets(data),
+      })
 }
