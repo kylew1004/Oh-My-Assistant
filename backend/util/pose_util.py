@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
-from models import models, schemas
+from models import models
 from fastapi import HTTPException, UploadFile
+from sqlalchemy.orm import load_only
 import requests
 import os
 import boto3
@@ -92,7 +93,16 @@ def get_pose_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int
                         models.PoseImg.assetName == asset_name, 
                         models.Webtoon.userId == user_id).first()
     if db_pose:
-        return db_pose
+        result = {
+            "originalCharacterImgUrl": db_pose.originalCharacterImgUrl,
+            "originalPoseImgUrl": db_pose.originalPoseImgUrl,
+            "characterImgUrl": db_pose.characterImgUrl,
+            "poseImgUrl": db_pose.poseImgUrl,
+            "createdAt": db_pose.createdAt,
+            "assetName": db_pose.assetName,
+            "description": db_pose.description
+        }
+        return result
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
 
