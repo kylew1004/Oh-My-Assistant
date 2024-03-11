@@ -12,3 +12,10 @@ api_pose = APIRouter(prefix="/api/pose")
 @api_pose.post('/inference')
 def pose_inference(poseImage: UploadFile, characterImage: UploadFile):
     return pose_util.pose_inference(characterImage, poseImage)
+
+
+@api_pose.post('/save')
+def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile, characterImage: UploadFile, poseImage: UploadFile, 
+              webtoonName: str, assetName: str, description: str, db: Session = Depends(get_db)):
+    return pose_util.pose_save(originalCharacterImg, originalPoseImg, characterImage, poseImage,
+                               webtoonName, assetName, description, db)

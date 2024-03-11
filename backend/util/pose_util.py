@@ -1,11 +1,22 @@
 from sqlalchemy.orm import Session
 from models import models, schemas
-from fastapi import HTTPException
+from fastapi import HTTPException, UploadFile
 import requests
 import os
+import boto3
+import uuid
+from datetime import datetime
 
 
-def pose_inference(characterImage, poseImage):
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=os.environ.get("AWS_S3_ACCESS_KEY_ID"),
+    aws_secret_access_key=os.environ.get("AWS_S3_SECRET_ACCESS_KEY"),
+    region_name=os.environ.get("AWS_S3_REGION")
+)
+
+
+def pose_inference(characterImage: UploadFile, poseImage: UploadFile):
     character_file_name = characterImage.filename
     character_file_content = characterImage.file.read()
     character_file_content_type = characterImage.content_type
@@ -24,24 +35,31 @@ def pose_inference(characterImage, poseImage):
         return response.json()
 
 
-# def post_pose_image(source_file, target_file, db: Session):
-#     source_file_name = source_file.filename
-#     source_file_content = source_file.file.read()
-#     source_file_content_type = source_file.content_type
+def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile, 
+              characterImage: UploadFile, poseImage: UploadFile, 
+              webtoonName: str, assetName: str, description: str, db: Session):
     
-#     target_file_name = target_file.filename
-#     target_file_content = target_file.file.read()
-#     target_file_content_type = target_file.content_type
+    originalCharacterImgName = f"{uuid.uuid4()}__{originalCharacterImg.filename}"
+    originalPoseImgName = f"{uuid.uuid4()}__{originalPoseImg.filename}"
+    characterImageName = f"{uuid.uuid4()}__{characterImage.filename}"
+    poseImageName = f"{uuid.uuid4()}__{poseImage.filename}"
     
-#     files = {'file_source': (source_file_name, source_file_content, source_file_content_type),
-#              'file_target': (target_file_name, target_file_content, target_file_content_type)}
-#     response = requests.post(f"{os.environ['POSE_MODEL_SERVER']}/translate-pose/", files=files)
-#     pose_image_path = response.json()["result"]
-#     print(pose_image_path)
-#     db_image = models.Image(image_path=pose_image_path)
-#     db.add(db_image)
-#     db.commit()
-#     db.refresh(db_image)
-
+    s3.upload_fileobj(originalCharacterImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=originalCharacterImgName)
+    s3.upload_fileobj(originalPoseImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=originalPoseImgName)
+    s3.upload_fileobj(characterImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=characterImageName)
+    s3.upload_fileobj(poseImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=poseImageName)
     
-#     return db_image
+    originalCharacterImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalCharacterImgName}"
+    originalPoseImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalPoseImgName}"
+    characterImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{characterImageName}"
+    poseImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{poseImageName}"
+    
+    original_image_url = f"{originalCharacterImgPath} {originalPoseImgPath}"
+    pose_image_url = f"{characterImagePath} {poseImagePath}"
+    db_pose = models.PoseImg(webtoonName=webtoonName, originalImageUrl=original_image_url, pose_image_url=pose_image_url, 
+                             created_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), asset_name=assetName, description=description)
+    db.add(db_pose)
+    db.commit()
+    db.refresh(db_pose)
+    
+    return db_pose
