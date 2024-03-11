@@ -4,6 +4,7 @@ import LoginForm from '../components/LoginForm.js';
 import logoImg from '../assets/logo.png';
 import WelcomeSlide from '../components/WelcomeSlide.js';
 import { postLogin, postSignup } from '../util/http.js';
+import {tokenLoader} from '../util/auth.js';
 
 
 
@@ -95,9 +96,16 @@ export default function Welcome() {
       localStorage.setItem('expiration', expiration.toISOString());
     
     
-      return redirect('/assets');
+      return redirect('/');
       
     }
 
     return result;
+  }
+
+
+  export function loader(){
+    if(tokenLoader()) return redirect('/');
+    return null;
+
   }
