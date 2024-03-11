@@ -1,8 +1,25 @@
 import {useState} from 'react'; 
 import { Form } from 'react-router-dom';
+import { postVerifyEmail } from '../util/http.js';
 
 export default function SignupForm() {
     const [pwNotEqual, setPwNotEqual] = useState(false);
+    const [verified, setVerified] = useState('false');
+    const [email, setEmail] = useState('');
+
+    async function handleVerify(){
+      const result = await postVerifyEmail({userEmail:email});
+      if(result.userEmail){
+        setVerified('true');
+        alert('Email verified!');
+      }else alert('Email already exists!');
+      
+    }
+
+    function handleEmailChange(e){
+      setVerified('false');
+      setEmail(e.target.value);
+    }
 
     // function handleSubmit(event){
     //     event.preventDefault();
@@ -35,8 +52,9 @@ export default function SignupForm() {
           <input className="h-16 w-full rounded-lg p-4 bg-gray-50 text-gray-700 text-lg  focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="email" type="email" name="email" placeholder="Email Address" required />
         </div> */}
         <div className="flex flex-row control-row h-16 w-full my-5 rounded-lg bg-gray-50 text-gray-700 text-lg ">
-            <input className="h-16 w-full p-4 rounded-lg focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 bg-gray-50 m-auto placeholder-gray-400" id="email" type="email" name="email" placeholder="Email Address" required />
-            <button className="h-8 my-auto mx-3 bg-[#5748B9] text-gray-50 rounded-full px-3 text-sm" type="button">Verify</button>
+            <input className="h-16 w-full p-4 rounded-lg focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 bg-gray-50 m-auto placeholder-gray-400" id="email" type="email" name="email" placeholder="Email Address" required
+                  onChange={handleEmailChange} />
+            <button className="h-8 my-auto mx-3 bg-[#5748B9] text-gray-50 rounded-full px-3 text-sm" type="button" onClick={handleVerify}>Verify</button>
         </div>
     
         <div className="flex flex-row w-full gap-3">
@@ -47,6 +65,8 @@ export default function SignupForm() {
             <div className='control-error'>{pwNotEqual && <p>Passwords must match.</p>}</div>
           </div>
         </div>
+
+        <input id="verified" name="verified" type="text" value={verified} hidden /> 
 
           <button type="submit" className="button m-auto my-6 h-12 w-1/2  bg-gradient-to-r from-[#F6C443] to-[#F3AC58] rounded-full text-black">
             Sign up

@@ -53,7 +53,7 @@ export async function postLogin(authData){
           });
     
         //handle response
-        if(response.status===422 || response.status ==401){
+        if(response.status===422 || response.status ==401 || response.stastus==400){
             throw {error: 'Could not athenticate user.',
                   status:response.status}
         }
@@ -116,6 +116,37 @@ export async function getUser(data){
 }
 
 export async function postVerifyEmail(data){
+    try{
+        const response = await fetch(`${URL}/api/user/email-check`,{
+            method:'POST',
+            headers:{
+              'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(data)
+          });
+    
+        //handle response
+        if(response.status===422 || response.status ==401 || response.stastus==400){
+            throw {error: 'Could not verify email.',
+                  status:response.status}
+        }
+      
+        if(!response.ok){
+            throw {error: 'Could not verify email.',
+                   status:500}
+        }
+      
+        //manage the token returned 
+        const resData = await response.json();
+        return resData;
+
+    }catch(e){
+        if(e.error) return e;
+        else return {error: 'Could not verify email.',
+        status:'unkown'}
+    }
+
+
 
 }
 

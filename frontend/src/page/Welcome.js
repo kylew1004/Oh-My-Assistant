@@ -73,6 +73,11 @@ export default function Welcome() {
       result = await postLogin(authData);
 
     }else{
+      if(data.get('verified')=='false'){
+        alert('Please verify email!');
+        return null;
+      }
+      
       const authData = {
         userNickname: data.get('name'),
         userEmail: data.get('email'),
