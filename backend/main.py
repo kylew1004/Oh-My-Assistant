@@ -1,10 +1,12 @@
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from models import models
 from models.database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
 from router import user_router
 from router import webtoon_router
+from router import pose_router
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -28,3 +30,4 @@ app.add_middleware(
 
 app.include_router(user_router.api_user)
 app.include_router(webtoon_router.api_webtoon)
+app.include_router(pose_router.api_pose)

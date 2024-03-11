@@ -1,8 +1,8 @@
 from datetime import datetime, timedelta
 from fastapi import HTTPException, status
 from jose import jwt, JWTError
-from pydantic import EmailStr, BaseSettings
-from typing import Optional
+from pydantic import BaseSettings
+
 
 class Settings(BaseSettings):
     SECRETE_KEY: str
