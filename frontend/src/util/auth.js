@@ -28,7 +28,7 @@ export function tokenLoader(){
     const token=getAuthToken();
 
     if(!token){
-        return redirect('/auth')
+        return null;
     }
 
     return getAuthToken();
