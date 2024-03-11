@@ -63,7 +63,7 @@ class ContentImg(Base):
 class PoseImg(Base):
     __tablename__ = "pose_img"
 
-    pose_image_id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     originalCharacterImgUrl = Column(String(255), index=True)
     originalPoseImgUrl = Column(String(255), index=True)
@@ -89,7 +89,7 @@ class Model(Base):
     __tablename__ = "model"
 
     model_id = Column(Integer, primary_key=True, index=True)
-    webtoonId = Column(String(50), ForeignKey("webtoon.id"), nullable=False)
+    webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     model_path = Column(String(255), index=True)
 
     webtoon = relationship("Webtoon", back_populates="model")
