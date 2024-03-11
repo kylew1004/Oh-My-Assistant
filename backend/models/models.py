@@ -17,7 +17,8 @@ class User(Base):
 
 class Webtoon(Base):
     __tablename__ = "webtoon"
-    webtoonName = Column(String(50), primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
+    webtoonName = Column(String(50), index=True)
     userId = Column(Integer, ForeignKey("users.id"), nullable=False)
     createdAt = Column(DateTime, index=True)
 
@@ -31,7 +32,7 @@ class ContentImg(Base):
     __tablename__ = "content_img"
 
     original_image_id = Column(Integer, primary_key=True, index=True)
-    webtoonName = Column(String(50), ForeignKey("webtoon.webtoonName"), nullable=False)
+    webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     created_at = Column(DateTime, index=True)
     original_image_url = Column(String(100), index=True)
     asset_name = Column(String(50), index=True)
@@ -44,12 +45,14 @@ class ContentImg(Base):
 class PoseImg(Base):
     __tablename__ = "pose_img"
 
-    pose_image_id = Column(Integer, primary_key=True, index=True)
-    webtoonName = Column(String(50), ForeignKey("webtoon.webtoonName"), nullable=False)
-    originalImageUrl = Column(String(255), index=True)
-    pose_image_url = Column(String(255), index=True)
-    created_at = Column(DateTime, index=True)
-    asset_name = Column(String(50), index=True)
+    id = Column(Integer, primary_key=True, index=True)
+    webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
+    originalCharacterImgUrl = Column(String(255), index=True)
+    originalPoseImgUrl = Column(String(255), index=True)
+    characterImgUrl = Column(String(255), index=True)
+    poseImgUrl = Column(String(255), index=True)
+    createdAt = Column(DateTime, index=True)
+    assetName = Column(String(50), index=True, unique=True)
     description = Column(String(255), index=True)
 
     webtoon = relationship("Webtoon", back_populates="pose_img")
@@ -58,7 +61,7 @@ class BackgroundImg(Base):
     __tablename__ = "background_img"
 
     background_image_id = Column(Integer, primary_key=True, index=True)
-    webtoonName = Column(String(50), ForeignKey("content_img.webtoonName"), nullable=False)
+    webtoonId = Column(Integer, ForeignKey("content_img.webtoonId"), nullable=False)
     background_image_url = Column(String(255), index=True)
 
     content_img = relationship("ContentImg", back_populates="background_img")
@@ -68,7 +71,7 @@ class Model(Base):
     __tablename__ = "model"
 
     model_id = Column(Integer, primary_key=True, index=True)
-    webtoonName = Column(String(50), ForeignKey("webtoon.webtoonName"), nullable=False)
+    webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     model_path = Column(String(255), index=True)
 
     webtoon = relationship("Webtoon", back_populates="model")
