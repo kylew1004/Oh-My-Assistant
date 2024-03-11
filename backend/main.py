@@ -1,10 +1,11 @@
-from fastapi import Depends, FastAPI
+from fastapi import FastAPI
 from models import models
 from models.database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
 from router import user_router
 from router import webtoon_router
+
 
 models.Base.metadata.create_all(bind=engine)
 
