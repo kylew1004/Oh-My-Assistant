@@ -29,7 +29,7 @@ export default function LoginForm(){
 
         
         <div className="control control-row w-full my-5 mb-9 flex flex-col">
-          <input className="h-16 w-full rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="email" type="email" name="email" placeholder="Email Address" required />
+          <input className="h-16 w-full rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="username" type="email" name="username" placeholder="Email Address" required />
         </div>
     
         <div className="control p-1 flex flex-col control-row w-full my-5">
