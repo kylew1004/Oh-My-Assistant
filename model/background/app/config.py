@@ -9,7 +9,6 @@ class Config(BaseSettings):
 class TrainConfig(BaseSettings):
     data_dir: str 
     model_dir: str 
-    model_name: str 
     pipeline_name: str = "runwayml/stable-diffusion-v1-5"
     rank: int = 16
     resolution: int = 512

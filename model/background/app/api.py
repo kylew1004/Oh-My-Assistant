@@ -33,7 +33,10 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     model_name = f"{uuid.uuid4()}"
 
     # clear dir
-    shutil.rmtree(os.path.join(train_config.data_dir, model_name))
+    try:
+        shutil.rmtree(os.path.join(train_config.data_dir, model_name))
+    except:
+        pass
     
     # make dir
     os.makedirs(os.path.join(train_config.data_dir, model_name), exist_ok=True)
@@ -89,12 +92,12 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
 
 
 @router.post("/api/model/background/")
-def background_inference(content_image: UploadFile = File(...)) -> GenerationResponse:
+def background_inference(model_path: str = str(...), content_image: UploadFile = File(...)) -> GenerationResponse:
     # make dir
     os.makedirs('results', exist_ok=True)
     
     # patch pipeline
-    result = patch_pipeline(model_path=config.model_path)
+    result = patch_pipeline(model_path=model_path)
     if not result:
         generated_result = GenerationResult(result = "Error: There is no trained model.")
         return GenerationResponse(
