@@ -1,15 +1,12 @@
 from fastapi import APIRouter, Depends, HTTPException
-from models import crud,schemas
-from models.crud import pwd_context
-from datetime import timedelta, datetime
+from models import schemas
+from util.user_util import pwd_context
+from datetime import timedelta
 from sqlalchemy.orm import Session
 from models.database import get_db
-from typing import List
-from auth.token import create_access_token, verify_access_token, Settings
-#from models.crud import get_current_activate_user
+from auth.token import Settings
 from fastapi.security import OAuth2PasswordRequestForm
-from jose import jwt
-from models import crud
+from util import user_util
 from fastapi import status
 from models import models, database
 from auth import token
@@ -27,7 +24,7 @@ def read_user_me(current_user: schemas.User = Depends(get_current_user)):
 
 @api_user.post('/email-check')
 def check_email(request: schemas.UserBase , db: Session = Depends(get_db)):
-    user = crud.get_user_by_email(db, userEmail=request.userEmail)
+    user = user_util.get_user_by_email(db, userEmail=request.userEmail)
     if user:
         raise HTTPException(status_code=400, detail="Email already registered")
     return request
@@ -60,10 +57,10 @@ def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(
 
 @api_user.post("/create", response_model=schemas.Token, status_code=200)
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
-    db_user = crud.get_user_by_email(db, userEmail=user.userEmail)
+    db_user = user_util.get_user_by_email(db, userEmail=user.userEmail)
     if db_user:
         raise HTTPException(status_code=400, detail="Bad Request: Email already registered")
-    user = crud.create_user(db=db, user=user)
+    user = user_util.create_user(db=db, user=user)
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = token.create_access_token(data={"userEmail": user.userEmail},expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}
