@@ -50,7 +50,7 @@ class ContentImg(Base):
     __tablename__ = "content_img"
 
     original_image_id = Column(Integer, primary_key=True, index=True)
-    webtoonName = Column(String(50), ForeignKey("webtoon.webtoonName"), nullable=False)
+    webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     created_at = Column(DateTime, index=True)
     original_image_url = Column(String(100), index=True)
     asset_name = Column(String(50), index=True)
@@ -79,7 +79,7 @@ class BackgroundImg(Base):
     __tablename__ = "background_img"
 
     background_image_id = Column(Integer, primary_key=True, index=True)
-    webtoonName = Column(String(50), ForeignKey("content_img.webtoonName"), nullable=False)
+    webtoonId = Column(Integer, ForeignKey("content_img.webtoonId"), nullable=False)
     background_image_url = Column(String(255), index=True)
 
     content_img = relationship("ContentImg", back_populates="background_img")
@@ -89,7 +89,7 @@ class Model(Base):
     __tablename__ = "model"
 
     model_id = Column(Integer, primary_key=True, index=True)
-    webtoonName = Column(String(50), ForeignKey("webtoon.webtoonName"), nullable=False)
+    webtoonId = Column(String(50), ForeignKey("webtoon.id"), nullable=False)
     model_path = Column(String(255), index=True)
 
     webtoon = relationship("Webtoon", back_populates="model")
