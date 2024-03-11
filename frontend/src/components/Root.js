@@ -1,8 +1,8 @@
-import { Outlet, useLoaderData, defer} from 'react-router-dom';
+import { Outlet, useLoaderData, defer, redirect} from 'react-router-dom';
 import {getUser, getWebtoons} from '../util/http.js';
 
 import Menu from "./Menu.js";
-import Panel from './Panel.js';
+import {tokenLoader} from '../util/auth.js';
 
 // import MainNavigation from '../components/MainNavigation';
 // import {getTokenDuration} from '../util/auth';
@@ -35,7 +35,7 @@ function RootLayout() {
       <Menu />
       <div className="flex flex-col w-full h-screen overflow-scroll no-scrollbar">
          {/* {navigation.state === 'loading' && <p>Loading...</p>} */}
-        <Panel />
+        {/* <Panel /> */}
         {/* <div className=""> */}
           <Outlet />
         {/* </div> */}
@@ -47,8 +47,11 @@ function RootLayout() {
 export default RootLayout;
 
 export function loader(){
+
+  if(!tokenLoader()) return redirect('/auth');
+
   return defer({
     userInfo: getUser(),
     webtoons: getWebtoons()
-  })
+  });
 }
