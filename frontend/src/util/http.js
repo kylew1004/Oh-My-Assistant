@@ -1,3 +1,4 @@
+import qs from 'qs';
 const URL = "http://localhost:8000";
 
 
@@ -42,14 +43,13 @@ export async function postInput(image) {
 
 //------------------------------------------------------------------------------------
 export async function postLogin(authData){
-
     try{
         const response = await fetch(`${URL}/api/user/login`,{
             method:'POST',
             headers:{
-              'Content-Type' : 'application/json'
+              'Content-Type' : 'application/x-www-form-urlencoded'
             },
-            body: JSON.stringify(authData)
+            body: qs.stringify(authData) 
           });
     
         //handle response
@@ -141,6 +141,8 @@ export async function getStyleAlbum(data){
 
 export async function postModelTrain(data){
 
+    return data.get('images');
+
 }
 
 export async function postStyleTransfer(data){
@@ -161,7 +163,7 @@ export async function postPoseTransfer(data){
     const resData = {
         postImageUrl : "https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg"
     }
-    return resData.postImageUrl.split(" ");
+    return resData.postImageUrl;
 
 }
 

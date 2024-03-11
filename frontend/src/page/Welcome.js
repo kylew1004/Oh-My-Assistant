@@ -61,9 +61,14 @@ export default function Welcome() {
     const data = await request.formData();
     let result;
     if(mode=='login'){
-      const authData = new FormData();
-      authData.append('username', data.get('email'));
-      authData.append('password', data.get('password'));
+      const authData = {
+        grant_type:'',
+        username: data.get('username'),
+        password:data.get('password'),
+        scope:'',
+        client_id:'',
+        client_secret:''
+      }
 
       result = await postLogin(authData);
 
