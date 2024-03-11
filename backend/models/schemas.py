@@ -46,7 +46,6 @@ class WebtoonCreate(WebtoonBase):
     webtoonName: str
 
 class Webtoon(WebtoonBase):
-    id: int
     createdAt: datetime
     userId: int
 
@@ -55,7 +54,7 @@ class Webtoon(WebtoonBase):
         
 
 class ContentImgBase(BaseModel):
-    webtoon_id: int
+    webtoonName: str
     original_image_url: str
     asset_name: str
     description: Optional[str] = None
@@ -72,7 +71,8 @@ class ContentImg(ContentImgBase):
 
 
 class PoseImgBase(BaseModel):
-    webtoon_id: int
+    webtoonName: str
+    originalImageUrl: str
     pose_image_url: str
     asset_name: str
     description: Optional[str] = None
@@ -89,7 +89,7 @@ class PoseImg(PoseImgBase):
         orm_mode = True
 
 class BackgroundImgBase(BaseModel):
-    webtoon_id: int
+    webtoonName: str
     background_image_url: str
 
 class BackgroundImgCreate(BackgroundImgBase):
@@ -103,7 +103,7 @@ class BackgroundImg(BackgroundImgBase):
 
 
 class ModelBase(BaseModel):
-    webtoon_id: int
+    webtoonName: str
     model_path: str
 
 class ModelCreate(ModelBase):

@@ -32,9 +32,8 @@ def read_webtoon_list(db: Session = Depends(get_db), current_user: schemas.User 
     formatted_webtoons = []
     for webtoon in webtoons:
         formatted_webtoons.append({
-            "id":webtoon.id,
-            "userId":webtoon.userId,
             "webtoonName":webtoon.webtoonName,
+            "userId":webtoon.userId,
             "createdAt":webtoon.createdAt
         })
     return {"webtoonList":formatted_webtoons}
