@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState , useEffect} from "react";
 import {redirect} from 'react-router-dom';
 
 import OutputPanel from '../components/OutputPanel.js';
@@ -9,7 +9,8 @@ import { postStyleTransfer } from "../util/http.js";
  
 function StyleTransfer() {
     const [file, setFile] = useState();
-    const [outputUrl, setOutputUrl] = useState();
+    const [prompt, setPrompt] = useState();
+    const [outputs, setOutputs] = useState();
     const [isFetching, setIsFetching] = useState(false);
     const [errorFetching, setErrorFetching] = useState();
 
@@ -18,10 +19,15 @@ function StyleTransfer() {
 
     function handleChange(e) {
         console.log(e.target.files[0]);
+        setPrompt("");
         setFile(e.target.files[0]);
         setErrorFetching(null);
         setIsFetching(false);
-        
+        setOutputs(null);
+    }
+
+    function handlePromptChange(e){
+      setPrompt(e.target.value);
     }
 
     async function handleSubmit(){
@@ -31,12 +37,9 @@ function StyleTransfer() {
         setIsFetching(true);
 
         postStyleTransfer(file)
-          // .then(() =>{
-          //   return fetchOutput();
-          // })
-          .then(imgUrl =>{
-            console.log(imgUrl);
-            setOutputUrl(imgUrl);
+          .then(imgArr =>{
+            console.log(imgArr);
+            setOutputs(imgArr);
             setErrorFetching(null);
             setIsFetching(false);
           })
@@ -64,8 +67,8 @@ function StyleTransfer() {
         <hr className="bg-gray-700 h-[0.4px] w-11/12 mx-auto" />
 
         <div className="flex font-sans flex-row items-center justify-center h-screen my-auto pt-6 pb-3">
-          <InputPanel imageUrl={fileUrl} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit}/>
-          <OutputPanel imageUrl={outputUrl} isFetching={isFetching} error={errorFetching} />    
+          <InputPanel imageUrl={fileUrl} prompt={prompt} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit} handlePromptChange={handlePromptChange}/>
+          <OutputPanel images={outputs} isFetching={isFetching} error={errorFetching} originalImg={file} />    
         </div>
         </>
     );
@@ -73,20 +76,3 @@ function StyleTransfer() {
  
 export default StyleTransfer;
 
-
-export async function action({request}){
-  // const data = await request.formData();
-  // let result;
-  // if(mode=='login'){
-  //   const authData = {
-  //     userEmail: data.get('email'),
-  //     userPassword:data.get('password'),
-  //   }
-
-  //   result = await postLogin(authData);
-
-  // }
-
-  window.location.reload();
-  return null;
-}
