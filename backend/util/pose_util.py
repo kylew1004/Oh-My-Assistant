@@ -37,7 +37,8 @@ def pose_inference(characterImage: UploadFile, poseImage: UploadFile):
 
 def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile, 
               characterImage: UploadFile, poseImage: UploadFile, 
-              webtoonName: str, assetName: str, description: str, db: Session):
+              webtoonName: str, assetName: str, description: str, db: Session,
+              user_id: int):
     
     originalCharacterImgName = f"{uuid.uuid4()}__{originalCharacterImg.filename}"
     originalPoseImgName = f"{uuid.uuid4()}__{originalPoseImg.filename}"
@@ -53,13 +54,27 @@ def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile,
     originalPoseImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalPoseImgName}"
     characterImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{characterImageName}"
     poseImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{poseImageName}"
+
+    webtoonId = db.query(models.Webtoon).filter(models.Webtoon.webtoonName == webtoonName, 
+                                                models.Webtoon.userId == user_id).first().id
     
-    original_image_url = f"{originalCharacterImgPath} {originalPoseImgPath}"
-    pose_image_url = f"{characterImagePath} {poseImagePath}"
-    db_pose = models.PoseImg(webtoonName=webtoonName, originalImageUrl=original_image_url, pose_image_url=pose_image_url, 
-                             created_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), asset_name=assetName, description=description)
+    db_pose = models.PoseImg(webtoonId=webtoonId, originalCharacterImgUrl=originalCharacterImgPath, originalPoseImgUrl=originalPoseImgPath, 
+                             characterImgUrl=characterImagePath, poseImgUrl=poseImagePath,
+                             createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), assetName=assetName, description=description)
     db.add(db_pose)
     db.commit()
     db.refresh(db_pose)
     
     return db_pose
+
+
+def get_pose_asset_list(webtoon_name: str, db: Session, user_id: int):
+    db_pose = db.query(models.PoseImg.assetName, models.PoseImg.originalCharacterImgUrl)\
+                .join(models.Webtoon, models.PoseImg.webtoonId == models.Webtoon.id)\
+                .filter(models.Webtoon.webtoonName == webtoon_name,
+                        models.Webtoon.userId == user_id)\
+                .all()
+    if db_pose:
+        return db_pose
+    else:
+        raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
