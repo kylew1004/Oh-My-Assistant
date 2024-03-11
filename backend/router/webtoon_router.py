@@ -20,11 +20,7 @@ def read_webtoon_list(db: Session = Depends(get_db), current_user: user_schemas.
     webtoons = webtoon_util.get_webtoon_list_by_user_id(db, current_user['userId'])
     formatted_webtoons = []
     for webtoon in webtoons:
-        formatted_webtoons.append({
-            "webtoonName":webtoon.webtoonName,
-            "userId":webtoon.userId,
-            "createdAt":webtoon.createdAt
-        })
+        formatted_webtoons.append(webtoon.webtoonName)
     return {"webtoonList":formatted_webtoons}
 
 @api_webtoon.delete('/delete/{webtoon_name}')
