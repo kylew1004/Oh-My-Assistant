@@ -1,9 +1,6 @@
-from typing import List
-
-from fastapi import Depends, FastAPI, HTTPException, File, UploadFile, status
-from sqlalchemy.orm import Session
-from models import crud, models, schemas
-from models.database import SessionLocal, engine
+from fastapi import Depends, FastAPI
+from models import models
+from models.database import engine
 from fastapi.middleware.cors import CORSMiddleware
 
 from router import user_router
