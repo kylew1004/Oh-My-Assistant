@@ -78,3 +78,14 @@ def get_pose_asset_list(webtoon_name: str, db: Session, user_id: int):
         return db_pose
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
+
+
+def get_pose_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int):
+    db_pose = db.query(models.PoseImg).join(models.Webtoon, models.PoseImg.webtoonId == models.Webtoon.id)\
+                .filter(models.Webtoon.webtoonName == webtoon_name,
+                        models.PoseImg.assetName == asset_name, 
+                        models.Webtoon.userId == user_id).first()
+    if db_pose:
+        return db_pose
+    else:
+        raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
