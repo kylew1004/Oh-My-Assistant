@@ -1,3 +1,5 @@
+import {getAuthToken} from '../util/auth.js';
+
 import qs from 'qs';
 const URL = "http://localhost:8000";
 
@@ -111,7 +113,42 @@ export async function postSignup(authData){
 
 }
 
-export async function getUser(data){
+export async function getUser(){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/user/me`,{
+                method:'GET',
+                headers:{
+                  'Content-Type' : 'application/json',
+                  'Authorization' : token
+                }
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.status ==400){
+                throw {error: 'Could not get user info.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not get user info.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData;
+    
+        }catch(e){
+            if(e.error) return e;
+            else return {error: 'Could not create user.',
+            status:'unknown'}
+        }
+
+    }
+
+    return null;
 
 }
 
@@ -151,6 +188,42 @@ export async function postVerifyEmail(data){
 }
 
 export async function getWebtoons(data){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/webtoon/list`,{
+                method:'GET',
+                headers:{
+                  'Content-Type' : 'application/json',
+                  'Authorization' : token
+                }
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.status ==400){
+                throw {error: 'Could not get user info.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not get user info.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData;
+    
+        }catch(e){
+            if(e.error) return e;
+            else return {error: 'Could not create user.',
+            status:'unknown'}
+        }
+
+    }
+
+    return null;
+
     
 }
 
