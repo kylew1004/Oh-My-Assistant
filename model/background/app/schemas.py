@@ -14,3 +14,5 @@ class GenerationRequest(BaseModel):
     
 class GenerationResponse(BaseModel):
     result: str
+class TrainResponse(BaseModel):
+    result: str

@@ -8,3 +8,7 @@ class GenerationResult(BaseModel):
     result: str
     created_at: str = Field(default_factory=datetime.datetime.now)
     
+class TrainResult(BaseModel):
+    result: str
+    created_at: str = Field(default_factory=datetime.datetime.now)
+    

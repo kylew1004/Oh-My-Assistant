@@ -30,5 +30,4 @@ config = Config(
 train_config = TrainConfig(
     data_dir = "./data",
     model_dir = "./models",
-    model_name = "temp"  
 )
