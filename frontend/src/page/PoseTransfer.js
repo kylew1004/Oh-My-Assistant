@@ -16,7 +16,7 @@ function PoseTransfer() {
     let characterUrl=null;
     if(character) {characterUrl = URL.createObjectURL(character);}
     let poseUrl=null;
-    if(pose) {poseUrl = URL.createObjectURL(character);}
+    if(pose) {poseUrl = URL.createObjectURL(pose);}
 
     function handleCharacter(e) {
         console.log(e.target.files[0]);
