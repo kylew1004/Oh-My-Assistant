@@ -32,3 +32,9 @@ def get_pose_asset_list(webtoon_name: str, db: Session = Depends(get_db),
 def get_pose_asset(webtoon_name: str, asset_name: str, db: Session = Depends(get_db), 
                    current_user: schemas.User = Depends(get_current_user)):
     return pose_util.get_pose_asset(webtoon_name, asset_name, db, current_user['userId'])
+
+
+@api_pose.delete('/asset/{webtoon_name}/{asset_name}')
+def delete_pose_asset(webtoon_name: str, asset_name: str, db: Session = Depends(get_db), 
+                      current_user: schemas.User = Depends(get_current_user)):
+    return pose_util.delete_pose_asset(webtoon_name, asset_name, db, current_user['userId'])
