@@ -4,7 +4,7 @@ import {tokenLoader, checkAuthLoader} from './util/auth';
 import Welcome, {action as authAction} from "./page/Welcome.js";
 import {action as logoutAction} from './page/Logout.js';
 import Assets from './page/Assets.js';
-import RootLayout from "./components/Root.js";
+import RootLayout, {loader as rootLoader} from "./components/Root.js";
 import StyleTransfer, {action as saveBackgroundAssetAction} from './page/StyleTransfer.js';
 import PoseTransfer, {action as savePoseAssetAction} from './page/PoseTransfer.js';
 import CreateNew from './page/CreateNew.js';
@@ -17,7 +17,8 @@ const router = createBrowserRouter([
     element: <RootLayout />,
     // errorElement: <ErrorPage />,
     id:'root',
-    loader: tokenLoader,
+    // loader: tokenLoader,
+    loader: rootLoader,
     children: [
       { index: true, element: <Assets /> },
       {

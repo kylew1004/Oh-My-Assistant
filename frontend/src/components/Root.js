@@ -1,4 +1,6 @@
-import { Outlet, useLoaderData} from 'react-router-dom';
+import { Outlet, useLoaderData, defer} from 'react-router-dom';
+import {getUser, getWebtoons} from '../util/http.js';
+
 import Menu from "./Menu.js";
 import Panel from './Panel.js';
 
@@ -43,3 +45,10 @@ function RootLayout() {
 }
 
 export default RootLayout;
+
+export function loader(){
+  return defer({
+    userInfo: getUser(),
+    webtoons: getWebtoons()
+  })
+}
