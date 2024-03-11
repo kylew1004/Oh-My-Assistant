@@ -9,7 +9,7 @@ function PoseTransfer() {
     const [character, setCharacter] = useState();
     const [pose, setPose] = useState();
 
-    const [outputUrl, setOutputUrl] = useState();
+    const [outputs, setOutputs] = useState();
     const [isFetching, setIsFetching] = useState(false);
     const [errorFetching, setErrorFetching] = useState();
 
@@ -22,7 +22,8 @@ function PoseTransfer() {
         console.log(e.target.files[0]);
         setCharacter(e.target.files[0]);
         setErrorFetching(null);
-        setIsFetching(false);   
+        setIsFetching(false);
+        setOutputs(null);   
     }
 
     function handlePose(e) {
@@ -30,6 +31,7 @@ function PoseTransfer() {
       setPose(e.target.files[0]);
       setErrorFetching(null);
       setIsFetching(false);   
+      setOutputs(null);
   }
 
     async function handleSubmit(){
@@ -45,7 +47,7 @@ function PoseTransfer() {
         postPoseTransfer(data)
           .then(imgArray =>{
             console.log(imgArray);
-            setOutputUrl(imgArray);
+            setOutputs(imgArray);
             setErrorFetching(null);
             setIsFetching(false);
           })
@@ -80,28 +82,10 @@ function PoseTransfer() {
             handleCharacter={handleCharacter} 
             handlePose={handlePose} 
             handleSubmit={handleSubmit}/>
-          <OutputPanel imageUrl={outputUrl} isFetching={isFetching} error={errorFetching} />    
+          <OutputPanel images={outputs} isFetching={isFetching} error={errorFetching} originalImages={[character,pose]} />    
         </div>
         </>
     );
 }
  
 export default PoseTransfer;
-
-
-export async function action({request}){
-  // const data = await request.formData();
-  // let result;
-  // if(mode=='login'){
-  //   const authData = {
-  //     userEmail: data.get('email'),
-  //     userPassword:data.get('password'),
-  //   }
-
-  //   result = await postLogin(authData);
-
-  // }
-
-  window.location.reload();
-  return null;
-}
