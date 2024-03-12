@@ -80,7 +80,7 @@ export async function postLogin(authData){
       
         //manage the token returned 
         const resData = await response.json();
-        return resData.access_token;
+        return resData.token_type+" "+resData.access_token;
 
     }catch(e){
         if(e.error) return e;
@@ -115,7 +115,7 @@ export async function postSignup(authData){
       
         //manage the token returned 
         const resData = await response.json();
-        return resData.access_token;
+        return resData.token_type+" "+resData.access_token;
 
     }catch(e){
         if(e.error) return e;
@@ -126,50 +126,48 @@ export async function postSignup(authData){
 
 }
  
-export async function getUser(){
-    //dummy-------------------------
-    // await sleep(2000);
-    return {
-        userEmail: 'juhee@gmail.com',
-        userNickname: '주희'
-    }
-    //------------------------------
+export async function getUser(token){
+    // //dummy-------------------------
+    // // await sleep(2000);
+    // return {
+    //     userEmail: 'juhee@gmail.com',
+    //     userNickname: '주희'
+    // }
+    // //------------------------------
 
-    const token=getAuthToken();
-    if(token && token!='EXPIRED'){
-        try{
-            const response = await fetch(`${URL}/api/user/me`,{
-                method:'GET',
-                headers:{
-                  'Content-Type' : 'application/json',
-                  'Authorization' : token
-                }
-              });
-        
-            //handle response
-            if(response.status===422 || response.status ==401 || response.status ==400){
-                throw {error: 'Could not get user info.',
-                      status:response.status}
+    try{
+        const response = await fetch(`${URL}/api/user/me`,{
+            method:'GET',
+            headers:{
+                'Content-Type' : 'application/json',
+                'Authorization' : token
             }
-          
-            if(!response.ok){
-                throw {error: 'Could not get user info.',
-                       status:500}
-            }
-          
-            //manage the token returned 
-            const resData = await response.json();
-            return resData;
+            });
     
-        }catch(e){
-            if(e.error) return e;
-            else return {error: 'Could not create user.',
-            status:'unknown'}
+        //handle response
+        if(response.status===422 || response.status ==401 || response.status ==400){
+            throw {error: 'Could not get user info.',
+                    status:response.status}
         }
+        
+        if(!response.ok){
+            throw {error: 'Could not get user info.',
+                    status:500}
+        }
+        
+        //manage the token returned 
+        const resData = await response.json();
+        return resData;
 
+    }catch(e){
+        if(e.error) return e;
+        else return {error: 'Could not create user.',
+        status:'unknown'}
     }
 
-    return null;
+    
+
+
 
 }
 
@@ -208,50 +206,46 @@ export async function postVerifyEmail(data){
 
 }
 
-export async function getWebtoons(){
-    //dummy--------------------------
-    // await sleep(2000);
-    return {
-        webtoonList: ['webtoon1', 'webtoon2', '웹툰3']
-    };
-    //--------------------------------
+export async function getWebtoons(token){
+    // //dummy--------------------------
+    // // await sleep(2000);
+    // return {
+    //     webtoonList: ['webtoon1', 'webtoon2', '웹툰3']
+    // };
+    // //--------------------------------
 
-
-    const token=getAuthToken();
-    if(token && token!='EXPIRED'){
-        try{
-            const response = await fetch(`${URL}/api/webtoon/list`,{
-                method:'GET',
-                headers:{
-                  'Content-Type' : 'application/json',
-                  'Authorization' : token
-                }
-              });
-        
-            //handle response
-            if(response.status===422 || response.status ==401 || response.status ==400){
-                throw {error: 'Could not get user info.',
-                      status:response.status}
+    try{
+        const response = await fetch(`${URL}/api/webtoon/list`,{
+            method:'GET',
+            headers:{
+                'Content-Type' : 'application/json',
+                'Authorization' : token
             }
-          
-            if(!response.ok){
-                throw {error: 'Could not get user info.',
-                       status:500}
-            }
-          
-            //manage the token returned 
-            const resData = await response.json();
-            return resData;
+            });
     
-        }catch(e){
-            if(e.error) return e;
-            else return {error: 'Could not create user.',
-            status:'unknown'}
+        //handle response
+        if(response.status===422 || response.status ==401 || response.status ==400){
+            throw {error: 'Could not get user info.',
+                    status:response.status}
         }
+        
+        if(!response.ok){
+            throw {error: 'Could not get user info.',
+                    status:500}
+        }
+        
+        //manage the token returned 
+        const resData = await response.json();
+        console.log(resData);
+        return resData;
 
+    }catch(e){
+        if(e.error) return e;
+        else return {error: 'Could not create user.',
+        status:'unknown'}
     }
 
-    return null;
+
 
     
 }
@@ -323,6 +317,43 @@ export async function postPoseTransfer(data){
 }
 
 export async function postWebtoon(data){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/webtoon/create`,{
+                method:'POST',
+                headers:{
+                  'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+                body: JSON.stringify(data)
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not add webtoon.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not add webtoon.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData;
+    
+        }catch(e){
+            if(e.error) return e;
+            else return {error: 'Could not add webtoon.',
+            status:'unkown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
 
 }
 
