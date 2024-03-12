@@ -236,7 +236,6 @@ export async function getWebtoons(token){
         
         //manage the token returned 
         const resData = await response.json();
-        console.log(resData);
         return resData;
 
     }catch(e){
@@ -252,14 +251,48 @@ export async function getWebtoons(token){
 
 export async function getPoseAssets(data){
     //dummy----
-    return ['Pose Asset 1', 'Pose Asset 2', 'Pose Asset 3']
+    return [
+        {
+            assetName: 'Pose Asset 1',
+            characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
+        },
+        {
+            assetName: 'Pose Asset 2',
+            characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+        },
+        {
+            assetName: 'Pose Asset 3',
+            characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+        },
+    ]
     //---------
 
 }
 
 export async function getStyleAssets(data){
         //dummy----
-        return ['Style Asset 1', 'Style Asset 2', 'Style Asset 3']
+        return [
+            {
+                assetName: 'Style Asset 1',
+                characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
+            },
+            {
+                assetName: 'Style Asset 2',
+                characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+            },
+            {
+                assetName: 'Style Asset 3',
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+            },
+            {
+                assetName: 'Style Asset 4',
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+            },
+            {
+                assetName: 'Style Asset 5',
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+            },
+        ]
         //---------
 
 }
