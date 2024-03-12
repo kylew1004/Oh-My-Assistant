@@ -10,7 +10,7 @@ from config import config, train_config
 from env import env
 
 from PIL import Image
-from lora_diffusion.cli_lora_pti import train
+from lora_diffusion.cli_lora_pti import train, state_running_process
 import shutil
 import io
 import os 
@@ -29,12 +29,19 @@ s3 = boto3.client(
 
 @router.post("/api/model/background/train")
 def background_train(style_images: List[UploadFile] = File(...)) -> None:
+    # check training server is busy, 사전에 cli_lora_pti.py를 수정해야 합니다.
+    if len(state_running_process) > 0:
+        return TrainResponse(
+            result = "training server is busy!"
+        )
+
     # set unique model name
     model_name = f"{uuid.uuid4()}"
+    print(f"start training... model_name: {model_name}")
 
     # clear dir
     try:
-        shutil.rmtree(os.path.join(train_config.data_dir, model_name))
+        shutil.rmtree(os.path.join(train_config.data_dir, model_name), ignore_errors=True)
     except:
         pass
     
@@ -84,7 +91,7 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     generated_result = TrainResult(result = output_dir)
     
     # if we don't use train images, run this code.
-    shutil.rmtree(os.path.join(train_config.data_dir, model_name)) 
+    # shutil.rmtree(os.path.join(train_config.data_dir, model_name), ignore_errors=True) 
     
     return TrainResponse(
         result = generated_result.result
@@ -93,11 +100,14 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
 
 @router.post("/api/model/background/")
 def background_inference(model_path: str = str(...), content_image: UploadFile = File(...)) -> GenerationResponse:
+    model_name = model_path.split('/')[-1]
+
     # make dir
-    os.makedirs('results', exist_ok=True)
+    os.makedirs(f'results/{model_name}', exist_ok=True)
     
     # patch pipeline
     result = patch_pipeline(model_path=model_path)
+    print(model_path, result)
     if not result:
         generated_result = GenerationResult(result = "Error: There is no trained model.")
         return GenerationResponse(
@@ -112,7 +122,7 @@ def background_inference(model_path: str = str(...), content_image: UploadFile =
     content = io.BytesIO(request_object_content)
 
     # generate
-    generated_images = generate(pipe, content)
+    generated_images = generate(pipe, content, alpha_unet=0.3, alpha_text=0.3)
     generated_image_bytes = []
 
     # save
@@ -123,8 +133,8 @@ def background_inference(model_path: str = str(...), content_image: UploadFile =
         generated_image_bytes.append(buf.getvalue())
         
         # Local Save
-        # background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
-        # img.save(f"results/{background_file_name}")
+        background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
+        img.save(f"results/{model_name}/{background_file_name}")
     
     # return StreamingResponse
     return StreamingResponse(generated_image_bytes, media_type="image/png")

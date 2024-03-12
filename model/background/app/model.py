@@ -15,11 +15,13 @@ import torch
 
 # diffusion
 from lora_diffusion import tune_lora_scale, patch_pipe
-from diffusers import StableDiffusionImg2ImgPipeline
+from diffusers import StableDiffusionImg2ImgPipeline, StableDiffusionUpscalePipeline, AutoencoderKL
 
 from config import train_config
 
+dr_pipe = None
 pipe = None 
+vae = None 
     
     
 def set_seed(seed):
@@ -30,20 +32,46 @@ def set_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
+def load_vae(vae_id):
+    global vae
+    if not vae_id: return 
+    vae = AutoencoderKL.from_pretrained(
+        vae_id, 
+        torch_dtype=torch.float16).to("cuda")
+    
+    return vae
+
 def load_pipeline(model_id):
     global pipe
-    pipe = StableDiffusionImg2ImgPipeline.from_pretrained(model_id, safety_checker=None, torch_dtype=torch.float16).to(
-        "cuda"
-    )
-    
+    if vae:
+        pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+            model_id, 
+            vae = vae,
+            safety_checker=None, 
+            torch_dtype=torch.float16).to("cuda")
+    else:
+        pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+            model_id, 
+            safety_checker=None, 
+            torch_dtype=torch.float16).to("cuda")
+        
     return pipe
+
+def load_sr_pipeline(model_id):
+    global sr_pipe
+    sr_pipe = StableDiffusionUpscalePipeline.from_pretrained(
+        model_id, 
+        revision="fp16",
+        torch_dtype=torch.float16).to("cuda")
+        
+    return sr_pipe
 
 def patch_pipeline(model_path: str):
     global pipe
     try:
         patch_pipe(
             pipe,
-            os.path.join(model_path),
+            os.path.join(model_path, "final_lora.safetensors"),
             patch_text=True,
             patch_ti=True,
             patch_unet=True,
@@ -55,6 +83,8 @@ def patch_pipeline(model_path: str):
 
 def get_pipe():
     return pipe
+def get_sr_pipe():
+    return sr_pipe
     
 def train() -> None:
     # os.path.append("/home/kcw/webtoon-background-generator/lora")
@@ -91,7 +121,7 @@ def train() -> None:
 def generate(pipe, content_image, 
              seed=42, prompt=None, 
              alpha_unet=0.4, alpha_text=0.8,
-             strength=0.55, guidance_scale=7.5) -> Image:
+             guidance_scale=7.5) -> Image:
     init_image = Image.open(content_image).convert("RGB").resize((512, 512))
     tune_lora_scale(pipe.unet, alpha_unet)
     tune_lora_scale(pipe.text_encoder, alpha_text)
@@ -102,20 +132,52 @@ def generate(pipe, content_image,
     for _ in range(3): 
         if prompt:
             generated_images.append(
-                pipe(prompt=f"{prompt}, style of <s1><s2>", image=init_image, strength=0.55, guidance_scale=guidance_scale).images[0]
+                pipe(prompt=f"{prompt}, style of <s1><s2>", 
+                    image=init_image, strength=0.55, guidance_scale=guidance_scale
+                    ).images[0]
+                # sr_pipe(
+                #     prompt="",
+                #     image=pipe(prompt=f"{prompt}, style of <s1><s2>", 
+                #         image=init_image, strength=0.55, guidance_scale=guidance_scale
+                #         ).images[0].resize((128,128))
+                # ).images[0]
             )
         else:
             generated_images.append(
-                pipe(prompt="style of <s1><s2>", image=init_image, strength=0.55, guidance_scale=guidance_scale).images[0]
+                pipe(prompt="style of <s1><s2>", 
+                    image=init_image, strength=0.55, guidance_scale=guidance_scale
+                    ).images[0]
+                # sr_pipe(
+                #     prompt="",
+                #     image=pipe(prompt="style of <s1><s2>", 
+                #         image=init_image, strength=0.55, guidance_scale=guidance_scale
+                #         ).images[0].resize((128,128))
+                # ).images[0]
             )
     for _ in range(3): 
         if prompt:
             generated_images.append(
-                pipe(prompt=f"{prompt}, style of <s1><s2>", image=init_image, strength=0.45, guidance_scale=guidance_scale).images[0]
+                pipe(prompt=f"{prompt}, style of <s1><s2>", 
+                        image=init_image, strength=0.45, guidance_scale=guidance_scale
+                        ).images[0]
+                # sr_pipe(
+                #     prompt="",
+                #     image=pipe(prompt=f"{prompt}, style of <s1><s2>", 
+                #         image=init_image, strength=0.45, guidance_scale=guidance_scale
+                #         ).images[0].resize((128,128))
+                # ).images[0]
             )
         else:
             generated_images.append(
-                pipe(prompt="style of <s1><s2>", image=init_image, strength=0.45, guidance_scale=guidance_scale).images[0]
+                pipe(prompt="style of <s1><s2>", 
+                        image=init_image, strength=0.45, guidance_scale=guidance_scale
+                        ).images[0]
+                # sr_pipe(
+                #     prompt="",
+                #     image=pipe(prompt="style of <s1><s2>", 
+                #         image=init_image, strength=0.45, guidance_scale=guidance_scale
+                #         ).images[0].resize((128,128))
+                # ).images[0]
             )
         
     return generated_images 
