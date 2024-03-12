@@ -1,7 +1,7 @@
 from typing import List 
 
 from fastapi import APIRouter, File, UploadFile
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, StreamingResponse
 
 from schemas import GenerationRequest, GenerationResponse, TrainResponse   # 통신에 활용하는 자료 형태를 정의합니다.
 from database import GenerationResult, TrainResult
@@ -113,29 +113,18 @@ def background_inference(model_path: str = str(...), content_image: UploadFile =
 
     # generate
     generated_images = generate(pipe, content)
+    generated_image_bytes = []
 
-    # save(upload image to AWS S3)
-    background_file_paths = []
+    # save
     for i, img in enumerate(generated_images):        
-        background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
-        
-        # S3 Save
-        img_byte_arr = io.BytesIO()
-        img.save(img_byte_arr, format='jpeg')
-        img_byte_arr.seek(0)
-        
-        s3.upload_fileobj(img_byte_arr, Bucket=env.bucket, Key=f"background/{background_file_name}")
-        background_file_path = f"https://{env.bucket}.s3.{env.region}.amazonaws.com/background/{background_file_name}"
-        background_file_paths.append(background_file_path)
+        # convert image to bytes
+        buf = io.BytesIO()
+        img.save(buf, format="PNG")
+        generated_image_bytes.append(buf.getvalue())
         
         # Local Save
-        img.save(f"results/{background_file_name}")
-        
-    # convert to response format
-    generated_result = GenerationResult(result = " ".join(background_file_paths))
+        # background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
+        # img.save(f"results/{background_file_name}")
     
-    return GenerationResponse(
-        result = generated_result.result
-    )
-    
-    # return FileResponse(path="./results/result.jpg", filename="result.jpg")
+    # return StreamingResponse
+    return StreamingResponse(generated_image_bytes, media_type="image/png")
