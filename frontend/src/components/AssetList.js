@@ -6,7 +6,7 @@ import { getStyleAssets, getPoseAssets } from '../util/http';
 export default function AssetList(){
     const {assets} = useLoaderData();
 
-    return <div className="gap-5 p-5 flex flex-row flex-wrap overflow-auto ">
+    return <div className="p-5 flex flex-row justify-start gap-5 flex-wrap mx-auto">
          <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
         <Await resolve={assets}>
             {(loadedAssets) => loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={asset.characterImgUrl} />)}

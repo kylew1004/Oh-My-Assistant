@@ -30,7 +30,7 @@ export default function Assets(){
 
 
 
-            <div className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0">
+            <div className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex justify-center">
                 <Outlet />
             </div>
 
