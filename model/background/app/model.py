@@ -32,9 +32,10 @@ def set_seed(seed):
 
 def load_pipeline(model_id):
     global pipe
-    pipe = StableDiffusionImg2ImgPipeline.from_pretrained(model_id, torch_dtype=torch.float16).to(
+    pipe = StableDiffusionImg2ImgPipeline.from_pretrained(model_id, safety_checker=None, torch_dtype=torch.float16).to(
         "cuda"
     )
+    
     return pipe
 
 def patch_pipeline(model_path: str):
