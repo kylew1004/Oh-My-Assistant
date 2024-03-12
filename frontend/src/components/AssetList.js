@@ -4,13 +4,15 @@ import Asset from '../components/Asset.js';
 import { getStyleAssets, getPoseAssets } from '../util/http';
 
 export default function AssetList(){
-    const {mode, assets} = useLoaderData();
+    const {assets} = useLoaderData();
 
-    return <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
+    return <div className="gap-5 p-5 flex flex-row flex-wrap overflow-auto ">
+         <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
         <Await resolve={assets}>
             {(loadedAssets) => loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={asset.characterImgUrl} />)}
         </Await>
     </Suspense>
+    </div> 
 }
 
 export function loader({params, request}){
@@ -22,12 +24,10 @@ export function loader({params, request}){
     }
 
     if(searchTerm=='Scenes') return defer({
-        mode:searchTerm,
         assets: getStyleAssets(data),
       });
 
     return defer({
-        mode:searchTerm,
         assets: getPoseAssets(data),
       })
 }
