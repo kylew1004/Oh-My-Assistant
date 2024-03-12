@@ -55,7 +55,6 @@ export default function Menu(){
             <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
                     <Await resolve={webtoons}>
                         {(loadedWebtoons) => {
-                            console.log(loadedWebtoons);
                             if(loadedWebtoons) return loadedWebtoons.webtoonList.map(webtoon=> <div className="flex flex-col pl-3 p-1">
                             <Link to={`/${webtoon}/assets`} className="text-white text-md pb-1  w-full text-left hover:bg-gray-950" >{webtoon}</Link>
                         </div>)}}
