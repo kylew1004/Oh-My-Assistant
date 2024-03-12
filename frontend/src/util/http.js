@@ -1,4 +1,5 @@
 import {getAuthToken} from '../util/auth.js';
+import {redirect} from 'react-router-dom';
 
 import qs from 'qs';
 const URL = "http://localhost:8000";
@@ -126,7 +127,7 @@ export async function postSignup(authData){
 
 }
  
-export async function getUser(token){
+export async function getUser(){
     // //dummy-------------------------
     // // await sleep(2000);
     // return {
@@ -134,6 +135,8 @@ export async function getUser(token){
     //     userNickname: '주희'
     // }
     // //------------------------------
+    const token = getAuthToken();
+    if(!token || token=='EXPIRED') return redirect('/auth');
 
     try{
         const response = await fetch(`${URL}/api/user/me`,{
@@ -206,13 +209,16 @@ export async function postVerifyEmail(data){
 
 }
 
-export async function getWebtoons(token){
+export async function getWebtoons(){
     // //dummy--------------------------
     // // await sleep(2000);
     // return {
     //     webtoonList: ['webtoon1', 'webtoon2', '웹툰3']
     // };
     // //--------------------------------
+
+    const token = getAuthToken();
+    if(!token || token=='EXPIRED') return redirect('/auth');
 
     try{
         const response = await fetch(`${URL}/api/webtoon/list`,{

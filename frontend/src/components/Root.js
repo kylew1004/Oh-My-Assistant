@@ -43,12 +43,9 @@ function RootLayout() {
 export default RootLayout;
 
 export function loader(){
-  const token = getAuthToken();
-  if(!token || token=='EXPIRED') return redirect('/auth');
-
   return defer({
-    userInfo: getUser(token),
-    webtoons: getWebtoons(token)
+    userInfo: getUser(),
+    webtoons: getWebtoons()
   });
 }
 
