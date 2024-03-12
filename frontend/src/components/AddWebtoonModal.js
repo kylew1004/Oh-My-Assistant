@@ -37,17 +37,3 @@ const AddWebtoonModal = function Modal({ open, handleClose }) {
 
 export default AddWebtoonModal;
 
-export async function action({request}){
-    // const data = await request.formData();
-    // let result;
-    // if(mode=='login'){
-    //   const authData = {
-    //     userEmail: data.get('email'),
-    //     userPassword:data.get('password'),
-    //   }
-
-    //   result = await postLogin(authData);
-
-    // }
-
-}
