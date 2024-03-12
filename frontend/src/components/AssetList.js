@@ -8,7 +8,7 @@ export default function AssetList(){
 
     return <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
         <Await resolve={assets}>
-            {(loadedAssets) => loadedAssets.map(asset=><Asset name={asset.assetName} imageUrl={asset.characterImgUrl} />)}
+            {(loadedAssets) => loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={asset.characterImgUrl} />)}
         </Await>
     </Suspense>
 }
