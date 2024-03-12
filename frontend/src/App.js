@@ -4,7 +4,7 @@ import {tokenLoader, checkAuthLoader} from './util/auth';
 import Welcome, {action as authAction, loader as authLoader} from "./page/Welcome.js";
 import {action as logoutAction} from './page/Logout.js';
 import Assets, {loader as assetsLoader} from './page/Assets.js';
-import RootLayout, {loader as rootLoader} from "./components/Root.js";
+import RootLayout, {loader as rootLoader, action as rootAction} from "./components/Root.js";
 import StyleTransfer, {action as saveBackgroundAssetAction} from './page/StyleTransfer.js';
 import PoseTransfer, {action as savePoseAssetAction} from './page/PoseTransfer.js';
 import CreateNew from './page/CreateNew.js';
@@ -20,6 +20,7 @@ const router = createBrowserRouter([
     id:'root',
     // loader: tokenLoader,
     loader: rootLoader,
+    action: rootAction,
     children: [
       { index: true, element: <p>no webtoon selected</p> },
       {
