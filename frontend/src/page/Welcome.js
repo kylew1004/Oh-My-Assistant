@@ -105,7 +105,12 @@ export default function Welcome() {
 
 
   export function loader(){
-    if(tokenLoader()) return redirect('/');
+    const token=tokenLoader();
+    if(token=='EXPIRED'){
+      localStorage.removeItem('token');
+      return null;
+    }
+    if(token) return redirect('/');
     return null;
 
   }
