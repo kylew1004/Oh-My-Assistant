@@ -20,17 +20,17 @@ export default function Assets(){
     return <div className="flex flex-col  w-full h-full">
 
             <div className="relative flex justify-center items-center w-full m-auto py-3">
-                <Link to={`?mode=${inactive}`} hidden={passLength===4} className={ `button h-12 w-[160px] absolute left-1/2 transform -translate-x${active==="Characters"?"":"-"}-3/4 bg-gray-300 text-gray-500 rounded-full`}>
-                    <p className="font-bold text-center pt-3">{inactive}</p>
+                <Link to={`?mode=${inactive}`} hidden={passLength===4} className={ `button flex h-10 w-[160px] absolute left-1/2 transform -translate-x-${active==="Characters"?"":"-"}3/4 bg-gray-300 text-gray-500 rounded-full`}>
+                    <p className="font-bold text-center m-auto">{inactive}</p>
                 </Link>
-                <Link to={`?mode=${active}`} hidden={passLength===4} className={`button h-12 w-[160px] absolute left-1/2 transform -translate-x-${active==="Characters"?"-":""}3/4 bg-yellow-500 text-black rounded-full`}>
-                <p className="font-bold text-center pt-3">{active}</p>
+                <Link to={`?mode=${active}`} hidden={passLength===4} className={`button flex  h-10 w-[160px] absolute left-1/2 transform -translate-x-${active==="Characters"?"-":""}3/4 bg-yellow-500 text-black rounded-full`}>
+                <p className="font-bold text-center m-auto">{active}</p>
                 </Link>
             </div>
 
 
 
-            <div className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex justify-center">
+            <div className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex justify-center shadow-lg">
                 <Outlet />
             </div>
 

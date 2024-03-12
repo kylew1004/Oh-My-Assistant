@@ -50,22 +50,24 @@ export default function Menu(){
         </div> */}
 
 
-        <div className="flex flex-col pl-4 py-4">
+        <div className="flex flex-col pl-4 py-4 h-2/3">
             <p className=" text-gray-600 text-md my-3"> WEBTOONS </p>
-            <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
-                    <Await resolve={webtoons}>
-                        {(loadedWebtoons) => {
-                            if(loadedWebtoons) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-col pl-3 p-1">
-                            <Link key={index} to={`/${webtoon}/assets`} className="text-white text-md pb-1  w-full text-left hover:bg-gray-950" >{webtoon}</Link>
-                        </div>)}}
-                    </Await>
-            </Suspense>
+            <div className="flex flex-col h-1/2 overflow-auto">
+                <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
+                        <Await resolve={webtoons}>
+                            {(loadedWebtoons) => {
+                                if(loadedWebtoons) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-col pl-3 p-1 hover:bg-gray-950">
+                                <Link key={index} to={`/${webtoon}/assets`} className="text-white text-md pb-1 w-full text-left " >{webtoon}</Link>
+                            </div>)}}
+                        </Await>
+                </Suspense> 
+            </div>
 
             <button className="text-yellow-500 text-md pb-1 bg-transparent text-left mt-3" onClick={handleClick}>+ Add New Webtoon</button>
         </div>
 
         <Form action="/logout" method="post" className="flex flex-col h-full">
-        <button className="mt-auto text-gray-900 text-lg mb-10 bg-gray-300 rounded-full h-[47px] w-10/12 mx-auto bottom-8">Log out</button>
+        <button className="mt-auto text-gray-900 text-lg mb-4 bg-gray-300 rounded-full h-[47px] w-10/12 mx-auto">Log out</button>
         </Form>
 
 
