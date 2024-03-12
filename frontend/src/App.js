@@ -11,6 +11,7 @@ import CreateNew from './page/CreateNew.js';
 import Train from './page/Train.js';
 import Panel from './components/Panel.js';
 import AssetList, {loader as assetsLoader} from './components/AssetList.js';
+import AssetDetail, {loader as assetDetailLoder} from './components/AssetDetail.js';
 
  
 const router = createBrowserRouter([
@@ -42,7 +43,8 @@ const router = createBrowserRouter([
               },
               {
                 path:':assetName',
-                element:<p>hihihi</p>,
+                element:<AssetDetail />,
+                loader: assetDetailLoder,
               }
             ]
           },
