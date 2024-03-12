@@ -1,43 +1,40 @@
-import { Outlet, useLoaderData, defer, redirect} from 'react-router-dom';
-import {getUser, getWebtoons} from '../util/http.js';
+import {useEffect} from 'react';
+import { Outlet, useLoaderData, defer, redirect, useSubmit} from 'react-router-dom';
+import {getUser, getWebtoons, postWebtoon} from '../util/http.js';
 
 import Menu from "./Menu.js";
-import {tokenLoader} from '../util/auth.js';
-
-// import MainNavigation from '../components/MainNavigation';
-// import {getTokenDuration} from '../util/auth';
+import {getAuthToken, getTokenDuration} from '../util/auth.js';
 
 function RootLayout() {
-//   const token = useLoaderData();
-//   const submit = useSubmit();
+  const token = useLoaderData();
+  const submit = useSubmit();
 
-//   useEffect(()=>{
-//     if(!token){
-//       return null;
-//     }
-//     if(token==="EXPIRED"){
-//       submit(null,{action:'/logout', method:'post'})
-//       return null ;
+  useEffect(()=>{
+    if(!token){
+      return null;
+    }
+    if(token==="EXPIRED"){
+      submit(null,{action:'/logout', method:'post'})
+      return null ;
 
-//     }
-//     const tokenDuration = getTokenDuration();
-//     console.log(tokenDuration);
+    }
+    const tokenDuration = getTokenDuration();
+    console.log(tokenDuration);
 
-//     setTimeout(()=>{
-//       submit(null,{action:'/logout', method:'post'})
+    setTimeout(()=>{
+      submit(null,{action:'/logout', method:'post'})
 
-//     },tokenDuration);
+    },tokenDuration);
 
-//   },[token, submit])
+  },[token, submit])
 
   return (
     <div className="flex flex-row">
       <Menu />
       <div className="flex flex-col w-full h-screen overflow-scroll no-scrollbar">
          {/* {navigation.state === 'loading' && <p>Loading...</p>} */}
-        {/* <Panel /> */}
         {/* <div className=""> */}
-          <Outlet />
+        <Outlet />
         {/* </div> */}
       </div>
     </div>
@@ -47,11 +44,28 @@ function RootLayout() {
 export default RootLayout;
 
 export function loader(){
-
-  if(!tokenLoader()) return redirect('/auth');
+  const token = getAuthToken();
+  if(!token || token=='EXPIRED') return redirect('/auth');
 
   return defer({
-    userInfo: getUser(),
-    webtoons: getWebtoons()
+    userInfo: getUser(token),
+    webtoons: getWebtoons(token)
   });
+}
+
+export async function action({request}){
+  const fd = await request.formData();
+  const data = {
+    webtoonName: fd.get('name')
+  }
+  const result = await postWebtoon(data);
+
+  if(!result.error){
+
+    return redirect(`/${result.webtoonName}/assets`);
+    // window.location.reload();
+    // return redirect(`/${result.webtoonName}/assets`);
+  }
+  return null;
+
 }
