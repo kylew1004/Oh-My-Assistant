@@ -34,7 +34,7 @@ class ContentImg(Base):
     original_image_id = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     created_at = Column(DateTime, index=True)
-    original_image_url = Column(String(100), index=True)
+    original_image_url = Column(String(255), index=True)
     asset_name = Column(String(50), index=True)
     description = Column(String(255), index=True)
 
@@ -61,7 +61,7 @@ class BackgroundImg(Base):
     __tablename__ = "background_img"
 
     id = Column(Integer, primary_key=True, index=True)
-    webtoonId = Column(Integer, ForeignKey("content_img.webtoonId"), nullable=False)
+    original_image_id = Column(Integer, ForeignKey("content_img.original_image_id"), nullable=False)
     backgroundImgUrl = Column(String(255), index=True)
 
     content_img = relationship("ContentImg", back_populates="background_img")
