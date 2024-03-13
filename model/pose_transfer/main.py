@@ -83,30 +83,16 @@ async def translate_pose(file_source: UploadFile = File(...), file_target: Uploa
     image_result.save(os.path.join(os.getcwd(), 'results', 'result.png'), 'png')
     image_pose.save(os.path.join(os.getcwd(), 'results', 'pose.png'), 'png')
 
-    images_file_path = []
-    image_result_name = f"{uuid.uuid4()}__result.png"
-    image_result_byte = image_to_byte_array(image_result)
-    image_result_path = f"https://{env.bucket}.s3.{env.region}.amazonaws.com/pose/{image_result_name}"
+    images = []
+    images.append(image_to_byte_array(image_result))
+    images.append(image_to_byte_array(image_pose))
 
-    image_pose_name = f"{uuid.uuid4()}__pose.png"
-    image_pose_byte = image_to_byte_array(image_pose)
-    image_pose_path = f"https://{env.bucket}.s3.{env.region}.amazonaws.com/pose/{image_pose_name}"
-
-    s3.upload_fileobj(image_result_byte, Bucket=env.bucket, Key=f"pose/{image_result_name}")
-    s3.upload_fileobj(image_pose_byte, Bucket=env.bucket, Key=f"pose/{image_pose_name}")
-    images_file_path.append(image_result_path)
-    images_file_path.append(image_pose_path)
-
-    result = GenerationResult(result = " ".join(images_file_path))
-
-    return GenerationResponse(
-        result = result.result
-    )
+    return StreamingResponse([img for img in images], media_type="image/png")
 
 
 def image_to_byte_array(image):
     imgByteArr = io.BytesIO()
     image.save(imgByteArr, format='PNG')
-    # imgByteArr = imgByteArr.getvalue()
-    imgByteArr.seek(0)
+    imgByteArr = imgByteArr.getvalue()
+    # imgByteArr.seek(0)
     return imgByteArr
