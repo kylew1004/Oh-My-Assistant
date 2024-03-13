@@ -61,7 +61,7 @@ class BackgroundImg(Base):
     __tablename__ = "background_img"
 
     id = Column(Integer, primary_key=True, index=True)
-    original_image_id = Column(Integer, ForeignKey("content_img.original_image_id"), nullable=False)
+    original_image_id = Column(Integer, ForeignKey("content_img.originalImageId"), nullable=False)
     backgroundImgUrl = Column(String(255), index=True)
 
     content_img = relationship("ContentImg", back_populates="background_img")

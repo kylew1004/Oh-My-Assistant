@@ -76,7 +76,7 @@ def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile,
 
 
 def get_pose_asset_list(webtoon_name: str, db: Session, user_id: int):
-    db_pose = db.query(models.PoseImg.assetName, models.PoseImg.originalCharacterImgUrl)\
+    db_pose = db.query(models.PoseImg.assetName, models.PoseImg.characterImgUrl)\
                 .join(models.Webtoon, models.PoseImg.webtoonId == models.Webtoon.id)\
                 .filter(models.Webtoon.webtoonName == webtoon_name,
                         models.Webtoon.userId == user_id)\
@@ -84,7 +84,7 @@ def get_pose_asset_list(webtoon_name: str, db: Session, user_id: int):
     if db_pose:
         return db_pose
     else:
-        raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
+        raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
 
 
 def get_pose_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int):
