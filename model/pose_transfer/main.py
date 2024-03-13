@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi import File, UploadFile, HTTPException
-from fastapi.responses import StreamingResponse, Response
+from fastapi.responses import StreamingResponse, Response, JSONResponse
 from requests_toolbelt import MultipartEncoder
 import fastapi as _fapi
 from fastapi.middleware.cors import CORSMiddleware
@@ -83,11 +83,10 @@ async def translate_pose(file_source: UploadFile = File(...), file_target: Uploa
     image_result.save(os.path.join(os.getcwd(), 'results', 'result.png'), 'png')
     image_pose.save(os.path.join(os.getcwd(), 'results', 'pose.png'), 'png')
 
-    images = []
-    images.append(image_to_byte_array(image_result))
-    images.append(image_to_byte_array(image_pose))
-
-    return StreamingResponse([img for img in images], media_type="image/png")
+    images = [image_to_byte_array(image_result), image_to_byte_array(image_pose)]
+    base64_images = [base64.b64encode(img).decode('utf-8') for img in images]
+    print(len(base64_images))
+    return JSONResponse(content={"images": base64_images})
 
 
 def image_to_byte_array(image):
@@ -96,3 +95,4 @@ def image_to_byte_array(image):
     imgByteArr = imgByteArr.getvalue()
     # imgByteArr.seek(0)
     return imgByteArr
+
