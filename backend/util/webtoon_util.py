@@ -21,3 +21,9 @@ def create_webtoon(db: Session, webtoon: webtoon_schemas.WebtoonCreate, user: us
     db.commit()
     db.refresh(db_webtoon)
     return db_webtoon
+
+def check_train(db: Session, webtoon_name: str):
+    return db.query(models.Model)\
+        .join(models.Webtoon, models.Model.webtoonId == models.Webtoon.id)\
+        .filter(models.Webtoon.webtoonName == webtoon_name)\
+        .first()

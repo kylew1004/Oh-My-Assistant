@@ -31,7 +31,7 @@ class Webtoon(Base):
 class ContentImg(Base):
     __tablename__ = "content_img"
 
-    original_image_id = Column(Integer, primary_key=True, index=True)
+    originalImageId = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     created_at = Column(DateTime, index=True)
     original_image_url = Column(String(255), index=True)
