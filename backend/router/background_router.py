@@ -25,3 +25,8 @@ def get_background_asset_list(webtoon_name: str, db: Session = Depends(get_db),
 def get_background_asset(webtoon_name: str, asset_name: str, db: Session = Depends(get_db), 
                     current_user: user_schemas.User = Depends(get_current_user)):
     return background_util.get_background_asset(webtoon_name, asset_name, db, current_user['userId'])
+
+@api_background.delete('/asset/delete/{webtoon_name}/{asset_name}')
+def delete_background_asset(webtoon_name: str, asset_name: str, db: Session = Depends(get_db), 
+                      current_user: user_schemas.User = Depends(get_current_user)):
+    return background_util.delete_background_asset(webtoon_name, asset_name, db, current_user['userId'])
