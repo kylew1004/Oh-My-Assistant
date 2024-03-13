@@ -60,9 +60,9 @@ class PoseImg(Base):
 class BackgroundImg(Base):
     __tablename__ = "background_img"
 
-    background_image_id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("content_img.webtoonId"), nullable=False)
-    background_image_url = Column(String(255), index=True)
+    backgroundImgUrl = Column(String(255), index=True)
 
     content_img = relationship("ContentImg", back_populates="background_img")
 
@@ -70,8 +70,8 @@ class BackgroundImg(Base):
 class Model(Base):
     __tablename__ = "model"
 
-    model_id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
-    model_path = Column(String(255), index=True)
+    modelPath = Column(String(255), index=True)
 
     webtoon = relationship("Webtoon", back_populates="model")
