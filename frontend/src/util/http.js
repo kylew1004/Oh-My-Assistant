@@ -257,21 +257,64 @@ export async function getWebtoons(){
 
 export async function getPoseAssets(data){
     //dummy----
-    return [
-        {
-            assetName: 'Pose Asset 1',
-            characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
-        },
-        {
-            assetName: 'Pose Asset 2',
-            characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-        },
-        {
-            assetName: 'Pose Asset 3',
-            characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-        },
-    ]
+    // return [
+    //     {
+    //         assetName: 'Pose Asset 1',
+    //         characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
+    //     },
+    //     {
+    //         assetName: 'Pose Asset 2',
+    //         characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+    //     },
+    //     {
+    //         assetName: 'Pose Asset 3',
+    //         characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+    //     },
+    // ]
     //---------
+
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/pose/asset/${data.webtoonName}`,{
+                method:'GET',
+                headers:{
+                //   'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+                // body: JSON.stringify(data)
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not fetch assets.',
+                      status:response.status}
+            }
+
+            if(!response.ok) return [];
+          
+            // if(!response.ok){
+            //     const resData = await response.json();
+            //     console.log(resData);
+            //     throw {error: 'Could not fetch assets.',
+            //            status:500}
+            // }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData;
+    
+        }catch(e){
+            console.log(e);
+            if(e.error) return e;
+            else return {error: 'Could not fetch assets.',
+            status:'unknown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
 
 }
 
@@ -396,7 +439,44 @@ export async function postWebtoon(data){
 
 }
 
-export async function postPoseAsset(data){
+export async function postPoseAsset(fd, files){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/pose/save?webtoonName=${fd.get('webtoonName')}&assetName=${fd.get('assetName')}&description=${fd.get('description')}`,{
+                method:'POST',
+                headers:{
+                  'Authorization' : token,
+                },
+                body: files
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not save asset.',
+                      status:response.status}
+            }
+          
+            // if(!response.ok){
+            //     throw {error: 'Could not save asset.',
+            //            status:500}
+            // }
+
+            const resData = await response.json();
+            console.log(resData);
+            return resData;
+    
+        }catch(e){
+            console.log(e);
+            if(e.error) return e;
+            else return {error: 'Could not save asset.',
+            status:'unknown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
 
 }
 
@@ -416,6 +496,43 @@ export async function deleteBackgroundAsset(data){
 }
 
 export async function deleteWebtoon(data){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/webtoon/delete/${data.webtoonName}`,{
+                method:'DELETE',
+                headers:{
+                  'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+                body: JSON.stringify(data)
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not delete webtoon.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not delete webtoon.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData;
+    
+        }catch(e){
+            if(e.error) return e;
+            else return {error: 'Could not delete webtoon.',
+            status:'unkown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
 
 }
 

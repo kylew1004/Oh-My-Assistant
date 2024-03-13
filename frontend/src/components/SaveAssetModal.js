@@ -1,5 +1,5 @@
 import { useRef, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, redirect } from 'react-router-dom';
 import { postPoseAsset, postStyleAsset } from '../util/http.js';
 
 const SaveAssetModal = function Modal({ open, handleClose, images, originalImg}) {
@@ -32,15 +32,21 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
       result = await postStyleAsset(fd);
     }else{
       const fd = new FormData(event.target);
-      fd.append('originalCharacterImg',originalImg[0]);
-      fd.append('originalPoseImg',originalImg[1]);
+      const files = new FormData();
       fd.append('webtoonName',location.pathname.split("/")[1]);
+      console.log(images[0])
 
-      fd.append('characterImg',images[0].file);
-      fd.append('poseImg',images[1].file);
+      files.append('originalCharacterImg',originalImg[0]);
+      files.append('originalPoseImg',originalImg[1]);
+      files.append('characterImage',images[0].file);
+      files.append('poseImage',images[1].file);
       
-      result = await postPoseAsset(fd);
+      
+      result = await postPoseAsset(fd, files);
+      console.log(result);
     }
+
+    if(result==='tokenError') redirect('/auth');
     
   
     window.location.reload();
