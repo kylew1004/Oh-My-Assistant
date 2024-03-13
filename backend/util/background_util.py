@@ -64,7 +64,7 @@ def background_inference(webtoon_name: str, file: UploadFile, db: Session, userI
 
     data = {'model_path': (None, model_path, 'text/plain')}
     files = {'content_image': (file_name, file_content, file_content_type)}
-    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/", data=data, files=files)
+    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/inference", data=data, files=files)
     
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Failed to inference style model")
