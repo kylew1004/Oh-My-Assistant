@@ -1,12 +1,14 @@
 import {useState, Suspense} from 'react';
-import {Form, useLoaderData, Await, Link} from 'react-router-dom';
+import {Form, useLoaderData, Await, Link, redirect, useNavigate} from 'react-router-dom';
 import menuLogo from '../assets/menu-logo.png';
 import profileImg from '../assets/profile.png';
 import AddWebtoonModal from './AddWebtoonModal';
+import {deleteWebtoon} from '../util/http.js';
 
 export default function Menu(){
     const [isModal, setIsModal] = useState(false);
     const {userInfo, webtoons} = useLoaderData();
+    const navigate = useNavigate()
 
     function handleClick(){
         setIsModal(true);
@@ -14,6 +16,15 @@ export default function Menu(){
 
     function handleClose(){
         setIsModal(false);
+    }
+
+    async function handleDelete(webtoon){
+        const result = await deleteWebtoon({
+            webtoonName: webtoon,
+        });
+
+        if(result==='tokenError') return redirect('/auth');
+        navigate('.', { replace: true });
     }
 
     return<div className="flex flex-col bg-gradient-to-bl from-[#0f0417] to-[#24263d] h-screen w-[220px] float-left overflow-hidden">
@@ -56,8 +67,9 @@ export default function Menu(){
                 <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
                         <Await resolve={webtoons}>
                             {(loadedWebtoons) => {
-                                if(loadedWebtoons) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-col pl-3 p-1 hover:bg-gray-950">
+                                if(loadedWebtoons) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-row pl-3 p-1 hover:bg-gray-950">
                                 <Link key={index} to={`/${webtoon}/assets`} className="text-white text-md pb-1 w-full text-left " >{webtoon}</Link>
+                                <button onClick={()=>handleDelete(webtoon)} className="bg-white text-red-700 w-3 px-2 rounded-full m-auto pr-4">x</button>
                             </div>)}}
                         </Await>
                 </Suspense> 
