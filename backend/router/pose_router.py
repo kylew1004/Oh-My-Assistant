@@ -10,7 +10,7 @@ api_pose = APIRouter(prefix="/api/pose")
 
 
 @api_pose.post('/inference')
-def pose_inference(poseImage: UploadFile, characterImage: UploadFile):
+def pose_inference(characterImage: UploadFile, poseImage: UploadFile):
     return pose_util.pose_inference(characterImage, poseImage)
 
 

@@ -5,16 +5,16 @@ from datetime import datetime
 
 class ContentImgBase(BaseModel):
     webtoonName: str
-    original_image_url: str
-    asset_name: str
+    originalImageUrl: str
+    assetName: str
     description: Optional[str] = None
 
 class ContentImgCreate(ContentImgBase):
     pass
 
 class ContentImg(ContentImgBase):
-    original_image_id: int
-    created_at: datetime
+    originalImageId: int
+    createdAt: datetime
 
     class Config:
         orm_mode = True

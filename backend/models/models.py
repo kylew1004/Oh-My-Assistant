@@ -31,10 +31,10 @@ class Webtoon(Base):
 class ContentImg(Base):
     __tablename__ = "content_img"
 
-    original_image_id = Column(Integer, primary_key=True, index=True)
+    originalImageId = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     created_at = Column(DateTime, index=True)
-    original_image_url = Column(String(100), index=True)
+    original_image_url = Column(String(255), index=True)
     asset_name = Column(String(50), index=True)
     description = Column(String(255), index=True)
 
@@ -60,9 +60,9 @@ class PoseImg(Base):
 class BackgroundImg(Base):
     __tablename__ = "background_img"
 
-    background_image_id = Column(Integer, primary_key=True, index=True)
-    webtoonId = Column(Integer, ForeignKey("content_img.webtoonId"), nullable=False)
-    background_image_url = Column(String(255), index=True)
+    id = Column(Integer, primary_key=True, index=True)
+    original_image_id = Column(Integer, ForeignKey("content_img.originalImageId"), nullable=False)
+    backgroundImgUrl = Column(String(255), index=True)
 
     content_img = relationship("ContentImg", back_populates="background_img")
 
@@ -70,8 +70,8 @@ class BackgroundImg(Base):
 class Model(Base):
     __tablename__ = "model"
 
-    model_id = Column(Integer, primary_key=True, index=True)
+    id = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
-    model_path = Column(String(255), index=True)
+    modelPath = Column(String(255), index=True)
 
     webtoon = relationship("Webtoon", back_populates="model")

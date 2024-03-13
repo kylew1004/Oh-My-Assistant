@@ -32,3 +32,11 @@ def delete_webtoon(request: webtoon_schemas.WebtoonCreate, db: Session = Depends
         return {"message": "Webtoon deleted successfully"}
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
+    
+@api_webtoon.get('/check-train/{webtoon_name}')
+def check_train(webtoon_name: str, db: Session = Depends(get_db)):
+    db_model = webtoon_util.check_train(db, webtoon_name)
+    if db_model and db_model.model_path:
+        return {"isTrained": True}
+    else:
+        return {"isTrained": False}
