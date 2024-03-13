@@ -5,6 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from router import user_router
 from router import webtoon_router
+from router import background_router
 from router import pose_router
 from router import background_router
 

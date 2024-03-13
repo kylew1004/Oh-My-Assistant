@@ -72,7 +72,7 @@ def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile,
     db.commit()
     db.refresh(db_pose)
     
-    return db_pose
+    return {"result": "Pose asset saved successfully"}
 
 
 def get_pose_asset_list(webtoon_name: str, db: Session, user_id: int):
