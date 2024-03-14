@@ -12,6 +12,7 @@ import Train from './page/Train.js';
 import Panel, {loader as isTrainedLoader} from './components/Panel.js';
 import AssetList, {loader as assetsLoader} from './components/AssetList.js';
 import AssetDetail, {loader as assetDetailLoder} from './components/AssetDetail.js';
+import InitialPage from './page/InitialPage.js';
 
  
 const router = createBrowserRouter([
@@ -24,7 +25,9 @@ const router = createBrowserRouter([
     loader: rootLoader,
     action: rootAction,
     children: [
-      { index: true, element: <p>no webtoon selected</p> },
+      { index: true,
+        element: <InitialPage />,
+      },
       {
         path:':webtoonName',
         element: <>
