@@ -128,9 +128,10 @@ def get_background_asset(webtoon_name: str, asset_name: str, db: Session, user_i
                 .join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
                 .filter(models.Webtoon.webtoonName == webtoon_name,
                         models.ContentImg.asset_name == asset_name, 
-                        models.Webtoon.userId == user_id).all()
+                        models.Webtoon.userId == user_id).first()
     if db_background:
-        return db_background
+        result = {"assetName": asset_name, "backgroundImageUrl": db_background.backgroundImgUrl}
+        return result
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
     
