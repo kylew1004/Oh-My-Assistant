@@ -323,23 +323,23 @@ export async function getStyleAssets(data){
         return [
             {
                 assetName: 'Style Asset 1',
-                originalImageUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
+                characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
             },
             {
                 assetName: 'Style Asset 2',
-                originalImageUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+                characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
             },
             {
                 assetName: 'Style Asset 3',
-                originalImageUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
             },
             {
                 assetName: 'Style Asset 4',
-                originalImageUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
             },
             {
                 assetName: 'Style Asset 5',
-                originalImageUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
             },
         ]
         //---------
@@ -389,6 +389,46 @@ export async function getStyleAssets(data){
 }
 
 export async function getPoseAlbum(data){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/pose/asset/${data.webtoonName}/${data.assetName}`,{
+                method:'GET',
+                headers:{
+                //   'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+                // body: JSON.stringify(data)
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not fetch asset detail.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not fetch asset detail.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData;
+    
+        }catch(e){
+            console.log(e);
+            if(e.error) return e;
+            else return {error: 'Could not fetch asset detail.',
+            status:'unknown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
+
+
 
 }
 
@@ -426,17 +466,61 @@ export async function postPoseTransfer(data){
 
     //dummy
     //첫번째가 character, 두번째가 pose
-    const urls=["https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true", 
-        "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-    ];
-    const result= await Promise.all(urls.map(async (item)=>{
-        const temp = await convertURLtoFile(item);
-        return {
-            url:item,
-            file:temp,
-        };
-    }));
-    return result;
+    // const urls=["https://www.akamai.com/site/im-demo/perceptual-standard.jpg", 
+    //     "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+    // ];
+    // const result= await Promise.all(urls.map(async (item)=>{
+    //     const temp = await convertURLtoFile(item);
+    //     return {
+    //         url:item,
+    //         file:temp,
+    //     };
+    // }));
+    // return result;
+    //------------------------------
+
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/pose/inference`,{
+                method:'POST',
+                headers:{
+                //   'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+                body: data,
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not process inference.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                const resData = await response.json();
+                console.log(resData);
+                return resData.images;
+                throw {error: 'Could not process inference.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData.images;
+    
+        }catch(e){
+            console.log(e);
+            if(e.error) return e;
+            else return {error: 'Could not process inference.',
+            status:'unknown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
+
 
 }
 
