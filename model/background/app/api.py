@@ -88,7 +88,7 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     )
     
     # convert to response format
-    generated_result = TrainResult(result = output_dir)
+    generated_result = TrainResult(result = output_dir.split("/")[-1])
     
     # if we don't use train images, run this code.
     # shutil.rmtree(os.path.join(train_config.data_dir, model_name), ignore_errors=True) 
@@ -97,16 +97,14 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
         result = generated_result.result
     )
 
-@router.post("/api/model/background/inference")
-def background_inference(model_path: str = str(...), content_image: UploadFile = File(...)) -> GenerationResponse:
-    model_name = model_path.split('/')[-1]
-
+@router.post("/api/model/background/inference/{model_id}")
+def background_inference(model_id: str = str(...), content_image: UploadFile = File(...)) -> GenerationResponse:
     # make dir
-    os.makedirs(f'results/{model_name}', exist_ok=True)
+    os.makedirs(f'results/{model_id}', exist_ok=True)
     
     # patch pipeline
-    result = patch_pipeline(model_path=model_path)
-    print(model_path, result)
+    result = patch_pipeline(model_path=f"./models/{model_id}")
+    print(model_id, result)
     if not result:
         generated_result = GenerationResult(result = "Error: There is no trained model.")
         return GenerationResponse(
