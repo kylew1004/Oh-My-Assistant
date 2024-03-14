@@ -31,6 +31,7 @@ const router = createBrowserRouter([
           <Panel />
           <Outlet />
         </>,
+        id:'webtoonRoot',
         loader: isTrainedLoader,
         children:[
           {
