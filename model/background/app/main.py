@@ -14,8 +14,8 @@ async def lifespan(app: FastAPI):
     load_vae(vae_id=config.vae_name)
     logger.info(f"Loading model: {config.pipeline_name}")
     load_pipeline(model_id=config.pipeline_name)
-    logger.info(f"Loading super-resolution-model: {config.sr_pipeline_name}")
-    load_sr_pipeline(model_id=config.sr_pipeline_name)
+    # logger.info(f"Loading super-resolution-model: {config.sr_pipeline_name}")
+    # load_sr_pipeline(model_id=config.sr_pipeline_name)
 
     yield 
     

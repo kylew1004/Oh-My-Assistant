@@ -62,6 +62,7 @@ def load_sr_pipeline(model_id):
     sr_pipe = StableDiffusionUpscalePipeline.from_pretrained(
         model_id, 
         revision="fp16",
+        use_safetensors=False,
         torch_dtype=torch.float16).to("cuda")
         
     return sr_pipe
