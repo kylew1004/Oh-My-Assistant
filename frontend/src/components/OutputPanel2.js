@@ -20,6 +20,7 @@ export default function OutputPanel({images, isFetching, error, originalImages})
         setIsModal(false);
         
     }
+    console.log(images)
 
 
     return  <>
@@ -31,7 +32,7 @@ export default function OutputPanel({images, isFetching, error, originalImages})
             {error ? <Error message={error.message} /> : 
             <span className=" h-full w-[55%] flex border rounded-lg p-3 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
             {isFetching ? <img className={styling} src={images}/> 
-                : (images && <img className={styling} src={images[0].url}/>) }
+                : (images && <img className={styling} src={"data:image/jpeg;base64,"+images[0]}/>) }
             
             </span>}
 
@@ -39,7 +40,7 @@ export default function OutputPanel({images, isFetching, error, originalImages})
                 <p className="text-black text-lg font-bold">Process Image</p>
                 <span className=" h-full w-full flex border rounded-lg p-3 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
                 {isFetching ? <img className={styling} src={images}/> 
-                    : (images && <img className={styling} src={images[1].url}/>) }
+                    : (images && <img className={styling} src={"data:image/jpeg;base64,"+images[1]}/>) }
                 
                 </span>
                 {/* <DownloadBtn imageUrl={imageUrl} isFetching={isFetching}/> */}

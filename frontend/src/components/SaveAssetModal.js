@@ -2,6 +2,21 @@ import { useRef, useEffect } from 'react';
 import { useLocation, redirect } from 'react-router-dom';
 import { postPoseAsset, postStyleAsset } from '../util/http.js';
 
+function base64toFile(base64Data){
+  const byteCharacters = atob(base64Data);
+  const byteNumbers = new Array(byteCharacters.length);
+  for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+  }
+  const byteArray = new Uint8Array(byteNumbers);
+  const blob = new Blob([byteArray], { type: 'image/jpeg' }); // 파일 형식에 따라서 변경해야 합니다.
+
+  // Blob을 File 객체로 변환 (파일명 지정 가능)
+  const file = new File([blob], 'filename.jpg', { type: 'image/jpeg' });
+
+  return file
+}
+
 const SaveAssetModal = function Modal({ open, handleClose, images, originalImg}) {
   const dialog = useRef();
   const location = useLocation();
@@ -34,16 +49,14 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
       const fd = new FormData(event.target);
       const files = new FormData();
       fd.append('webtoonName',location.pathname.split("/")[1]);
-      console.log(images[0])
 
       files.append('originalCharacterImg',originalImg[0]);
       files.append('originalPoseImg',originalImg[1]);
-      files.append('characterImage',images[0].file);
-      files.append('poseImage',images[1].file);
+      files.append('characterImage',base64toFile(images[0]));
+      files.append('poseImage',base64toFile(images[1]));
       
       
       result = await postPoseAsset(fd, files);
-      console.log(result);
     }
 
     if(result==='tokenError') redirect('/auth');
