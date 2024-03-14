@@ -22,8 +22,10 @@ class UserCreate(UserBase):
     userPw: str
     userNickname: str
 
-class User(UserBase):
-    id: int
+class User(BaseModel):
+    userId: int
+    userEmail: str
+    userNickname: str
 
     class Config:
         orm_mode = True
