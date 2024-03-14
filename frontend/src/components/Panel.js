@@ -9,7 +9,6 @@ const inactiveStyle = "flex flex-col pl-3 text-black font-bold text-md"
 export default function Panel(){
     const {webtoonName} = useParams();
     const {isTrained} = useLoaderData();
-    console.log(isTrained);
 
     return <div className="flex flex-row bg-gray-100 h-[105px] w-full">
     <div className="flex flex-col pl-3">
@@ -32,8 +31,8 @@ export default function Panel(){
 
     <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
                <Await resolve={isTrained}>
-                    {(loadedIsTrained) =>  loadedIsTrained && <NavLink to={`/${webtoonName}/train`} className="ml-auto my-auto mr-12 rounded-full text-white h-[45px] px-8
-    bg-gradient-to-b from-[#E9522E] via-pink-600 to-[#D58ABD] font-bold">
+                    {(loadedIsTrained) =>  loadedIsTrained && <NavLink to={`/${webtoonName}/train`} className={`ml-auto my-auto mr-12 h-[45px] px-8 rounded-full bg-gradient-to-b ${loadedIsTrained.isTrained ? 'from-[#2f2750] to-[#4a3ba0] text-yellow-500 ' 
+                    : ' from-[#E9522E] via-pink-600 to-[#D58ABD] text-white'} font-bold`}>
         <p className="text-center mt-3">
          {loadedIsTrained.isTrained ? "Re-initialize " : "Initialize "}Style Reference
         </p>
