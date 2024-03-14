@@ -5,17 +5,15 @@ import { getStyleAssets, getPoseAssets } from '../util/http';
 import { getAuthToken } from '../util/auth.js';
 
 export default function AssetList(){
-    const {mode, assets} = useLoaderData();
+    const {assets} = useLoaderData();
     console.log(assets);
 
     return <div className="p-5 flex flex-row justify-start gap-5 flex-wrap mx-auto">
          <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
-            <Await resolve={mode}>
-                {((loadedMode)=><Await resolve={assets} >
-                    {(loadedAssets) =>  loadedAssets && loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={loadedMode=='Scenes'? asset.originalImageUrl : asset.characterImgUrl} />)}
-                </Await>)}
-            </Await>
-    </Suspense>
+               <Await resolve={assets} >
+                    {(loadedAssets) =>  loadedAssets && loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={asset.characterImgUrl} />)}
+                </Await>
+        </Suspense>
     </div> 
 }
 
