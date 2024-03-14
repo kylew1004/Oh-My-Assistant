@@ -13,7 +13,6 @@ const urls=["https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypas
 export default function AssetDetail(){
     const [activeImage, setActiveImage] = useState();
     const {mode, asset} = useLoaderData();
-    console.log(asset);
 
     //에셋명, 상세설명, 생성날짜, 원본이미지
 

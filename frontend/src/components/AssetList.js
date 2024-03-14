@@ -6,15 +6,13 @@ import { getAuthToken } from '../util/auth.js';
 
 export default function AssetList(){
     const {assets} = useLoaderData();
-    console.log(assets);
 
-    return <div className="p-5 flex flex-row justify-start gap-5 flex-wrap mx-auto">
-         <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
-               <Await resolve={assets} >
+    return <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
+               <Await resolve={assets} className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex justify-center shadow-lg">
                     {(loadedAssets) =>  loadedAssets && loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={asset.characterImgUrl} />)}
                 </Await>
         </Suspense>
-    </div> 
+    {/* </div>  */}
 }
 
 export function loader({params, request}){

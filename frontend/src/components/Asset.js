@@ -4,7 +4,7 @@ export default function Asset({name, imageUrl}){
     const location = useLocation();
     const searchParams = location.search;
 
-    return <Link to={`${location.pathname}/${name}${searchParams}`} className={`flex flex-col text-white text-md pb-1 text-left h-64 w-60 rounded-2xl`} 
+    return <Link to={`${location.pathname}/${name}${searchParams}`} className={`flex flex-col text-white text-md pb-1 text-left h-56 rounded-2xl w-[23%]`} 
             style={{backgroundImage: `url('${imageUrl}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'  }} >
             
             <div className="mt-auto">
