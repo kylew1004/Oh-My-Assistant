@@ -34,7 +34,7 @@ def background_train(webtoon_name: str, db: Session, userId: int, images: List[U
         raise HTTPException(status_code=500, detail="Failed to train style model")
     else:
         model_path = response.json()['result']
-        webtoon_id = db.query(models.Webtoon).filter(models.User.id == userId, 
+        webtoon_id = db.query(models.Webtoon).join(models.User).filter(models.User.id == userId, 
                                                     models.Webtoon.webtoonName == webtoon_name).first().id
         db_model = models.Model(webtoonId=webtoon_id, modelPath=model_path)
         if db_model is None:
@@ -61,10 +61,8 @@ def background_inference(webtoon_name: str, file: UploadFile, db: Session, userI
     model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).first().modelPath
     if model_path is None:
         raise HTTPException(status_code=404, detail="Model not found")
-
-    data = {'model_path': (None, model_path, 'text/plain')}
     files = {'content_image': (file_name, file_content, file_content_type)}
-    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/inference", data=data, files=files)
+    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/inference/{model_path}", files=files)
     
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Failed to inference style model")
@@ -76,7 +74,7 @@ def background_save(webtoonName: str, assetName: str, description: str, db: Sess
                     original_image: UploadFile = File(...), generated_images: List[UploadFile] = File(...)):
     
     if db.query(models.ContentImg).join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
-        .filter(models.Webtoon.webtoonName == webtoonName, models.ContentImg.asset_name == assetName,
+        .filter(models.Webtoon.webtoonName == webtoonName, models.ContentImg.assetName == assetName,
                 models.Webtoon.userId == user_id).first():
 
         raise HTTPException(status_code=400, detail="Bad Request: Asset already exists")
@@ -91,20 +89,20 @@ def background_save(webtoonName: str, assetName: str, description: str, db: Sess
     s3.upload_fileobj(original_image.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{original_image_name}")
     original_image_path = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{original_image_name}"
     
-    db_content = models.ContentImg(webtoonId=webtoonId, created_at=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-                                   original_image_url=original_image_path, asset_name=assetName, 
+    db_content = models.ContentImg(webtoonId=webtoonId, createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
+                                   originalImageUrl=original_image_path, assetName=assetName, 
                                    description=description)
     db.add(db_content)
     db.commit()
     db.refresh(db_content)
     
-    original_image_id = db.query(models.ContentImg).filter(models.ContentImg.asset_name == assetName).first().originalImageId
+    original_image_id = db.query(models.ContentImg).filter(models.ContentImg.assetName == assetName).first().originalImageId
     
     for image in generated_images:
         image_name = f"{uuid.uuid4()}__{image.filename}"
         s3.upload_fileobj(image.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"background/{image_name}")
         image_path = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/background/{image_name}"
-        db_background = models.BackgroundImg(original_image_id=original_image_id, backgroundImgUrl=image_path)
+        db_background = models.BackgroundImg(originalImageId=original_image_id, backgroundImgUrl=image_path)
         db.add(db_background)
         db.commit()
         db.refresh(db_background)
@@ -124,20 +122,21 @@ def get_background_asset_list(webtoon_name: str, db: Session, user_id: int):
         raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
     
 def get_background_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int):
-    db_background = db.query(models.BackgroundImg).join(models.ContentImg, models.BackgroundImg.original_image_id == models.ContentImg.originalImageId)\
+    db_background = db.query(models.BackgroundImg).join(models.ContentImg, models.BackgroundImg.originalImageId == models.ContentImg.originalImageId)\
                 .join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
                 .filter(models.Webtoon.webtoonName == webtoon_name,
-                        models.ContentImg.asset_name == asset_name, 
-                        models.Webtoon.userId == user_id).all()
+                        models.ContentImg.assetName == asset_name, 
+                        models.Webtoon.userId == user_id).first()
     if db_background:
-        return db_background
+        result = {"assetName": asset_name, "backgroundImageUrl": db_background.backgroundImgUrl}
+        return result
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
     
 def delete_background_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int):
     db_content_img = db.query(models.ContentImg).join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
                 .filter(models.Webtoon.webtoonName == webtoon_name,
-                        models.ContentImg.asset_name == asset_name, 
+                        models.ContentImg.assetName == asset_name, 
                         models.Webtoon.userId == user_id).first()
     db_background = get_background_asset(webtoon_name, asset_name, db, user_id)
     if db_content_img and db_background:
@@ -148,9 +147,3 @@ def delete_background_asset(webtoon_name: str, asset_name: str, db: Session, use
         return {"detail": "Asset deleted successfully"}
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
-    # if db_background:
-    #     db.delete(db_background)
-    #     db.commit()
-    #     return {"detail": "Asset deleted successfully"}
-    # else:
-    #     raise HTTPException(status_code=400, detail="Bad Request: Asset not found")

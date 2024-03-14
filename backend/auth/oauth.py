@@ -11,7 +11,7 @@ def get_current_user(data: str = Depends(oauth2_scheme)):
     user = verify_access_token(data)
     if not user:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from schemas import webtoon_schemas, user_schemas
 from sqlalchemy.orm import Session
 from models.database import get_db
@@ -10,33 +10,16 @@ api_webtoon = APIRouter(prefix="/api/webtoon")
 
 @api_webtoon.post('/create')
 def create_webtoon(request: webtoon_schemas.WebtoonCreate, db: Session = Depends(get_db), current_user: user_schemas.User = Depends(get_current_user)):
-    db_webtoon = webtoon_util.get_webtoon_by_webtoon_name_and_userId(db, webtoon_name=request.webtoonName, user_id=current_user['userId'])
-    if db_webtoon:
-        raise HTTPException(status_code=400, detail="Bad Request: Webtoon already registered")
-    return webtoon_util.create_webtoon(db, webtoon=request, user=current_user)
+    return webtoon_util.create_webtoon(db, request, current_user)
 
 @api_webtoon.get('/list')
 def read_webtoon_list(db: Session = Depends(get_db), current_user: user_schemas.User = Depends(get_current_user)):
-    webtoons = webtoon_util.get_webtoon_list_by_user_id(db, current_user['userId'])
-    formatted_webtoons = []
-    for webtoon in webtoons:
-        formatted_webtoons.append(webtoon.webtoonName)
-    return {"webtoonList":formatted_webtoons}
+    return webtoon_util.read_webtoon_list(db, current_user['userId'])
 
 @api_webtoon.delete('/delete/{webtoon_name}')
 def delete_webtoon(request: webtoon_schemas.WebtoonCreate, db: Session = Depends(get_db), current_user: user_schemas.User = Depends(get_current_user)):
-    db_webtoon = webtoon_util.get_webtoon_by_webtoon_name_and_userId(db, webtoon_name=request.webtoonName, user_id=current_user['userId'])
-    if db_webtoon:
-        db.delete(db_webtoon)
-        db.commit()
-        return {"message": "Webtoon deleted successfully"}
-    else:
-        raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
+    return webtoon_util.delete_webtoon(db, request, current_user)
     
 @api_webtoon.get('/check-train/{webtoon_name}')
 def check_train(webtoon_name: str, db: Session = Depends(get_db)):
-    db_model = webtoon_util.check_train(db, webtoon_name)
-    if db_model and db_model.model_path:
-        return {"isTrained": True}
-    else:
-        return {"isTrained": False}
+    return webtoon_util.check_train(db, webtoon_name)
