@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 
 from schemas import GenerationRequest, GenerationResponse, TrainResponse   # 통신에 활용하는 자료 형태를 정의합니다.
 from database import GenerationResult, TrainResult
-from model import get_pipe, generate, patch_pipeline
+from model import get_img2img_pipe, get_txt2img_pipe, img2img_generate, txt2img_generate, patch_pipeline
 from config import config, train_config
 from env import env
 
@@ -97,31 +97,31 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
         result = generated_result.result
     )
 
-@router.post("/api/model/background/inference")
-def background_inference(model_path: str = str(...), content_image: UploadFile = File(...)) -> GenerationResponse:
+@router.post("/api/model/background/img2img")
+def background_img2img(model_path: str = str(...), content_image: UploadFile = File(...)):
     model_name = model_path.split('/')[-1]
 
     # make dir
     os.makedirs(f'results/{model_name}', exist_ok=True)
     
-    # patch pipeline
-    result = patch_pipeline(model_path=model_path)
-    print(model_path, result)
+    # load pipeline
+    img2img_pipe = get_img2img_pipe()
+
+    # patch img2img pipeline
+    result = patch_pipeline(pipe=img2img_pipe, model_path=model_path)
+    print("img2img pipeline:", model_path, result)
     if not result:
         generated_result = GenerationResult(result = "Error: There is no trained model.")
         return GenerationResponse(
             result = generated_result.result
         )
-
-    # load pipeline
-    pipe = get_pipe()
     
     # load content image
     request_object_content = content_image.file.read()
     content = io.BytesIO(request_object_content)
 
     # generate
-    generated_images = generate(pipe, content, alpha_unet=0.3, alpha_text=0.3)
+    generated_images = img2img_generate(img2img_pipe, content, alpha_unet=0.3, alpha_text=0.3)
     generated_image_bytes = []
 
     # save
@@ -132,8 +132,47 @@ def background_inference(model_path: str = str(...), content_image: UploadFile =
         generated_image_bytes.append(buf.getvalue())
         
         # Local Save
-        # background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
-        # img.save(f"results/{model_name}/{background_file_name}")
+        background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
+        img.save(f"results/{model_name}/{background_file_name}")
+    
+    base64_images = [base64.b64encode(img).decode('utf-8') for img in generated_image_bytes]
+    
+    # return StreamingResponse
+    return JSONResponse(content={"images": base64_images})
+
+@router.post("/api/model/background/txt2img")
+def background_txt2img(model_path: str = str(...), prompt: str = str(...)):
+    model_name = model_path.split('/')[-1]
+
+    # make dir
+    os.makedirs(f'results/{model_name}', exist_ok=True)
+    
+    # load pipeline
+    txt2img_pipe = get_txt2img_pipe()
+        
+    # patch txt2img pipeline
+    result = patch_pipeline(pipe=txt2img_pipe, model_path=model_path)
+    print("txt2img pipeline:", model_path, result)
+    if not result:
+        generated_result = GenerationResult(result = "Error: There is no trained model.")
+        return GenerationResponse(
+            result = generated_result.result
+        )
+
+    # generate
+    generated_images = txt2img_generate(txt2img_pipe, prompt=prompt)
+    generated_image_bytes = []
+
+    # save
+    for i, img in enumerate(generated_images):        
+        # convert image to bytes
+        buf = io.BytesIO()
+        img.save(buf, format="jpeg")
+        generated_image_bytes.append(buf.getvalue())
+        
+        # Local Save
+        background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
+        img.save(f"results/{model_name}/{background_file_name}")
     
     base64_images = [base64.b64encode(img).decode('utf-8') for img in generated_image_bytes]
     
