@@ -123,7 +123,11 @@ def generate(pipe, content_image,
              seed=42, prompt=None, 
              alpha_unet=0.4, alpha_text=0.8,
              guidance_scale=7.5) -> Image:
-    init_image = Image.open(content_image).convert("RGB").resize((512, 512))
+    
+    init_image = Image.open(content_image)
+    w, h = init_image.size
+    
+    init_image = init_image.convert("RGB").resize((512, 512))
     tune_lora_scale(pipe.unet, alpha_unet)
     tune_lora_scale(pipe.text_encoder, alpha_text)
     
@@ -135,7 +139,7 @@ def generate(pipe, content_image,
             generated_images.append(
                 pipe(prompt=f"{prompt}, style of <s1><s2>", 
                     image=init_image, strength=0.55, guidance_scale=guidance_scale
-                    ).images[0]
+                    ).images[0].resize((w, h))
                 # sr_pipe(
                 #     prompt="",
                 #     image=pipe(prompt=f"{prompt}, style of <s1><s2>", 
@@ -147,7 +151,7 @@ def generate(pipe, content_image,
             generated_images.append(
                 pipe(prompt="style of <s1><s2>", 
                     image=init_image, strength=0.55, guidance_scale=guidance_scale
-                    ).images[0]
+                    ).images[0].resize((w, h))
                 # sr_pipe(
                 #     prompt="",
                 #     image=pipe(prompt="style of <s1><s2>", 
@@ -160,7 +164,7 @@ def generate(pipe, content_image,
             generated_images.append(
                 pipe(prompt=f"{prompt}, style of <s1><s2>", 
                         image=init_image, strength=0.45, guidance_scale=guidance_scale
-                        ).images[0]
+                        ).images[0].resize((w, h))
                 # sr_pipe(
                 #     prompt="",
                 #     image=pipe(prompt=f"{prompt}, style of <s1><s2>", 
@@ -172,7 +176,7 @@ def generate(pipe, content_image,
             generated_images.append(
                 pipe(prompt="style of <s1><s2>", 
                         image=init_image, strength=0.45, guidance_scale=guidance_scale
-                        ).images[0]
+                        ).images[0].resize((w, h))
                 # sr_pipe(
                 #     prompt="",
                 #     image=pipe(prompt="style of <s1><s2>", 
