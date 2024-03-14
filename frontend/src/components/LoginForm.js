@@ -1,7 +1,7 @@
 import {useState} from 'react'; 
 import { Form } from 'react-router-dom';
 
-export default function LoginForm(){
+export default function LoginForm({isSubmitting}){
     const [pwNotEqual, setPwNotEqual] = useState(false);
 
     // function handleSubmit(event){
@@ -28,7 +28,7 @@ export default function LoginForm(){
         <Form method="post" className="flex flex-col w-5/6 h-auto" >
 
         
-        <div className="control control-row w-full my-5 mb-9 flex flex-col">
+        <div className="control control-row w-full my-5 mb-3 flex flex-col">
           <input className="h-16 w-full rounded-lg bg-gray-50 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="username" type="email" name="username" placeholder="Email Address" required />
         </div>
     
@@ -38,8 +38,8 @@ export default function LoginForm(){
 
 
 
-          <button type="submit" className="button m-auto h-12 my-6 w-1/2  bg-gradient-to-r from-[#F6C443] to-[#F3AC58] rounded-full text-black">
-            Log in
+          <button type="submit" disabled={isSubmitting} className={`m-auto h-12 my-6 w-1/2  ${isSubmitting ? 'bg-gray-400' :'bg-gradient-to-r from-[#F6C443] to-[#F3AC58]'} rounded-full text-black`}>
+          {isSubmitting ? 'Submitting...' : 'Log in'}
           </button>
 
       </Form>

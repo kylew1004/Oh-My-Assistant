@@ -2,12 +2,12 @@ import {useState} from 'react';
 import { Form } from 'react-router-dom';
 import { postVerifyEmail } from '../util/http.js';
 
-export default function SignupForm() {
+export default function SignupForm({isSubmitting}) {
     const [pwNotEqual, setPwNotEqual] = useState(false);
     const [verified, setVerified] = useState('false');
     const [email, setEmail] = useState('');
 
-    async function handleVerify(){
+    async function handleVerify({isSubmitting}){
       const result = await postVerifyEmail({userEmail:email});
       console.log(result)
       if(result.detail==="Email is available"){
@@ -69,9 +69,9 @@ export default function SignupForm() {
 
         <input id="verified" name="verified" type="text" value={verified} hidden /> 
 
-          <button type="submit" className="button m-auto my-6 h-12 w-1/2  bg-gradient-to-r from-[#F6C443] to-[#F3AC58] rounded-full text-black">
-            Sign up
-          </button>
+        <button type="submit" disabled={isSubmitting} className={`m-auto h-12 my-6 w-1/2  ${isSubmitting ? 'bg-gray-400' :'bg-gradient-to-r from-[#F6C443] to-[#F3AC58]'} rounded-full text-black`}>
+            {isSubmitting ? 'Submitting...' : 'Sign up'}
+        </button>
 
   
 
