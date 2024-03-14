@@ -9,7 +9,7 @@ import StyleTransfer, {action as saveBackgroundAssetAction} from './page/StyleTr
 import PoseTransfer, {action as savePoseAssetAction} from './page/PoseTransfer.js';
 import CreateNew from './page/CreateNew.js';
 import Train from './page/Train.js';
-import Panel from './components/Panel.js';
+import Panel, {loader as isTrainedLoader} from './components/Panel.js';
 import AssetList, {loader as assetsLoader} from './components/AssetList.js';
 import AssetDetail, {loader as assetDetailLoder} from './components/AssetDetail.js';
 
@@ -31,6 +31,7 @@ const router = createBrowserRouter([
           <Panel />
           <Outlet />
         </>,
+        loader: isTrainedLoader,
         children:[
           {
             path: 'assets',
