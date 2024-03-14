@@ -1,7 +1,7 @@
 from typing import List 
 
 from fastapi import APIRouter, File, UploadFile
-from fastapi.responses import FileResponse, StreamingResponse
+from fastapi.responses import JSONResponse
 
 from schemas import GenerationRequest, GenerationResponse, TrainResponse   # 통신에 활용하는 자료 형태를 정의합니다.
 from database import GenerationResult, TrainResult
@@ -14,9 +14,9 @@ from lora_diffusion.cli_lora_pti import train, state_running_process
 import shutil
 import io
 import os 
-import urllib.request 
 import uuid 
 import boto3
+import base64
 
 
 router = APIRouter()
@@ -97,8 +97,7 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
         result = generated_result.result
     )
 
-
-@router.post("/api/model/background/")
+@router.post("/api/model/background/inference")
 def background_inference(model_path: str = str(...), content_image: UploadFile = File(...)) -> GenerationResponse:
     model_name = model_path.split('/')[-1]
 
@@ -129,12 +128,14 @@ def background_inference(model_path: str = str(...), content_image: UploadFile =
     for i, img in enumerate(generated_images):        
         # convert image to bytes
         buf = io.BytesIO()
-        img.save(buf, format="PNG")
+        img.save(buf, format="jpeg")
         generated_image_bytes.append(buf.getvalue())
         
         # Local Save
-        background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
-        img.save(f"results/{model_name}/{background_file_name}")
+        # background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
+        # img.save(f"results/{model_name}/{background_file_name}")
+    
+    base64_images = [base64.b64encode(img).decode('utf-8') for img in generated_image_bytes]
     
     # return StreamingResponse
-    return StreamingResponse(generated_image_bytes, media_type="image/png")
+    return JSONResponse(content={"images": base64_images})
