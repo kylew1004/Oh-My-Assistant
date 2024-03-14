@@ -9,6 +9,7 @@ export default function Menu(){
     const [isModal, setIsModal] = useState(false);
     const {userInfo, webtoons} = useLoaderData();
     const navigate = useNavigate()
+    console.log(userInfo);
 
     function handleClick(){
         setIsModal(true);
@@ -67,7 +68,7 @@ export default function Menu(){
                 <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
                         <Await resolve={webtoons}>
                             {(loadedWebtoons) => {
-                                if(loadedWebtoons) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-row pl-3 p-1 hover:bg-gray-950">
+                                if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-row pl-3 p-1 hover:bg-gray-950">
                                 <Link key={index} to={`/${webtoon}/assets`} className="text-white text-md pb-1 w-full text-left " >{webtoon}</Link>
                                 <button onClick={()=>handleDelete(webtoon)} className="bg-white text-red-700 w-3 px-2 rounded-full m-auto pr-4">x</button>
                             </div>)}}

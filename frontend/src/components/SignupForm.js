@@ -9,7 +9,8 @@ export default function SignupForm() {
 
     async function handleVerify(){
       const result = await postVerifyEmail({userEmail:email});
-      if(result.userEmail){
+      console.log(result)
+      if(result.detail==="Email is available"){
         setVerified('true');
         alert('Email verified!');
       }else alert('Email already exists!');
