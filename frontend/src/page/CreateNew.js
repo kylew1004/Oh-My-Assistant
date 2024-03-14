@@ -7,7 +7,7 @@ import CreateNewPanel from '../components/CreateNewPanel.js';
 export default function CreateNew(){
     const {webtoonName} = useParams();
 
-    return <div className="flex flex-row h-full w-full overflow-auto">
+    return <div className="flex flex-row h-full w-full m-auto overflow-auto">
         {/* <NavLink to="/styleTransfer" className="flex flex-col h-11/12 w-11/12 m-20 bg-yellow-500 rounded-3xl">
             <h1 className="font-bold text-5xl mx-auto mt-16">SCENE<br/>STYLE TRANSFER</h1>
             <p className="text-xl mx-20 my-7  text-gray-600"> 학습된 웹툰의 그림체로 실사 배경 이미지를 웹툰 배경으로 변환합니다. </p>

@@ -5,10 +5,17 @@ export default function CreateNewPanel({type, detail, link, img}){
     const splitType = type.split("&");
 
     
-    return <NavLink to={link} className="flex flex-col h-auto w-full m-10 my-16 bg-yellow-500 rounded-3xl overflow-hidden">
-        <h2 className="font-bold text-3xl mt-10 ml-9">{splitType[0]}<br />{splitType[1]}</h2>
-        <p className="text-lg mx-9 my-3 mb-8 h-10  text-gray-600"> {detail} </p>
-        <img src={img} className=" h-72 w-full" />
-        <img src={arrowImg} className="h-auto w-1/5 ml-auto mr-8 mt-4" />
+    // return <NavLink to={link} className="flex flex-col h-auto w-1/3 m-auto my-16 bg-yellow-500 rounded-3xl overflow-hidden">
+    //     <h2 className="font-bold text-3xl mt-10 ml-9">{splitType[0]}<br />{splitType[1]}</h2>
+    //     <p className="text-lg mx-9 my-3 mb-8 h-10  text-gray-600"> {detail} </p>
+    //     <img src={img} className=" h-72 w-full" />
+    //     <img src={arrowImg} className="h-auto w-1/5 ml-auto mr-8 mt-4" />
+    // </NavLink>
+
+    return <NavLink to={link} className="flex flex-col h-auto w-1/3 m-auto my-16 bg-yellow-500 rounded-3xl overflow-hidden py-5 pt-16">
+        <h2 className="font-bold text-3xl h-1/4 mx-8 mb-4">{splitType[0]}<br />{splitType[1]}</h2>
+        <p className="text-lg text-gray-600 h-1/4 mx-8"> {detail} </p>
+        <img src={img} className=" w-full h-2/3" />
+        <img src={arrowImg} className="h-1/5 w-1/5 ml-auto mr-8 mt-4" />
     </NavLink>
 }
