@@ -323,26 +323,68 @@ export async function getStyleAssets(data){
         return [
             {
                 assetName: 'Style Asset 1',
-                characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
+                originalImageUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
             },
             {
                 assetName: 'Style Asset 2',
-                characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+                originalImageUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
             },
             {
                 assetName: 'Style Asset 3',
-                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+                originalImageUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
             },
             {
                 assetName: 'Style Asset 4',
-                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+                originalImageUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
             },
             {
                 assetName: 'Style Asset 5',
-                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+                originalImageUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
             },
         ]
         //---------
+        const token=getAuthToken();
+        if(token && token!='EXPIRED'){
+            try{
+                const response = await fetch(`${URL}/api/background/asset/${data.webtoonName}`,{
+                    method:'GET',
+                    headers:{
+                    //   'Content-Type' : 'application/json',
+                      'Authorization' : token,
+                    },
+                    // body: JSON.stringify(data)
+                  });
+            
+                //handle response
+                if(response.status===422 || response.status ==401 || response.stastus==400){
+                    throw {error: 'Could not fetch assets.',
+                          status:response.status}
+                }
+    
+                if(!response.ok) return [];
+              
+                // if(!response.ok){
+                //     const resData = await response.json();
+                //     console.log(resData);
+                //     throw {error: 'Could not fetch assets.',
+                //            status:500}
+                // }
+              
+                //manage the token returned 
+                const resData = await response.json();
+                return resData;
+        
+            }catch(e){
+                console.log(e);
+                if(e.error) return e;
+                else return {error: 'Could not fetch assets.',
+                status:'unknown'}
+            }
+        
+    
+        }
+    
+        return 'tokenError';
 
 }
 
