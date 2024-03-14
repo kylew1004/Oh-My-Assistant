@@ -9,11 +9,7 @@ from models import database
 from auth.oauth import get_current_user
 
 
-settings = Settings()
-
-
 api_user = APIRouter(prefix="/api/user")
-ACCESS_TOKEN_EXPIRE_MINUTES = 60*24
 
 @api_user.get('/me')
 def read_user_me(current_user: user_schemas.User = Depends(get_current_user)):
