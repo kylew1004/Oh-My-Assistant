@@ -7,9 +7,9 @@ export default function Asset({name, imageUrl}){
     return <Link to={`${location.pathname}/${name}${searchParams}`} className={`flex flex-col text-white text-md pb-1 text-left h-56 rounded-2xl w-[23%]`} 
             style={{backgroundImage: `url('${imageUrl}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'  }} >
             
-            <div className="mt-auto">
-                <div className="flex bg-[#3f396b] rounded-full w-1/2 mb-2 ml-2">
-                    <p className="m-auto p-1.5">{name}</p>
+            <div className="flex mt-auto w-auto">
+                <div className="flex bg-[#3f396b] rounded-full mb-2 ml-2">
+                    <p className="p-1.5 px-4">{name}</p>
                 </div>
 {/* 
                 downlaod Button */}
