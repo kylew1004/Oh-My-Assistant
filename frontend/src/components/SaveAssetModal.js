@@ -29,32 +29,26 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
 
   async function handleSubmit(event){
     event.preventDefault();
+    let fd = new FormData(event.target);
+    fd.append('webtoonName',location.pathname.split("/")[1]);
 
+    let files = new FormData();
     let result;
     if(location.pathname.includes('styleTransfer')){
-      const fd = new FormData(event.target);
-      fd.append('originalImage',originalImg);
-      fd.append('webtoonName',location.pathname.split("/")[1]);
-
-      const imageFiles = images.map(item=>{
-        return item.file;
+      files.append('original_image',originalImg);
+      images.forEach(item=>{
+        files.append('generated_images',base64toFile(item));
       });
-      fd.append('outputImages',imageFiles);
 
       console.log(fd.get('outputImages'));
       console.log(fd.get('webtoonName'));
 
       result = await postStyleAsset(fd);
     }else{
-      const fd = new FormData(event.target);
-      const files = new FormData();
-      fd.append('webtoonName',location.pathname.split("/")[1]);
-
       files.append('originalCharacterImg',originalImg[0]);
       files.append('originalPoseImg',originalImg[1]);
       files.append('characterImage',base64toFile(images[0]));
       files.append('poseImage',base64toFile(images[1]));
-      
       
       result = await postPoseAsset(fd, files);
     }

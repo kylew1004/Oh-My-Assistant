@@ -703,10 +703,49 @@ export async function postPoseAsset(fd, files){
 
 }
 
-export async function postStyleAsset(data){
+export async function postStyleAsset(fd, files){
     //dummy---------
-    return 'ok';
+    // return 'ok';
     //--------------
+
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/background/save/${fd.get('webtoonName')}?assetName=${fd.get('assetName')}&description=${fd.get('description')}`,{
+                method:'POST',
+                headers:{
+                  'Authorization' : token,
+                },
+                body: files
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not save asset.',
+                      status:response.status}
+            }
+          
+            // if(!response.ok){
+            //     throw {error: 'Could not save asset.',
+            //            status:500}
+            // }
+
+            const resData = await response.json();
+            console.log(resData);
+            return resData;
+    
+        }catch(e){
+            console.log(e);
+            if(e.error) return e;
+            else return {error: 'Could not save asset.',
+            status:'unknown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
+
 
 }
 
