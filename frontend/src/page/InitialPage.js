@@ -1,9 +1,11 @@
-import { useNavigate, useRouteLoaderData } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useNavigate, useRouteLoaderData, useActionData } from 'react-router-dom';
 import noWebtoonImg from '../assets/no-webtoon.png';
 
 export default function InitialPage(){
     const navigate = useNavigate();
     const {webtoons} = useRouteLoaderData('root');
+    
 
 
     const fetchData = () => {
@@ -11,14 +13,18 @@ export default function InitialPage(){
             resolve(webtoons);
         });
       };
-      
-    fetchData()
-    .then((webtoons) => {
-        console.log(webtoons.webtoonList); // Access the value when the promise resolves
-        if (webtoons?.webtoonList && webtoons.webtoonList.length > 0) {
-            navigate(`/${webtoons.webtoonList[0]}/assets`);
-        }
-    })
+
+
+    // useEffect(()=>{
+    //   fetchData()
+    //   .then((webtoons) => {
+    //       console.log(webtoons.webtoonList); // Access the value when the promise resolves
+    //       if (webtoons?.webtoonList && webtoons.webtoonList.length > 0) {
+    //           navigate(`/${webtoons.webtoonList[webtoons.webtoonList.length-1]}/assets`);
+    //       }
+    //   })
+
+    // },[]);
 
     return (
       <div className="flex flex-col h-full bg-white bg-opacity-30 rounded-2xl items-center justify-center gap-5 m-10">
