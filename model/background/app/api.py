@@ -1,6 +1,6 @@
 from typing import List 
 
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, File, UploadFile, Form
 from fastapi.responses import JSONResponse
 
 from schemas import GenerationRequest, GenerationResponse, TrainResponse   # 통신에 활용하는 자료 형태를 정의합니다.
@@ -51,8 +51,9 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     # load & save style image
     for i, style_image in enumerate(style_images):
         request_object_content = style_image.file.read()
+        file_name = style_image.filename
         style_image = Image.open(io.BytesIO(request_object_content)).convert("RGB").resize((512, 512))
-        style_image.save(os.path.join(train_config.data_dir, model_name, f"{i}.jpg"))
+        style_image.save(os.path.join(train_config.data_dir, model_name, f"{file_name}"))
 
     # train
     output_dir = os.path.join(train_config.model_dir, model_name+"_r"+str(train_config.rank))
@@ -88,7 +89,7 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     )
     
     # convert to response format
-    generated_result = TrainResult(result = output_dir)
+    generated_result = TrainResult(result = output_dir.split('/')[-1])
     
     # if we don't use train images, run this code.
     # shutil.rmtree(os.path.join(train_config.data_dir, model_name), ignore_errors=True) 
@@ -97,19 +98,17 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
         result = generated_result.result
     )
 
-@router.post("/api/model/background/img2img")
-def background_img2img(model_path: str = str(...), content_image: UploadFile = File(...)):
-    model_name = model_path.split('/')[-1]
-
+@router.post("/api/model/background/img2img/{model_id}")
+def background_img2img(model_id: str = str(...), content_image: UploadFile = File(...)):
     # make dir
-    os.makedirs(f'results/{model_name}', exist_ok=True)
+    os.makedirs(f'results/{model_id}', exist_ok=True)
     
     # load pipeline
     img2img_pipe = get_img2img_pipe()
 
     # patch img2img pipeline
-    result = patch_pipeline(pipe=img2img_pipe, model_path=model_path)
-    print("img2img pipeline:", model_path, result)
+    result = patch_pipeline(pipe=img2img_pipe, model_path=f"./models/{model_id}")
+    print("img2img pipeline:", model_id, result)
     if not result:
         generated_result = GenerationResult(result = "Error: There is no trained model.")
         return GenerationResponse(
@@ -133,26 +132,26 @@ def background_img2img(model_path: str = str(...), content_image: UploadFile = F
         
         # Local Save
         background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
-        img.save(f"results/{model_name}/{background_file_name}")
+        img.save(f"results/{model_id}/{background_file_name}")
     
     base64_images = [base64.b64encode(img).decode('utf-8') for img in generated_image_bytes]
     
     # return StreamingResponse
     return JSONResponse(content={"images": base64_images})
 
-@router.post("/api/model/background/txt2img")
-def background_txt2img(model_path: str = str(...), prompt: str = str(...)):
-    model_name = model_path.split('/')[-1]
+@router.post("/api/model/background/txt2img/{model_id}")
+def background_txt2img(model_id: str = str(...), prompt: str = Form(...)):
+    print(prompt)
 
     # make dir
-    os.makedirs(f'results/{model_name}', exist_ok=True)
+    os.makedirs(f'results/{model_id}', exist_ok=True)
     
     # load pipeline
     txt2img_pipe = get_txt2img_pipe()
         
     # patch txt2img pipeline
-    result = patch_pipeline(pipe=txt2img_pipe, model_path=model_path)
-    print("txt2img pipeline:", model_path, result)
+    result = patch_pipeline(pipe=txt2img_pipe, model_path=f"./models/{model_id}")
+    print("txt2img pipeline:", model_id, result)
     if not result:
         generated_result = GenerationResult(result = "Error: There is no trained model.")
         return GenerationResponse(
@@ -172,7 +171,7 @@ def background_txt2img(model_path: str = str(...), prompt: str = str(...)):
         
         # Local Save
         background_file_name = f"{uuid.uuid4()}__result{i}.jpg"
-        img.save(f"results/{model_name}/{background_file_name}")
+        img.save(f"results/{model_id}/{background_file_name}")
     
     base64_images = [base64.b64encode(img).decode('utf-8') for img in generated_image_bytes]
     

@@ -15,7 +15,7 @@ import torch
 
 # diffusion
 from lora_diffusion import tune_lora_scale, patch_pipe
-from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline, StableDiffusionUpscalePipeline, AutoencoderKL
+from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline, EulerAncestralDiscreteScheduler, StableDiffusionUpscalePipeline, AutoencoderKL
 
 from config import train_config
 
@@ -59,10 +59,10 @@ def load_img2img_pipeline(model_id):
 
 def load_txt2img_pipeline(model_id):
     global txt2img_pipe
-    txt2img_pipe = StableDiffusionPipeline(
+    txt2img_pipe = StableDiffusionPipeline.from_pretrained(
         model_id,
-        safety_checker=None, 
-        torch_dtype=torch.float16).to("cuda")
+        safety_checker=None).to("cuda")
+    txt2img_pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(txt2img_pipe.scheduler.config)
     return txt2img_pipe
 
 def load_sr_pipeline(model_id):
@@ -89,9 +89,9 @@ def patch_pipeline(pipe, model_path: str):
     return True
 
 def get_img2img_pipe():
-    return img2img_pipe.copy()
+    return img2img_pipe
 def get_txt2img_pipe():
-    return txt2img_pipe.copy()
+    return txt2img_pipe
 def get_sr_pipe():
     return sr_pipe
     
@@ -199,6 +199,9 @@ def txt2img_generate(pipe, prompt,
              seed=42, num_inference_steps=50, guidance_scale=7) -> Image:
     
     torch.manual_seed(seed) # 동일 조건 동일 결과 보장
+    
+    tune_lora_scale(pipe.unet, 0.5) # 0.8
+    tune_lora_scale(pipe.text_encoder, 0.5) # 0.9
     
     generated_images = []
     for _ in range(6): 
