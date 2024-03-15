@@ -8,7 +8,7 @@ export default function Assets(){
 
     useEffect(() => {
         if (!searchParams.get('mode')) {
-          searchParams.set("mode", "Scenes");
+          searchParams.set("mode", "Characters");
           setSearchParams(searchParams);
         }
     }, [searchParams, setSearchParams]);
@@ -23,7 +23,7 @@ export default function Assets(){
                 <Link to={`?mode=${inactive}`} hidden={passLength===4} className={ `flex flex-row bg-gray-300 rounded-full w-1/4`}>
                     {active==='Scenes' && <p hidden={passLength===4} className="text-center m-auto">{inactive}</p>}
                     <Link to={`?mode=${active}`} hidden={passLength===4} className={`bg-yellow-500 rounded-full h-full w-1/2 py-2`}>
-                        <p className="font-bold text-center m-auto">{active}</p>
+                        <p className="text-center m-auto">{active}</p>
                     </Link>
                     {active!=='Scenes' && <p hidden={passLength===4} className="text-center m-auto">{inactive}</p>}
                 </Link>
