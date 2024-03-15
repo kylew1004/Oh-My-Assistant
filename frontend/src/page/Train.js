@@ -7,7 +7,6 @@ export default function Train(){
     const [isTraining, setIsTraining] = useState(false);
     const navigate = useNavigate();
     const {webtoonName} = useParams();
-    console.log(webtoonName);
 
     // const urls = files.map((item)=>{
     //     return URL.createObjectURL(item);
@@ -42,7 +41,7 @@ export default function Train(){
         if(result==='tokenError') redirect('/auth');
         setIsTraining(false);
 
-        navigate('/assets');
+        navigate(`/${webtoonName}/assets`);
 
     }
 
