@@ -12,7 +12,6 @@ export default function AssetList(){
                     {(loadedAssets) =>  loadedAssets && loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={asset.characterImgUrl} />)}
                 </Await>
         </Suspense>
-    {/* </div>  */}
 }
 
 export function loader({params, request}){
