@@ -19,15 +19,13 @@ function PoseTransfer() {
     if(pose) {poseUrl = URL.createObjectURL(pose);}
 
     function handleCharacter(e) {
-        console.log(e.target.files[0]);
-        setCharacter(e.target.files[0]);
-        setErrorFetching(null);
-        setIsFetching(false);
-        setOutputs(null);   
+      setCharacter(e.target.files[0]);
+      setErrorFetching(null);
+      setIsFetching(false);
+      setOutputs(null);   
     }
 
     function handlePose(e) {
-      console.log(e.target.files[0]);
       setPose(e.target.files[0]);
       setErrorFetching(null);
       setIsFetching(false);   
