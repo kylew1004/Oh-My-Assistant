@@ -117,18 +117,34 @@ def get_background_asset_list(webtoon_name: str, db: Session, user_id: int):
                         models.Webtoon.userId == user_id)\
                 .all()
     if db_background:
-        return db_background
+        result = []
+        for db_backgrounds in db_background:
+            result.append({
+                "createdAt": db_backgrounds.createdAt,
+                "assetName": db_backgrounds.assetName,
+                "originalImageUrl": db_backgrounds.originalImageUrl,
+                "description": db_backgrounds.description
+            })
+        return result
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
     
 def get_background_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int):
-    db_background = db.query(models.BackgroundImg).join(models.ContentImg, models.BackgroundImg.originalImageId == models.ContentImg.originalImageId)\
-                .join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
-                .filter(models.Webtoon.webtoonName == webtoon_name,
+    db_background = db.query(models.ContentImg).join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
+                        .filter(models.Webtoon.webtoonName == webtoon_name,
                         models.ContentImg.assetName == asset_name, 
                         models.Webtoon.userId == user_id).first()
     if db_background:
-        result = {"assetName": asset_name, "backgroundImageUrl": db_background.backgroundImgUrl}
+        result = []
+        backgroundImageUrls = db.query(models.BackgroundImg).filter(models.BackgroundImg.originalImageId == db_background.originalImageId).all()
+        backgroundImageUrls = [url.backgroundImgUrl for url in backgroundImageUrls]
+        result.append({
+            "createdAt": db_background.createdAt,
+            "assetName": db_background.assetName,
+            "originalImageUrl": db_background.originalImageUrl,
+            "description": db_background.description,
+            "backgroundImageUrls": backgroundImageUrls
+            })
         return result
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
