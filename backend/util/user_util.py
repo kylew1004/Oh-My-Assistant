@@ -13,7 +13,7 @@ def get_user(user: user_schemas.User):
     if user:
         result = {
             "userEmail": user["userEmail"],
-            "exp": user["exp"]
+            "userNickname": user["userNickname"]
         }
         return result
     else:
