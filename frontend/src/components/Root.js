@@ -1,5 +1,5 @@
 import {useEffect} from 'react';
-import { Outlet, useLoaderData, defer, redirect, useSubmit} from 'react-router-dom';
+import { Outlet, useLoaderData, defer, redirect, useSubmit } from 'react-router-dom';
 import {getUser, getWebtoons, postWebtoon} from '../util/http.js';
 
 import Menu from "./Menu.js";
@@ -61,12 +61,10 @@ export async function action({request}){
   const result = await postWebtoon(data);
 
   if(!result.error){
-    console.log(result);
-
     return redirect(`/${data.webtoonName}/assets`);
     // window.location.reload();
     // return redirect(`/${result.webtoonName}/assets`);
   }
-  return null;
+  return result;
 
 }
