@@ -677,13 +677,13 @@ export async function postWebtoon(data){
                       status:response.status}
             }
           
-            if(!response.ok){
-                throw {error: 'Could not add webtoon.',
-                       status:500}
-            }
-          
             //manage the token returned 
             const resData = await response.json();
+
+            if(!response.ok){
+                if(resData.detail==="Bad Request: Webtoon already registered") throw {error: "Webtoon name already exists!", status:500};
+                throw {error: resData.detail, status:500};
+            }
             return resData;
     
         }catch(e){
