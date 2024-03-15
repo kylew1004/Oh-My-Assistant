@@ -43,7 +43,7 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
       console.log(fd.get('outputImages'));
       console.log(fd.get('webtoonName'));
 
-      result = await postStyleAsset(fd);
+      result = await postStyleAsset(fd, files);
     }else{
       files.append('originalCharacterImg',originalImg[0]);
       files.append('originalPoseImg',originalImg[1]);
