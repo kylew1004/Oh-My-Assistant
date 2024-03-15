@@ -434,6 +434,45 @@ export async function getPoseAlbum(data){
 }
 
 export async function getStyleAlbum(data){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/background/asset/${data.webtoonName}/${data.assetName}`,{
+                method:'GET',
+                headers:{
+                //   'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+                // body: JSON.stringify(data)
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not fetch asset detail.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not fetch asset detail.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData[0];
+    
+        }catch(e){
+            console.log(e);
+            if(e.error) return e;
+            else return {error: 'Could not fetch asset detail.',
+            status:'unknown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
+
 
 }
 
