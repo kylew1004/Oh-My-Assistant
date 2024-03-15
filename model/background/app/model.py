@@ -15,12 +15,13 @@ import torch
 
 # diffusion
 from lora_diffusion import tune_lora_scale, patch_pipe
-from diffusers import StableDiffusionImg2ImgPipeline, StableDiffusionUpscalePipeline, AutoencoderKL
+from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline, EulerAncestralDiscreteScheduler, StableDiffusionUpscalePipeline, AutoencoderKL
 
 from config import train_config
 
-dr_pipe = None
-pipe = None 
+sr_pipe = None
+img2img_pipe = None 
+txt2img_pipe = None 
 vae = None 
     
     
@@ -41,21 +42,28 @@ def load_vae(vae_id):
     
     return vae
 
-def load_pipeline(model_id):
-    global pipe
+def load_img2img_pipeline(model_id):
+    global img2img_pipe
     if vae:
-        pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+        img2img_pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
             model_id, 
             vae = vae,
             safety_checker=None, 
             torch_dtype=torch.float16).to("cuda")
     else:
-        pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
+        img2img_pipe = StableDiffusionImg2ImgPipeline.from_pretrained(
             model_id, 
             safety_checker=None, 
             torch_dtype=torch.float16).to("cuda")
-        
-    return pipe
+    return img2img_pipe
+
+def load_txt2img_pipeline(model_id):
+    global txt2img_pipe
+    txt2img_pipe = StableDiffusionPipeline.from_pretrained(
+        model_id,
+        safety_checker=None).to("cuda")
+    txt2img_pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(txt2img_pipe.scheduler.config)
+    return txt2img_pipe
 
 def load_sr_pipeline(model_id):
     global sr_pipe
@@ -64,11 +72,9 @@ def load_sr_pipeline(model_id):
         revision="fp16",
         use_safetensors=False,
         torch_dtype=torch.float16).to("cuda")
-        
     return sr_pipe
 
-def patch_pipeline(model_path: str):
-    global pipe
+def patch_pipeline(pipe, model_path: str):
     try:
         patch_pipe(
             pipe,
@@ -82,8 +88,10 @@ def patch_pipeline(model_path: str):
         return False
     return True
 
-def get_pipe():
-    return pipe
+def get_img2img_pipe():
+    return img2img_pipe
+def get_txt2img_pipe():
+    return txt2img_pipe
 def get_sr_pipe():
     return sr_pipe
     
@@ -119,7 +127,7 @@ def train() -> None:
         --lora_rank={train_config.rank} \
         --seed={train_config.seed}""")
 
-def generate(pipe, content_image, 
+def img2img_generate(pipe, content_image, 
              seed=42, prompt=None, 
              alpha_unet=0.4, alpha_text=0.8,
              guidance_scale=7.5) -> Image:
@@ -187,6 +195,23 @@ def generate(pipe, content_image,
         
     return generated_images 
 
+def txt2img_generate(pipe, prompt, 
+             seed=42, num_inference_steps=50, guidance_scale=7) -> Image:
+    
+    torch.manual_seed(seed) # 동일 조건 동일 결과 보장
+    
+    tune_lora_scale(pipe.unet, 0.5) # 0.8
+    tune_lora_scale(pipe.text_encoder, 0.5) # 0.9
+    
+    generated_images = []
+    for _ in range(6): 
+        generated_images.append(
+           pipe(prompt=f"{prompt}, style of <s1><s2>", 
+                num_inference_steps=num_inference_steps, 
+                guidance_scale=guidance_scale).images[0]
+        )
+        
+    return generated_images 
     
 def main():
     pass 
