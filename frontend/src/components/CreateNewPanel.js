@@ -4,7 +4,7 @@ import arrowImg from '../assets/arrow.png';
 export default function CreateNewPanel({type, detail, link, img, disable}){
     const splitType = type.split("&");
 
-    return <NavLink to={link} onClick={disable ? e=>e.preventDefault() : (e)=>{}} className={`flex flex-col h-auto w-1/3 m-auto my-16 bg-${disable ? 'gray-400 cursor-auto hover:cursor-auto' : 'yellow-500'} rounded-3xl overflow-hidden py-5 pt-16`}>
+    return <NavLink to={link} onClick={disable ? e=>e.preventDefault() : (e)=>{}} className={`flex flex-col h-auto w-2/5 m-auto my-16 bg-${disable ? 'gray-400 cursor-auto hover:cursor-auto' : 'yellow-500'} rounded-3xl overflow-hidden py-5 pt-16`}>
         <h2 className="font-bold text-3xl h-1/4 mx-8 mb-4">{splitType[0]}<br />{splitType[1]}</h2>
         <p className="text-lg text-gray-600 h-1/4 mx-8"> {detail} </p>
         <img src={img} className=" w-full h-2/3 overflow-scroll opacity-20" />
