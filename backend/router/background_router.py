@@ -22,10 +22,17 @@ def background_train(webtoon_name:str, images: List[UploadFile] = File(...),  db
     return background_util.background_train(webtoon_name, db, current_user['userId'], images)
 
 
-@api_background.post('/inference/{webtoon_name}')
+@api_background.post('/img2img/{webtoon_name}')
 def background_inference(webtoon_name: str, image: UploadFile, db: Session = Depends(get_db),
                          current_user: user_schemas.User = Depends(get_current_user)):
-    return background_util.background_inference(webtoon_name, image, db, current_user['userId'])
+    return background_util.background_img2img(webtoon_name, image, db, current_user['userId'])
+
+
+@api_background.post('/txt2img/{webtoon_name}')
+def background_txt2img(webtoon_name: str, prompt: str, db: Session = Depends(get_db),
+                         current_user: user_schemas.User = Depends(get_current_user)):
+    return background_util.background_txt2img(webtoon_name, prompt, db, current_user['userId'])
+
 
 
 @api_background.post('/save/{webtoonName}')
@@ -41,10 +48,12 @@ def get_background_asset_list(webtoon_name: str, db: Session = Depends(get_db),
                         current_user: user_schemas.User = Depends(get_current_user)):
     return background_util.get_background_asset_list(webtoon_name, db, current_user['userId'])
 
+
 @api_background.get('/asset/{webtoon_name}/{asset_name}')
 def get_background_asset(webtoon_name: str, asset_name: str, db: Session = Depends(get_db), 
                     current_user: user_schemas.User = Depends(get_current_user)):
     return background_util.get_background_asset(webtoon_name, asset_name, db, current_user['userId'])
+
 
 @api_background.delete('/asset/delete/{webtoon_name}/{asset_name}')
 def delete_background_asset(webtoon_name: str, asset_name: str, db: Session = Depends(get_db), 

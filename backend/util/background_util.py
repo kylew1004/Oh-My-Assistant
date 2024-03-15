@@ -46,7 +46,7 @@ def background_train(webtoon_name: str, db: Session, userId: int, images: List[U
             return {"result": "model has been trained successfully"}
 
 
-def background_inference(webtoon_name: str, file: UploadFile, db: Session, userId: int):
+def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId: int):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -62,7 +62,29 @@ def background_inference(webtoon_name: str, file: UploadFile, db: Session, userI
     if model_path is None:
         raise HTTPException(status_code=404, detail="Model not found")
     files = {'content_image': (file_name, file_content, file_content_type)}
-    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/inference/{model_path}", files=files)
+    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
+    
+    if response.status_code != 200:
+        raise HTTPException(status_code=500, detail="Failed to inference style model")
+    else:
+        return response.json()
+    
+
+def background_txt2img(webtoon_name: str, prompt: str, db: Session, userId: int):
+    if db.query(models.User).filter(models.User.id == userId).first() is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    webtoon_id = db.query(models.Webtoon).filter(models.Webtoon.userId == userId, 
+                                                models.Webtoon.webtoonName == webtoon_name).first().id
+    if webtoon_id is None:
+        raise HTTPException(status_code=404, detail="Webtoon not found")
+    
+    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).first().modelPath
+    if model_path is None:
+        raise HTTPException(status_code=404, detail="Model not found")
+    
+    data = {"prompt": prompt}
+    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/txt2img/{model_path}", data=data)
     
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Failed to inference style model")
