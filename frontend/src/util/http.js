@@ -320,28 +320,28 @@ export async function getPoseAssets(data){
 
 export async function getStyleAssets(data){
         //dummy----
-        return [
-            {
-                assetName: 'Style Asset 1',
-                characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
-            },
-            {
-                assetName: 'Style Asset 2',
-                characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-            },
-            {
-                assetName: 'Style Asset 3',
-                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-            },
-            {
-                assetName: 'Style Asset 4',
-                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-            },
-            {
-                assetName: 'Style Asset 5',
-                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-            },
-        ]
+        // return [
+        //     {
+        //         assetName: 'Style Asset 1',
+        //         characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
+        //     },
+        //     {
+        //         assetName: 'Style Asset 2',
+        //         characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+        //     },
+        //     {
+        //         assetName: 'Style Asset 3',
+        //         characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+        //     },
+        //     {
+        //         assetName: 'Style Asset 4',
+        //         characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+        //     },
+        //     {
+        //         assetName: 'Style Asset 5',
+        //         characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+        //     },
+        // ]
         //---------
         const token=getAuthToken();
         if(token && token!='EXPIRED'){

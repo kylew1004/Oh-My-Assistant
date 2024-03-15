@@ -6,10 +6,12 @@ import { getAuthToken } from '../util/auth.js';
 
 export default function AssetList(){
     const {assets} = useLoaderData();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const isScene = searchParams.get('mode')==='Scenes';
 
     return <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
                <Await resolve={assets} className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex justify-center shadow-lg">
-                    {(loadedAssets) =>  loadedAssets && loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={asset.characterImgUrl} />)}
+                    {(loadedAssets) =>  loadedAssets && loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={isScene ? asset.originalImageUrl : asset.characterImgUrl} />)}
                 </Await>
         </Suspense>
 }
