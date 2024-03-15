@@ -18,7 +18,7 @@ def read_webtoon_list(db: Session = Depends(get_db), current_user: user_schemas.
 
 @api_webtoon.delete('/delete/{webtoon_name}')
 def delete_webtoon(request: webtoon_schemas.WebtoonCreate, db: Session = Depends(get_db), current_user: user_schemas.User = Depends(get_current_user)):
-    return webtoon_util.delete_webtoon(db, request, current_user)
+    return webtoon_util.delete_webtoon(db, request.webtoonName, current_user['userId'])
     
 @api_webtoon.get('/check-train/{webtoon_name}')
 def check_train(webtoon_name: str, db: Session = Depends(get_db)):

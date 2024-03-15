@@ -37,12 +37,15 @@ def create_user(db: Session, user: user_schemas.UserCreate):
     db.add(db_user)
     db.commit()
     db.refresh(db_user)
+    re_user = db.query(models.User)\
+                .filter(models.User.userEmail == user.userEmail)\
+                .first()
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = token.create_access_token(data=user_schemas.TokenData(userEmail=db_user.userEmail,
-                                                                          userId=db_user.id, 
-                                                                          userNickname=db_user.userNickname).dict(), 
-                                                                          expires_delta=access_token_expires
-                                                                          )
+    access_token = token.create_access_token(data={"userEmail": user.userEmail, 
+                                                   "userNickname":user.userNickname, 
+                                                   "userId":re_user.id},
+                                             expires_delta=access_token_expires
+                                             )
     return {"access_token": access_token, "token_type": "bearer"}
 
 def delete_user(db: Session, user_id: int):
