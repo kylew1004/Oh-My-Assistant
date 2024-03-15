@@ -61,8 +61,9 @@ export async function action({request}){
   const result = await postWebtoon(data);
 
   if(!result.error){
+    console.log(result);
 
-    return redirect(`/${result.webtoonName}/assets`);
+    return redirect(`/${data.webtoonName}/assets`);
     // window.location.reload();
     // return redirect(`/${result.webtoonName}/assets`);
   }
