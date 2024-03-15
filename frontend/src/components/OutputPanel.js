@@ -65,7 +65,6 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
             </span>}
             <ul className="h-[14%] gap-3 mt-3 flex flex-row rounded-lg p-3 pr-5 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
             {images && !isFetching && images.map((item,index)=>{
-                console.log(item);
                 return <li className="relative inline-block" key={index}>
                     <img className={`h-14 w-14 rounded-xl ${activeImage===item && " border-4 border-yellow-500"}`} src={"data:image/jpeg;base64,"+item} onClick={ (()=>setActiveImage(item))}/>
                     {isSelect && <button className={`absolute top-0 right-0 transform translate-y--2 -translate-x--1 border-2  bg-white bg-opacity-80 rounded-full ${!selected.includes(item) ? 'px-3 border-gray-500' : 'px-2 text-green-600 border-green-600'} text-md`}

@@ -20,7 +20,6 @@ export default function OutputPanel({images, isFetching, error, originalImages})
         setIsModal(false);
         
     }
-    console.log(images)
 
 
     return  <>

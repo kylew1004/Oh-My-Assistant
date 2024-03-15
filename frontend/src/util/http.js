@@ -36,7 +36,6 @@ export async function fetchOutput() {
 }
 
 export async function postInput(image) {
-    console.log(image);
     let formData = new FormData();
     formData.append('image', image);
 
@@ -371,7 +370,6 @@ export async function getStyleAssets(data){
               
                 //manage the token returned 
                 const resData = await response.json();
-                console.log(resData);
                 if(!response.ok) return [];
                 return resData;
         
