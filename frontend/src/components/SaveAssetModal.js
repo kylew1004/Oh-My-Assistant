@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useLocation, redirect } from 'react-router-dom';
 import { postPoseAsset, postStyleAsset } from '../util/http.js';
 
@@ -20,6 +20,8 @@ function base64toFile(base64Data){
 const SaveAssetModal = function Modal({ open, handleClose, images, originalImg}) {
   const dialog = useRef();
   const location = useLocation();
+  const [error,setError] = useState();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(()=>{
     if(open) dialog.current.showModal();
@@ -34,14 +36,12 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
 
     let files = new FormData();
     let result;
+    setIsSubmitting(true);
     if(location.pathname.includes('styleTransfer')){
       files.append('original_image',originalImg);
       images.forEach(item=>{
         files.append('generated_images',base64toFile(item));
       });
-
-      console.log(fd.get('outputImages'));
-      console.log(fd.get('webtoonName'));
 
       result = await postStyleAsset(fd, files);
     }else{
@@ -53,10 +53,10 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
       result = await postPoseAsset(fd, files);
     }
 
-    if(result==='tokenError') redirect('/auth');
-    
-  
-    window.location.reload();
+    if(result==='tokenError') return redirect('/auth');
+    if(result.detail && result.detail==="Bad Request: Asset already exists") setError("Asset name already exists. Please use a different asset name.");
+    else window.location.reload();
+    setIsSubmitting(false);
 
   }
 
@@ -68,6 +68,7 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
         <h2 className="font-bold ">Save as Asset</h2>
         <hr className="h-[2px] bg-black"></hr>
         <div className="control control-row w-full my-5 flex flex-col">
+          {error && <p className="text-red-700 mb-5">{error}</p>}
           <label className="font-bold mb-3">Asset Name</label>
           <input className="h-16 w-full rounded-lg bg-gray-300 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="assetName" type="text" name="assetName" placeholder="Enter Asset name" required />
         </div>
@@ -79,7 +80,7 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
 
 
         <button  className="button mx-auto h-12 my-6 w-full  bg-yellow-500 rounded-full text-black font-bold">
-        Create Asset
+        {isSubmitting ? 'Creating asset...' : 'Create Asset'}
         </button>
 
       </form>
