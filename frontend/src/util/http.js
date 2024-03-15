@@ -320,28 +320,28 @@ export async function getPoseAssets(data){
 
 export async function getStyleAssets(data){
         //dummy----
-        // return [
-        //     {
-        //         assetName: 'Style Asset 1',
-        //         characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
-        //     },
-        //     {
-        //         assetName: 'Style Asset 2',
-        //         characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
-        //     },
-        //     {
-        //         assetName: 'Style Asset 3',
-        //         characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-        //     },
-        //     {
-        //         assetName: 'Style Asset 4',
-        //         characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-        //     },
-        //     {
-        //         assetName: 'Style Asset 5',
-        //         characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
-        //     },
-        // ]
+        return [
+            {
+                assetName: 'Style Asset 1',
+                characterImgUrl: "https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
+            },
+            {
+                assetName: 'Style Asset 2',
+                characterImgUrl: "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
+            },
+            {
+                assetName: 'Style Asset 3',
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+            },
+            {
+                assetName: 'Style Asset 4',
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+            },
+            {
+                assetName: 'Style Asset 5',
+                characterImgUrl: "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
+            },
+        ]
         //---------
         const token=getAuthToken();
         if(token && token!='EXPIRED'){
@@ -437,9 +437,49 @@ export async function getStyleAlbum(data){
 
 }
 
-export async function postModelTrain(data){
+export async function postModelTrain(webtoonName, data){
 
-    return data.get('images');
+    // console.log(data.get('images'));
+    // return data.get('images');
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/background/train/${webtoonName}`,{
+                method:'POST',
+                headers:{
+                //   'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+                body: data
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not process train.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not process train.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            return resData;
+    
+        }catch(e){
+            console.log(e);
+            if(e.error) return e;
+            else return {error: 'Could not process train.',
+            status:'unknown'}
+        }
+    
+
+    }
+
+    return 'tokenError';
+
 
 }
 
@@ -453,14 +493,7 @@ export async function postStyleTransfer(data){
         "https://www.simplilearn.com/ice9/free_resources_article_thumb/what_is_image_Processing.jpg",
         "https://letsenhance.io/static/8f5e523ee6b2479e26ecc91b9c25261e/1015f/MainAfter.jpg",
     ];
-    const result= await Promise.all(urls.map(async (item)=>{
-        const temp = await convertURLtoFile(item);
-        return {
-            url:item,
-            file:temp,
-        };
-    }));
-    return result;
+    return urls;
 }
 
 export async function postPoseTransfer(data){
@@ -648,6 +681,7 @@ export async function deleteWebtoon(data){
           
             //manage the token returned 
             const resData = await response.json();
+            console.log(resData);
             return resData;
     
         }catch(e){
