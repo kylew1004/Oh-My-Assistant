@@ -9,7 +9,6 @@ export default function Menu(){
     const [isModal, setIsModal] = useState(false);
     const {userInfo, webtoons} = useLoaderData();
     const navigate = useNavigate()
-    console.log(userInfo);
 
     function handleClick(){
         setIsModal(true);
