@@ -60,14 +60,14 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
             {error ? <Error message={error.message} /> : 
             <span className=" h-[75%] flex border rounded-lg p-3 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
             {isFetching ? <img className={styling} src={images}/> 
-                : (activeImage && <img className={styling} src={activeImage}/>) }
+                : (activeImage && <img className={styling} src={"data:image/jpeg;base64,"+activeImage}/>) }
             
             </span>}
             <ul className="h-[14%] gap-3 mt-3 flex flex-row rounded-lg p-3 pr-5 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
             {images && !isFetching && images.map((item,index)=>{
                 console.log(item);
                 return <li className="relative inline-block" key={index}>
-                    <img className={`h-14 w-14 rounded-xl ${activeImage===item.url && " border-4 border-yellow-500"}`} src={item.url} onClick={ (()=>setActiveImage(item.url))}/>
+                    <img className={`h-14 w-14 rounded-xl ${activeImage===item && " border-4 border-yellow-500"}`} src={"data:image/jpeg;base64,"+item} onClick={ (()=>setActiveImage(item))}/>
                     {isSelect && <button className={`absolute top-0 right-0 transform translate-y--2 -translate-x--1 border-2  bg-white bg-opacity-80 rounded-full ${!selected.includes(item) ? 'px-3 border-gray-500' : 'px-2 text-green-600 border-green-600'} text-md`}
                                 onClick={()=>handleSelect(item)}>{selected.includes(item) ? 'v' : <br />}</button> }
                 </li>

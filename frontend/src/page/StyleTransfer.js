@@ -1,5 +1,5 @@
 import React, { useState , useEffect} from "react";
-import {redirect} from 'react-router-dom';
+import {redirect, useParams} from 'react-router-dom';
 
 import OutputPanel from '../components/OutputPanel.js';
 import InputPanel from '../components/InputPanel.js';
@@ -13,6 +13,7 @@ function StyleTransfer() {
     const [outputs, setOutputs] = useState();
     const [isFetching, setIsFetching] = useState(false);
     const [errorFetching, setErrorFetching] = useState();
+    const {webtoonName} = useParams();
 
     let fileUrl=null;
     if(file) {fileUrl = URL.createObjectURL(file);}
@@ -31,12 +32,14 @@ function StyleTransfer() {
     }
 
     async function handleSubmit(){
-      if(file){
+      console.log(prompt, webtoonName);
+      console.log(file);
+      if(file || prompt){
         //send data to backend
         setErrorFetching(null);
         setIsFetching(true);
 
-        postStyleTransfer(file)
+        postStyleTransfer(file,prompt,webtoonName)
           .then(imgArr =>{
             console.log(imgArr);
             setOutputs(imgArr);
@@ -52,7 +55,7 @@ function StyleTransfer() {
           });
 
       }else{
-        alert('Please uplaod an image!');
+        alert('Please uplaod an image or enter prompt!');
       }
 
     }
