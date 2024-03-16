@@ -787,10 +787,83 @@ export async function postStyleAsset(fd, files){
 }
 
 export async function deletePoseAsset(data){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/pose/asset/${data.webtoonName}/${data.assetName}`,{
+                method:'DELETE',
+                headers:{
+                  'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not delete asset.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not delete asset.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            console.log(resData);
+            return resData;
+    
+        }catch(e){
+            if(e.error) return e;
+            else return {error: 'Could not delete asset.',
+            status:'unknown'}
+        }
+    
+    }
+
+    return 'tokenError';
+
 
 }
 
 export async function deleteBackgroundAsset(data){
+    const token=getAuthToken();
+    if(token && token!='EXPIRED'){
+        try{
+            const response = await fetch(`${URL}/api/background/asset/delete/${data.webtoonName}/${data.assetName}`,{
+                method:'DELETE',
+                headers:{
+                  'Content-Type' : 'application/json',
+                  'Authorization' : token,
+                },
+              });
+        
+            //handle response
+            if(response.status===422 || response.status ==401 || response.stastus==400){
+                throw {error: 'Could not delete asset.',
+                      status:response.status}
+            }
+          
+            if(!response.ok){
+                throw {error: 'Could not delete asset.',
+                       status:500}
+            }
+          
+            //manage the token returned 
+            const resData = await response.json();
+            console.log(resData);
+            return resData;
+    
+        }catch(e){
+            if(e.error) return e;
+            else return {error: 'Could not delete asset.',
+            status:'unknown'}
+        }
+    
+    }
+
+    return 'tokenError';
 
 }
 
@@ -826,7 +899,7 @@ export async function deleteWebtoon(data){
         }catch(e){
             if(e.error) return e;
             else return {error: 'Could not delete webtoon.',
-            status:'unkown'}
+            status:'unknown'}
         }
     
 
