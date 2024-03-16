@@ -36,7 +36,7 @@ def background_txt2img(webtoon_name: str, prompt: str, db: Session = Depends(get
 
 
 @api_background.post('/save/{webtoonName}')
-def background_save(webtoonName: str, assetName: str, description: str, original_image: UploadFile = File(...), 
+def background_save(webtoonName: str, assetName: str, description: str, original_image: UploadFile = None, 
                     generated_images: List[UploadFile] = File(...), db: Session = Depends(get_db),
                     current_user: user_schemas.User = Depends(get_current_user)):
     return background_util.background_save(webtoonName, assetName, description, db, current_user['userId'], 
