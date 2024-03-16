@@ -10,8 +10,6 @@ export default function Menu(){
     const {userInfo, webtoons} = useLoaderData();
     const {webtoonName} = useParams();
 
-    console.log(webtoonName);
-
 
     function handleClick(){
         setIsModal(true);
