@@ -106,20 +106,22 @@ def background_save(webtoonName: str, assetName: str, description: str, db: Sess
     
     if webtoonId is None:
         raise HTTPException(status_code=404, detail="Webtoon not found")
-
-    original_image_name = f"{uuid.uuid4()}__{original_image.filename}"
-    s3.upload_fileobj(original_image.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{original_image_name}")
-    original_image_path = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{original_image_name}"
     
-    db_content = models.ContentImg(webtoonId=webtoonId, createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
-                                   originalImageUrl=original_image_path, assetName=assetName, 
-                                   description=description)
+    if original_image is not None:
+        original_image_name = f"{uuid.uuid4()}__{original_image.filename}"
+        s3.upload_fileobj(original_image.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{original_image_name}")
+        original_image_path = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{original_image_name}"
+        db_content = models.ContentImg(webtoonId=webtoonId, createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
+                                    originalImageUrl=original_image_path, assetName=assetName, 
+                                    description=description)
+    else:
+        db_content = models.ContentImg(webtoonId=webtoonId, createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), 
+                                    assetName=assetName, description=description)
     db.add(db_content)
     db.commit()
     db.refresh(db_content)
     
     original_image_id = db.query(models.ContentImg).filter(models.ContentImg.assetName == assetName).first().originalImageId
-    
     for image in generated_images:
         image_name = f"{uuid.uuid4()}__{image.filename}"
         s3.upload_fileobj(image.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"background/{image_name}")
@@ -150,7 +152,8 @@ def get_background_asset_list(webtoon_name: str, db: Session, user_id: int):
         return result
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
-    
+
+
 def get_background_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int):
     db_background = db.query(models.ContentImg).join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
                         .filter(models.Webtoon.webtoonName == webtoon_name,
@@ -170,7 +173,8 @@ def get_background_asset(webtoon_name: str, asset_name: str, db: Session, user_i
         return result
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
-    
+
+
 def delete_background_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int):
     db_content_img = db.query(models.ContentImg).join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
                 .filter(models.Webtoon.webtoonName == webtoon_name,
