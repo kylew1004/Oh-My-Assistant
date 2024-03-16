@@ -1,9 +1,12 @@
-import { Link, useLocation} from 'react-router-dom';
+import { Link, useLocation, useParams, useSearchParams} from 'react-router-dom';
 import DeleteMenu from './DeleteMenu.js';
 
 export default function Asset({name, imageUrl}){
     const location = useLocation();
+    const {webtoonName} = useParams();
     const searchParams = location.search;
+    const [searchParam, setSearchParam] = useSearchParams();
+    const isScenes = searchParam.get('mode')==='Scenes';
 
     return <Link to={`${location.pathname}/${name}${searchParams}`} className={`flex flex-col text-white text-md pb-1 text-left h-56 rounded-2xl w-[23%]`} 
             style={{backgroundImage: `url('${imageUrl}')`, backgroundSize: 'cover', backgroundRepeat: 'no-repeat', backgroundPosition: 'center'  }} >
@@ -14,7 +17,7 @@ export default function Asset({name, imageUrl}){
                 </div>
 
                 <div className="flex bg-[#3f396b] w-[18%] rounded-full mb-2 px-2 ml-auto mr-2 justify-center overflow-hidden">
-                    <DeleteMenu/>
+                    <DeleteMenu subject={{assetName:name, webtoonName: webtoonName, isScenes: isScenes}}/>
                 </div>
 {/* 
                 downlaod Button */}

@@ -3,7 +3,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import menuIcon from '../assets/dot-menu-more-svgrepo-com.svg';
 import {useState} from 'react';
-import {deleteWebtoon} from '../util/http.js';
+import {deleteWebtoon, deletePoseAsset, deleteBackgroundAsset } from '../util/http.js';
 import {redirect, useNavigate} from 'react-router-dom';
 
 export default function DeleteMenu({subject}) {
@@ -25,11 +25,22 @@ export default function DeleteMenu({subject}) {
         navigate('.', { replace: true });
     }
 
+    async function handleDeleteAsset(subject){
+        let result;
+        if(subject.isScenes) result = await deleteBackgroundAsset(subject);
+        else result = await deletePoseAsset(subject);
+
+        if(result==='tokenError') return redirect('/auth');
+        navigate('.', { replace: true });
+    }
+
     async function handleDelete(event){
       await handleClose(event);
 
-      if(subject.webtoonName){
+      if(!subject.assetName){
         await handleDeleteWebtoon(subject.webtoonName);
+      }else{
+        await handleDeleteAsset(subject);
       }
     };
 
