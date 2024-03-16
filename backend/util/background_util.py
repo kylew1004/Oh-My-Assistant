@@ -135,19 +135,25 @@ def background_save(webtoonName: str, assetName: str, description: str, db: Sess
 
 
 def get_background_asset_list(webtoon_name: str, db: Session, user_id: int):
-    db_background = db.query(models.ContentImg)\
+    db_content = db.query(models.ContentImg)\
                 .join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
                 .filter(models.Webtoon.webtoonName == webtoon_name,
                         models.Webtoon.userId == user_id)\
                 .all()
-    if db_background:
+    db_background = db.query(models.BackgroundImg)\
+                .join(models.ContentImg, models.BackgroundImg.originalImageId == models.ContentImg.originalImageId)\
+                .join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
+                .filter(models.Webtoon.webtoonName == webtoon_name,
+                        models.Webtoon.userId == user_id)\
+                .first()
+    if db_content and db_background:
         result = []
-        for db_backgrounds in db_background:
+        for db_contents in db_content:
             result.append({
-                "createdAt": db_backgrounds.createdAt,
-                "assetName": db_backgrounds.assetName,
-                "originalImageUrl": db_backgrounds.originalImageUrl,
-                "description": db_backgrounds.description
+                "createdAt": db_contents.createdAt,
+                "assetName": db_contents.assetName,
+                "backgroundImgUrl": db_background.backgroundImgUrl,
+                "description": db_contents.description
             })
         return result
     else:
