@@ -38,7 +38,7 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
     let result;
     setIsSubmitting(true);
     if(location.pathname.includes('styleTransfer')){
-      files.append('original_image',originalImg);
+      if(originalImg) files.append('original_image',originalImg);
       images.forEach(item=>{
         files.append('generated_images',base64toFile(item));
       });
