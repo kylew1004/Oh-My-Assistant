@@ -1,15 +1,17 @@
 import {useState, Suspense} from 'react';
-import {Form, useLoaderData, Await, Link, redirect, useNavigate} from 'react-router-dom';
+import {Form, useLoaderData, Await, Link, useNavigate, useParams} from 'react-router-dom';
 import menuLogo from '../assets/menu-logo.png';
 import profileImg from '../assets/profile.png';
 import AddWebtoonModal from './AddWebtoonModal';
-import {deleteWebtoon} from '../util/http.js';
 import DeleteMenu from './DeleteMenu.js';
 
 export default function Menu(){
     const [isModal, setIsModal] = useState(false);
     const {userInfo, webtoons} = useLoaderData();
-    const navigate = useNavigate()
+    const {webtoonName} = useParams();
+
+    console.log(webtoonName);
+
 
     function handleClick(){
         setIsModal(true);
@@ -17,15 +19,6 @@ export default function Menu(){
 
     function handleClose(){
         setIsModal(false);
-    }
-
-    async function handleDelete(webtoon){
-        const result = await deleteWebtoon({
-            webtoonName: webtoon,
-        });
-
-        if(result==='tokenError') return redirect('/auth');
-        navigate('.', { replace: true });
     }
 
     return<div className="flex flex-col bg-gradient-to-bl from-[#0f0417] to-[#24263d] h-screen w-[220px] float-left overflow-hidden">
@@ -58,22 +51,22 @@ export default function Menu(){
         </div> */}
 
 
-        <div className="flex flex-col pl-4 py-4 h-2/3">
-            <p className=" text-gray-600 text-md my-3"> WEBTOONS </p>
-            <div className="flex flex-col h-1/2 overflow-auto">
+        <div className="flex flex-col py-4 h-2/3">
+            <p className=" text-gray-600 pl-3 text-md my-3"> WEBTOONS </p>
+            <div className="flex flex-col h-auto max-h-1/2 overflow-auto">
                 <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
                         <Await resolve={webtoons}>
                             {(loadedWebtoons) => {
-                                if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-row h-11 pl-3 p-1 hover:bg-gray-950">
-                                <Link key={index} to={`/${webtoon}/assets`} className=" pb-1 w-full flex" ><p className="text-left my-auto text-white text-md">{webtoon}</p></Link>
-                                <div className="flex h-full ml-auto w-5 justify-center"><DeleteMenu /></div>
-                                {/* <button onClick={()=>handleDelete(webtoon)} className="bg-white text-red-700 w-3 px-2 rounded-full m-auto pr-4">x</button> */}
+                                if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-row h-11 p-1 hover:bg-gray-950">
+                                <div className={`bg-yellow-500${webtoonName!==webtoon ? '/0' : ''} mr-4 h-full w-1`} />
+                                <Link key={index} to={`/${webtoon}/assets`} className={`pb-1 w-full flex ${webtoonName===webtoon ? 'text-yellow-500 bg-gray-950' : 'text-white'}`} ><p className="text-left my-auto  text-md">{webtoon}</p></Link>
+                                <div className="flex h-full ml-auto w-5 justify-center"><DeleteMenu subject={{webtoonName: webtoon}}/></div>
                             </div>)}}
                         </Await>
                 </Suspense> 
             </div>
 
-            <button className="text-yellow-500 text-md pb-1 bg-transparent text-left mt-3" onClick={handleClick}>+ Add New Webtoon</button>
+            <button className="text-yellow-500 text-md pb-1 bg-transparent text-left mt-3 mx-auto" onClick={handleClick}>+ Add New Webtoon</button>
         </div>
 
         <Form action="/logout" method="post" className="flex flex-col h-full">

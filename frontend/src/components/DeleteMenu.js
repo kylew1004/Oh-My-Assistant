@@ -3,18 +3,40 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import menuIcon from '../assets/dot-menu-more-svgrepo-com.svg';
 import {useState} from 'react';
+import {deleteWebtoon} from '../util/http.js';
+import {redirect, useNavigate} from 'react-router-dom';
 
-export default function DeleteMenu() {
+export default function DeleteMenu({subject}) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
+    const navigate = useNavigate()
+
     const handleClick = (event) => {
       event.preventDefault();
       setAnchorEl(event.currentTarget);
     };
-    const handleClose = (event) => {
-      event.preventDefault();
-      setAnchorEl(null);
+
+    async function handleDeleteWebtoon(webtoon){
+        const result = await deleteWebtoon({
+            webtoonName: webtoon,
+        });
+
+        if(result==='tokenError') return redirect('/auth');
+        navigate('.', { replace: true });
+    }
+
+    async function handleDelete(event){
+      await handleClose(event);
+
+      if(subject.webtoonName){
+        await handleDeleteWebtoon(subject.webtoonName);
+      }
     };
+
+    async function handleClose(event){
+        event.preventDefault();
+        setAnchorEl(null);
+      };
   
     return (
       <>
@@ -37,7 +59,7 @@ export default function DeleteMenu() {
             'aria-labelledby': 'basic-button',
           }}
         >
-          <MenuItem onClick={handleClose}><p className="text-red-700">Delete</p></MenuItem>
+          <MenuItem onClick={handleDelete}><p className="text-red-700">Delete</p></MenuItem>
         </Menu>
       </>
     );
