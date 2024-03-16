@@ -34,7 +34,7 @@ class ContentImg(Base):
     originalImageId = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     createdAt = Column(DateTime, index=True)
-    originalImageUrl = Column(String(255), index=True)
+    originalImageUrl = Column(String(255), nullable=True)
     assetName = Column(String(50), index=True)
     description = Column(String(255), index=True)
 
