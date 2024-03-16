@@ -3,7 +3,7 @@ from models import models
 from schemas import webtoon_schemas, user_schemas
 from datetime import datetime
 from fastapi import HTTPException
-from util import background_util
+from util import background_util, pose_util
 
 def get_webtoon_by_webtoon_name_and_userId(db: Session, webtoon_name: str, user_id: int):
     return db.query(models.Webtoon).filter(models.Webtoon.webtoonName == webtoon_name,
@@ -49,10 +49,14 @@ def check_train(db: Session, webtoon_name: str):
 def delete_webtoon(db: Session, webtoon_name: str, user_id: int):
     db_webtoon = get_webtoon_by_webtoon_name_and_userId(db, webtoon_name=webtoon_name, user_id=user_id)
     db_content_img = db.query(models.ContentImg).filter(models.ContentImg.webtoonId == db_webtoon.id).all()
+    db_pose_img = db.query(models.PoseImg).filter(models.PoseImg.webtoonId == db_webtoon.id).all()
     if db_webtoon:
         if db_content_img:
             for db_content_imgs in db_content_img:
                 background_util.delete_content_asset(webtoon_name=webtoon_name, asset_name=db_content_imgs.assetName, db=db, user_id=user_id)
+        if db_pose_img:
+            for db_pose_imgs in db_pose_img:
+                pose_util.delete_pose_asset(webtoon_name=webtoon_name, asset_name=db_pose_imgs.assetName, db=db, user_id=user_id)
         db.delete(db_webtoon)
         db.commit()
         return {"message": "Webtoon deleted successfully"}
