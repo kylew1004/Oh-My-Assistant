@@ -4,6 +4,7 @@ import menuLogo from '../assets/menu-logo.png';
 import profileImg from '../assets/profile.png';
 import AddWebtoonModal from './AddWebtoonModal';
 import {deleteWebtoon} from '../util/http.js';
+import DeleteMenu from './DeleteMenu.js';
 
 export default function Menu(){
     const [isModal, setIsModal] = useState(false);
@@ -52,11 +53,7 @@ export default function Menu(){
         {/* <div className="flex flex-row m-2 ml-0 pl-4 ">
             <div className="flex flex-col pl-3">
                 <h3 className="text-white text-md pb-1" >4</h3>
-                <p className=" text-gray-600 text-sm"> WEBTOONS </p>
-            </div>
-            <div className="flex flex-col pl-3">
-                <h3 className="text-white text-lg pb-1" >34</h3>
-                <p className=" text-gray-600 text-md"> ASSETS </p>
+                <p className=" text-gray-600 text-sm"> WEBTOONS TOTAL</p>
             </div>
         </div> */}
 
@@ -67,9 +64,10 @@ export default function Menu(){
                 <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
                         <Await resolve={webtoons}>
                             {(loadedWebtoons) => {
-                                if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-row pl-3 p-1 hover:bg-gray-950">
-                                <Link key={index} to={`/${webtoon}/assets`} className="text-white text-md pb-1 w-full text-left " >{webtoon}</Link>
-                                <button onClick={()=>handleDelete(webtoon)} className="bg-white text-red-700 w-3 px-2 rounded-full m-auto pr-4">x</button>
+                                if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-row h-11 pl-3 p-1 hover:bg-gray-950">
+                                <Link key={index} to={`/${webtoon}/assets`} className=" pb-1 w-full flex" ><p className="text-left my-auto text-white text-md">{webtoon}</p></Link>
+                                <div className="flex h-full ml-auto w-5 justify-center"><DeleteMenu /></div>
+                                {/* <button onClick={()=>handleDelete(webtoon)} className="bg-white text-red-700 w-3 px-2 rounded-full m-auto pr-4">x</button> */}
                             </div>)}}
                         </Await>
                 </Suspense> 

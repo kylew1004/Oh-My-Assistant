@@ -1,5 +1,5 @@
 import { Link, useLocation} from 'react-router-dom';
-import menuIcon from '../assets/dot-menu-more-svgrepo-com.svg';
+import DeleteMenu from './DeleteMenu.js';
 
 export default function Asset({name, imageUrl}){
     const location = useLocation();
@@ -12,9 +12,10 @@ export default function Asset({name, imageUrl}){
                 <div className="flex bg-[#3f396b] rounded-full mb-2 ml-2">
                     <p className="p-1.5 px-4">{name}</p>
                 </div>
-                <button onClick={(e)=>{e.preventDefault()}} className="flex bg-[#3f396b] rounded-full mb-2 px-2 ml-auto mr-2">
-                    <img className="h-[60%] m-auto" src={menuIcon}/>
-                </button>
+
+                <div className="flex bg-[#3f396b] w-[18%] rounded-full mb-2 px-2 ml-auto mr-2 justify-center overflow-hidden">
+                    <DeleteMenu/>
+                </div>
 {/* 
                 downlaod Button */}
 
@@ -23,3 +24,4 @@ export default function Asset({name, imageUrl}){
             
         </Link>
 }
+
