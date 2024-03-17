@@ -28,9 +28,9 @@ function RootLayout() {
   },[token, submit])
 
   return (
-    <div className="flex flex-row">
+    <div className="flex flex-row w-full">
       <Menu />
-      <div className="flex flex-col w-full h-screen overflow-scroll no-scrollbar">
+      <div className="flex flex-col w-full h-screen overflow-hidden no-scrollbar">
          {/* {navigation.state === 'loading' && <p>Loading...</p>} */}
         {/* <div className=""> */}
         <Outlet />

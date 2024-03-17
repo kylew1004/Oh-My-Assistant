@@ -10,8 +10,8 @@ export default function Panel(){
     const {webtoonName} = useParams();
     const {isTrained} = useLoaderData();
 
-    return <div className="flex flex-row bg-gray-100 h-[105px] w-full">
-    <div className="flex flex-col pl-3">
+    return <div className="flex flex-row bg-gray-100 h-[11%] min-h-[11%] w-full">
+    <div className="flex flex-col pl-3 h-full">
         <h1 className="text-gray-800 text-2xl my-auto ml-5 font-bold mb-0" >{webtoonName}</h1>
         <div className="flex flex-row mt-auto">
             <NavLink to={`/${webtoonName}/assets`} className={({ isActive }) => isActive ? inactiveStyle : activeStyle }>
