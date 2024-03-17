@@ -19,6 +19,7 @@ function base64toFile(base64Data){
 
 const SaveAssetModal = function Modal({ open, handleClose, images, originalImg}) {
   const dialog = useRef();
+  const form = useRef();
   const location = useLocation();
   const [error,setError] = useState();
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -60,11 +61,17 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
 
   }
 
+  function handleFinalClose(){
+    form.current.reset();
+    setError(null);
+    handleClose();
+  }
 
-  return <div onClick={handleClose}>
+
+  return <div onClick={handleFinalClose}>
     <dialog className="modal" ref={dialog} >
-      <form onSubmit={handleSubmit} method="post" encType="multipart/form-data" onClick={e => e.stopPropagation()} className="px-7 py-3 flex flex-col bg-gray-200">
-        <button type="button" onClick={handleClose} className="ml-auto text-3xl text-gray-500">x</button>
+      <form ref={form} onSubmit={handleSubmit} method="post" encType="multipart/form-data" onClick={e => e.stopPropagation()} className="px-7 py-3 flex flex-col bg-gray-200">
+        <button type="button" onClick={handleFinalClose} className="ml-auto text-3xl text-gray-500">x</button>
         <h2 className="font-bold ">Save as Asset</h2>
         <hr className="h-[2px] bg-black"></hr>
         <div className="control control-row w-full my-5 flex flex-col">

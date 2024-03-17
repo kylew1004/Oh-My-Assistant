@@ -48,6 +48,7 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
         setIsModal(false);
         setIsSelect(false);
         setSelected([]);
+
     }
 
     function handleCancel(){
