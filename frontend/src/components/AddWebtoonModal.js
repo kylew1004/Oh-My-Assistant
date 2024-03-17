@@ -1,15 +1,25 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState} from 'react';
 import { Form, useActionData} from 'react-router-dom'
 
 const AddWebtoonModal = function Modal({ open, handleClose }) {
   const dialog = useRef();
-  const data=useActionData();
+  let data=useActionData();
+  const [error, setError] = useState(data ? data.error : null);
+  const [name, setName] = useState('');
 
   useEffect(()=>{
     if(open) dialog.current.showModal();
-    else dialog.current.close();
+    else{
+      dialog.current.close();
+      setError(null);
+      setName('');
+    }
 
   },[open]);
+
+  useEffect(()=>{
+    if(data&&data.error) setError(data.error);
+  },[data])
 
 
   return <div onClick={handleClose}>
@@ -19,12 +29,13 @@ const AddWebtoonModal = function Modal({ open, handleClose }) {
         <h2 className="font-bold ">Add New Webtoon</h2>
         <hr className="h-[2px] bg-black"></hr>
         <div className="control control-row w-full my-5 flex flex-col">
-          {data && data.error && <div className="flex w-full p-2 bg-red-400/30 rounded-md">
+          {error && <div className="flex w-full p-2 bg-red-400/30 rounded-md">
               <p className="text-red-700 mx-auto">{data.error}</p>
             </div>
           }
           <label className="font-bold mb-3">Name</label>
-          <input className="h-16 w-full rounded-lg bg-gray-300 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="name" type="text" name="name" placeholder="Enter Webtoon name" required />
+          <input className="h-16 w-full rounded-lg bg-gray-300 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="name" type="text" name="name" placeholder="Enter Webtoon name" required 
+          value={name} onChange={e=>setName(e.target.value)}/>
         </div>
   
 
