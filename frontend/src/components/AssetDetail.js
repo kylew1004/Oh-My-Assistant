@@ -1,7 +1,7 @@
 import {useState, Suspense, useEffect} from 'react';
 import {Await, defer, useLoaderData, useSearchParams} from 'react-router-dom';
 import {getPoseAlbum, getStyleAlbum} from '../util/http.js';
-import JSZip from 'jszip';
+import DeleteMenu from './DownloadMenu.js';
 
 export default function AssetDetail(){
     const [activeImage, setActiveImage] = useState();
@@ -23,66 +23,6 @@ export default function AssetDetail(){
         })
 
     },[]);
-
-    function handleDownload (imgObject) {
-        if(imgObject){
-            if(typeof imgObject ==='string'){
-                const link = document.createElement('a');
-                link.href = imgObject;
-                link.download = 'output.jpg';
-                link.click();
-            }else{
-                const zip = new JSZip();
-                const folderName = 'output'; // Name of the folder in the zip file
-
-                if(imgObject.characterImgUrl){
-                    fetch(imgObject.characterImgUrl,{method:'GET',mode:'no-cors'})
-                        .then(response => response.blob())
-                        .then(blob => zip.folder(folderName).file('output_image', blob))
-                        .then(() => {
-                            fetch(imgObject.poseImgUrl,{method:'GET',mode:'no-cors'})
-                            .then(response => response.blob())
-                            .then(blob => zip.folder(folderName).file('pose_image', blob))  
-                        })
-                        .then(()=>{
-                            // Generate the zip file and download it
-                            zip.generateAsync({ type: 'blob' })
-                                .then(content => {
-                                    const link = document.createElement('a');
-                                    link.href = URL.createObjectURL(content);
-                                    link.download = 'output.zip';
-                                    link.click();
-                                });
-                        });
-
-                }
-
-                // Iterate through each image URL and add it to the zip folder
-                // imageUrls.forEach((imageUrl, index) => {
-                //     const filename = `image_${index + 1}.jpg`; // Name of the image file
-                //     fetch(imageUrl)
-                //         .then(response => response.blob())
-                //         .then(blob => zip.folder(folderName).file(filename, blob))
-                //         .then(() => {
-                //             // Check if all images have been added to the zip folder
-                //             if (index === imageUrls.length - 1) {
-                //                 // Generate the zip file and download it
-                //                 zip.generateAsync({ type: 'blob' })
-                //                     .then(content => {
-                //                         const link = document.createElement('a');
-                //                         link.href = URL.createObjectURL(content);
-                //                         link.download = 'images.zip';
-                //                         link.click();
-                //                     });
-                //             }
-                //         });
-                // });
-
-            }
-        }else{
-            alert('There is no image selected!');
-        }
-    }
       
 
 
@@ -90,10 +30,6 @@ export default function AssetDetail(){
                         <Await resolve={asset} >
                                 {(loadedAsset) =>  loadedAsset && <div className="flex flex-col h-[89%]">
                                 <div className="flex flex-row h-[10%]">
-                                    <div className="flex flex-row w-[62%] h-full ml-auto">
-                                        <button className="bg-[#1c1a2e] text-white text-sm rounded-t-lg mt-auto h-2/3 px-2" onClick={()=>handleDownload(activeImage)}>Download current</button>
-                                        <button className="bg-white rounded-t-lg h-2/3 mt-auto text-sm px-2" onClick={()=>handleDownload(loadedAsset)}>Download all</button>
-                                    </div>
                                     
                                 </div>
                                 <div className="flex flex-row bg-[#1c1a2e] p-4 rounded-xl w-11/12 max-h-[90%] mx-auto mb-3">
@@ -116,9 +52,10 @@ export default function AssetDetail(){
                                         }
                                     </div>
                                 
-                                    <div className="h-full w-[40%] rounded-r-xl flex flex-col p-5 mx-auto">
+                                    <div className="h-full w-[40%] rounded-r-xl flex flex-col px-2 mx-auto">
+                                        <div className="flex h-[8%] aspect-square mr-auto hover:bg-violet-300/60 rounded-full overflow-hidden justify-center"><DeleteMenu activeImage={activeImage} loadedAsset={loadedAsset}/></div>
                                         <h2 className="text-gray-200 text-center">DETAILS</h2>
-                                        <div className="h-auto w-full rounded-r-xl flex flex-col mx-auto gap-3 overflow-auto">
+                                        <div className="h-[80%] w-full rounded-r-xl flex flex-col mx-auto gap-3 overflow-auto">
                                             <div className="flex flex-row w-full mx-auto bg-violet-300 bg-opacity-30 rounded-lg itemes-center justify-center">
                                                 <h3 className="flex-1 text-center font-bold bg-violet-300 bg-opacity-40 rounded-l-lg py-3">Asset Name</h3>
                                                 <p className="flex-1 text-center py-3 text-gray-300">{loadedAsset.assetName}</p>
