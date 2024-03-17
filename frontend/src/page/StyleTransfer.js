@@ -1,5 +1,5 @@
 import React, { useState , useEffect} from "react";
-import {redirect, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 
 import OutputPanel from '../components/OutputPanel.js';
 import InputPanel from '../components/InputPanel.js';
@@ -62,18 +62,19 @@ function StyleTransfer() {
 
  
     return (
-        <>
-        <header className="flex font-sans flex-row items-center justify-center pt-5 pb-3">
-          <h2 className="text-gray-600">SCENE STYLE TRANSFER</h2>
-          {/* <button>Back</button> */}
-        </header>
-        <hr className="bg-gray-700 h-[0.4px] w-11/12 mx-auto" />
+      <div className="flex flex-col w-full h-[89%]">
+          <header className="flex h-[10%] font-sans flex-row items-center justify-center pt-5 pb-3">
+            <h2 className="text-gray-600">SCENE STYLE TRANSFER</h2>
+            {/* <button>Back</button> */}
+          </header>
+          <hr className="bg-gray-700 h-[0.4px] w-11/12 mx-auto" />
 
-        <div className="flex font-sans flex-row items-center justify-center h-screen my-auto pt-6 pb-3">
+
+        <div className="flex font-sans flex-row items-center h-[90%] my-auto py-4">
           <InputPanel imageUrl={fileUrl} prompt={prompt} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit} handlePromptChange={handlePromptChange}/>
           <OutputPanel images={outputs} isFetching={isFetching} error={errorFetching} originalImg={file} />    
         </div>
-        </>
+      </div>
     );
 }
  

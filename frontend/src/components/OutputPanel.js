@@ -18,7 +18,7 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
     }
 
     useEffect(()=>{
-        if(images) setActiveImage(images[0].url);
+        if(images) setActiveImage(images[0]);
         if(!images) setActiveImage(null);
     },[images]);
 
@@ -29,6 +29,10 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
             else updated.push(item);
             return updated; 
         });
+    }
+
+    function handleSelectAll(){
+        setSelected(images);
     }
 
     function handleSubmit(){
@@ -74,8 +78,11 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
             </ul>
             {/* <DownloadBtn imageUrl={imageUrl} isFetching={isFetching}/> */}
             <div className="flex flex-row">
-                {isSelect && <button className="mr-auto my-auto rounded-full bg-red-500 px-5 text-white py-1 mt-4" onClick={handleCancel}>Cancel</button>}
-                <button className="ml-auto my-auto rounded-full bg-yellow-500 px-5 py-1 mt-4 mr-1 disabled:text-gray-700 disabled:cursor-not-allowed" onClick={handleSubmit} disabled={isFetching || !images}>{!isSelect ? 'Select': 'Save'}</button>
+                {isSelect && <>
+                    <button className="mr-auto my-auto rounded-full bg-red-500 px-5 text-white py-1 mt-4" onClick={handleCancel}>Cancel</button>
+                    <button className="ml-auto my-auto rounded-full bg-violet-300/40 px-5 py-1 mt-4" onClick={handleSelectAll}>Select All</button>
+                </>}
+                <button className="ml-3 my-auto rounded-full bg-yellow-500 px-5 py-1 mt-4 mr-1 disabled:text-gray-700 disabled:cursor-not-allowed" onClick={handleSubmit} disabled={isFetching || !images}>{!isSelect ? 'Select': 'Save'}</button>
             </div>
         
         </div>
