@@ -2,17 +2,25 @@ import {redirect, useParams} from 'react-router-dom';
 import {useState} from 'react';
 import {postModelTrain} from '../util/http.js';
 
+const ALLOW_EXTENSION = ['jpg','jpeg','png'];
+
 export default function TrainUpload({handleState}){
     const [files,setFiles] = useState([]);
     const {webtoonName} = useParams();
 
 
     function handleChange(e){
-        setFiles((prev)=>{
-            const updated=[...prev];
-            updated.push(e.target.files[0]);
-            return updated;
-        });
+        const imgFile = e.target.files[0];
+        const extension = imgFile.name.split('.').pop();
+
+        if(ALLOW_EXTENSION.includes(extension)){
+            setFiles((prev)=>{
+                const updated=[...prev];
+                updated.push(e.target.files[0]);
+                return updated;
+            });
+        }else alert('The file must have jpg, jpeg or png extension!')
+    
     }
 
     function handleImageClick(index){
@@ -44,8 +52,8 @@ export default function TrainUpload({handleState}){
 
 
     return <>
-            <h1 className=" text-white font-bold text- mx-auto mb-6">Add your illustrations</h1>
-        <p className="text-gray-400 text-md mx-auto">해당 웹툰의 그림체, 채색 스타일이 잘 드러나는 웹툰 이미지를 업로드해주세요. 업로드 된 사진들은 모델 학습에 사용됩니다. <br /> (10장 이하로 업로드)</p>
+        <h1 className=" text-white font-bold text-2xl mx-auto mb-6">Add your illustrations</h1>
+        <p className="text-gray-400 text-md mx-auto">해당 웹툰의 그림체, 채색 스타일이 잘 드러나는 웹툰 이미지를 업로드해주세요. 업로드 된 사진들은 모델 학습에 사용됩니다. <br /> ** 허용 파일 확장자: jpg, jpeg, png  &nbsp;/&nbsp; 이미지 수: 1 - 10장 사이로 업로드</p>
         
         <div className="flex flex-col h-full">
             <label className={`mx-auto my-4 rounded-full px-10 ${files.length>9 ? "text-gray-700 bg-gray-500" : "text-[#342C5A] bg-gradient-to-r from-[#F6C443] to-[#F3AC58] font-bold cursor-pointer"}`}>
@@ -55,10 +63,10 @@ export default function TrainUpload({handleState}){
 
             <h2 className=" text-white font-bold text-2xl mx-auto mt-3 mb-3">Preview</h2>
 
-            <ul className="flex flex-row flex-wrap justify-start px-5 py-3 h-[50%] w-full mx-auto no-scrollbar bg-white bg-opacity-50 overflow-scroll rounded-3xl">
+            <ul className="flex flex-row flex-wrap justify-start px-5 py-3 min-h-[50%] max-h-[50%] w-full mx-auto no-scrollbar bg-white bg-opacity-50 overflow-scroll rounded-3xl">
                     {
                         files.map((item,index)=>{
-                            return <li className="flex w-[20%] aspect-w-1 aspect-h-1 m-4 relative " key={index}> 
+                            return <li className="flex w-[20%] aspect-square m-4 relative " key={index}> 
                                 <img className=" h-full aspect-w-1 aspect-h-1  w-full" src={URL.createObjectURL(item)}/> 
                                 <button className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 border-2 border-gray-500 text-gray-500 bg-white bg-opacity-50 rounded-full px-2 text-lg font-bold"
                                 onClick={()=>handleImageClick(index)}>x</button> 
