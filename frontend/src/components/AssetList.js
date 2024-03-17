@@ -3,6 +3,7 @@ import {Suspense, useEffect} from 'react';
 import Asset from '../components/Asset.js';
 import { getStyleAssets, getPoseAssets } from '../util/http';
 import { getAuthToken } from '../util/auth.js';
+import emptyImg from '../assets/empty-box.png';
 
 export default function AssetList(){
     const {assets} = useLoaderData();
@@ -17,8 +18,8 @@ export default function AssetList(){
         }
     }, [searchParams, setSearchParams]);
 
-    return <div className="flex flex-col  w-full h-full">
-        <div className="relative flex justify-center items-center w-full m-auto py-3">
+    return <div className="flex flex-col  w-full h-[89%] pb-1">
+        <div className="flex justify-center items-center w-full m-auto py-1">
             <Link to={`?mode=${inactive}`} className={ `flex flex-row bg-gray-300 rounded-full w-1/4`}>
                 {active==='Scenes' && <p className="text-center m-auto text-gray-500 font-bold">{inactive}</p>}
                 <Link to={`?mode=${active}`} className={`bg-yellow-500 text-[#342d60] font-bold rounded-full h-full w-1/2 py-2`}>
@@ -31,7 +32,11 @@ export default function AssetList(){
         <div className="p-4 bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex flex-wrap justify-start gap-5 shadow-lg">
             <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
                 <Await resolve={assets} className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex justify-center shadow-lg">
-                        {(loadedAssets) =>  loadedAssets && loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={active==='Scenes' ? asset.backgroundImgUrl : asset.characterImgUrl} />)}
+                        {(loadedAssets) =>  loadedAssets.length>0 ? loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={active==='Scenes' ? asset.backgroundImgUrl : asset.characterImgUrl} />)
+                                            : <div className="flex flex-col w-full h-full justify-center items-center overflow-hidden">
+                                                <img src={emptyImg} className="h-1/4 aspect-square mb-7" />
+                                                <h3 className="text-[#19162a] font-bold text-xl">아직 생성된 에셋이 없습니다.</h3>
+                                                </div>}
                     </Await>
             </Suspense>
         </div> 
