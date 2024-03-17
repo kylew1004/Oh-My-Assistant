@@ -50,6 +50,7 @@ def delete_webtoon(db: Session, webtoon_name: str, user_id: int):
     db_webtoon = get_webtoon_by_webtoon_name_and_userId(db, webtoon_name=webtoon_name, user_id=user_id)
     db_content_img = db.query(models.ContentImg).filter(models.ContentImg.webtoonId == db_webtoon.id).all()
     db_pose_img = db.query(models.PoseImg).filter(models.PoseImg.webtoonId == db_webtoon.id).all()
+    db_model = db.query(models.Model).filter(models.Model.webtoonId == db_webtoon.id).first()
     if db_webtoon:
         if db_content_img:
             for db_content_imgs in db_content_img:
@@ -57,6 +58,11 @@ def delete_webtoon(db: Session, webtoon_name: str, user_id: int):
         if db_pose_img:
             for db_pose_imgs in db_pose_img:
                 pose_util.delete_pose_asset(webtoon_name=webtoon_name, asset_name=db_pose_imgs.assetName, db=db, user_id=user_id)
+        if db_model:
+            db.delete(db_model)
+            db.commit()
+        else:
+            raise HTTPException(status_code=400, detail="Bad Request: Model not found")
         db.delete(db_webtoon)
         db.commit()
         return {"message": "Webtoon deleted successfully"}
