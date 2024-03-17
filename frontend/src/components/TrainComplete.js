@@ -10,7 +10,7 @@ export default function TrainComplete(){
     }
     return <>
         <div className="flex flex-col mx-auto max-h-[90%] justify-center">
-            <img src={checkSvg} className="h-1/5" />
+            <img src={checkSvg} className="h-[17%] mb-5" />
             <h2 className="text-yellow-500">&nbsp;Training complete!</h2>
             <p className="text-gray-300">Style transfser is now available.</p>
         </div>
