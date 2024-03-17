@@ -53,18 +53,19 @@ export function loader(){
   });
 }
 
-export async function action({request}){
-  const fd = await request.formData();
-  const data = {
-    webtoonName: fd.get('name')
-  }
-  const result = await postWebtoon(data);
+// export async function action({request}){
+//   const fd = await request.formData();
+//   const data = {
+//     webtoonName: fd.get('name')
+//   }
+//   const result = await postWebtoon(data);
 
-  if(!result.error){
-    return redirect(`/${data.webtoonName}/assets`);
-    // window.location.reload();
-    // return redirect(`/${result.webtoonName}/assets`);
-  }
-  return result;
+//   if(!result.error){
+//     return data;
+//     // return redirect(`/${data.webtoonName}/assets`);
+//     // // window.location.reload();
+//     // // return redirect(`/${result.webtoonName}/assets`);
+//   }
+//   return result;
 
-}
+// }

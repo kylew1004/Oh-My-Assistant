@@ -1,11 +1,13 @@
 import { useRef, useEffect, useState} from 'react';
-import { Form, useActionData} from 'react-router-dom'
+import { Form, useActionData, redirect, useNavigate} from 'react-router-dom'
+import { postWebtoon} from '../util/http.js';
 
 const AddWebtoonModal = function Modal({ open, handleClose }) {
   const dialog = useRef();
-  let data=useActionData();
-  const [error, setError] = useState(data&&data.error ? data.error : null);
+  const navigate = useNavigate();
+  const [error, setError] = useState();
   const [name, setName] = useState('');
+
 
   useEffect(()=>{
     if(open) dialog.current.showModal();
@@ -17,20 +19,33 @@ const AddWebtoonModal = function Modal({ open, handleClose }) {
 
   },[open]);
 
-  useEffect(()=>{
-    if(data&&data.error) setError(data.error);
-  },[data])
+
+  async function handleSubmit(e){
+    e.preventDefault();
+    const data = {
+      webtoonName: name,
+    }
+    const result = await postWebtoon(data);
+  
+    if(!result.error){
+      handleClose();
+      navigate(`/${data.webtoonName}/assets`);
+
+    }else{
+      setError(result.error);
+    }    
+  }
 
 
   return <div onClick={handleClose}>
     <dialog className="modal" ref={dialog} >
-      <Form method="post" onClick={e => e.stopPropagation()} className="px-7 py-3 flex flex-col bg-gray-200">
+      <form onClick={e => e.stopPropagation()} className="px-7 py-3 flex flex-col bg-gray-200">
         <button type="button" onClick={handleClose} className="ml-auto text-3xl text-gray-500">x</button>
         <h2 className="font-bold ">Add New Webtoon</h2>
         <hr className="h-[2px] bg-black"></hr>
         <div className="control control-row w-full my-5 flex flex-col">
           {error && <div className="flex w-full p-2 bg-red-400/30 rounded-md">
-              <p className="text-red-700 mx-auto">{data.error}</p>
+              <p className="text-red-700 mx-auto">{error}</p>
             </div>
           }
           <label className="font-bold mb-3">Name</label>
@@ -39,11 +54,11 @@ const AddWebtoonModal = function Modal({ open, handleClose }) {
         </div>
   
 
-        <button  className="button mx-auto h-12 my-6 w-full  bg-yellow-500 rounded-full text-black font-bold">
+        <button onClick={handleSubmit} className="button mx-auto h-12 my-6 w-full  bg-yellow-500 rounded-full text-black font-bold">
         Create Webtoon
         </button>
 
-      </Form>
+      </form>
       
     </dialog>
 

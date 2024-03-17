@@ -3,7 +3,7 @@ import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
 import {tokenLoader, checkAuthLoader} from './util/auth';
 import Welcome, {action as authAction, loader as authLoader} from "./page/Welcome.js";
 import {action as logoutAction} from './page/Logout.js';
-import RootLayout, {loader as rootLoader, action as rootAction} from "./components/Root.js";
+import RootLayout, {loader as rootLoader} from "./components/Root.js";
 import StyleTransfer, {action as saveBackgroundAssetAction} from './page/StyleTransfer.js';
 import PoseTransfer, {action as savePoseAssetAction} from './page/PoseTransfer.js';
 import CreateNew from './page/CreateNew.js';
@@ -21,7 +21,6 @@ const router = createBrowserRouter([
     // errorElement: <ErrorPage />,
     id:'root',
     loader: rootLoader,
-    action: rootAction,
     children: [
       { index: true,
         element: <InitialPage />,
