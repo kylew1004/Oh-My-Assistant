@@ -63,7 +63,7 @@ export default function TrainUpload({handleState}){
             </label>
 
             <div className="flex flex-row mt-3 mb-3">
-                <h2 className="text-white font-bold text-2xl text-center ml-8 w-[90%]">Preview</h2>
+                <h2 className="text-white font-bold text-2xl text-center ml-12 w-[90%]">Preview</h2>
                 <p className="my-auto ml-auto text-gray-300 mr-4">{files.length}/10</p>
             </div>
             
