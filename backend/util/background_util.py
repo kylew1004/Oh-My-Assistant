@@ -140,21 +140,21 @@ def get_background_asset_list(webtoon_name: str, db: Session, user_id: int):
                 .filter(models.Webtoon.webtoonName == webtoon_name,
                         models.Webtoon.userId == user_id)\
                 .all()
-    db_background = db.query(models.BackgroundImg)\
-                .join(models.ContentImg, models.BackgroundImg.originalImageId == models.ContentImg.originalImageId)\
-                .join(models.Webtoon, models.ContentImg.webtoonId == models.Webtoon.id)\
-                .filter(models.Webtoon.webtoonName == webtoon_name,
-                        models.Webtoon.userId == user_id)\
-                .first()
-    if db_content and db_background:
+    if db_content:
         result = []
         for db_contents in db_content:
-            result.append({
-                "createdAt": db_contents.createdAt,
-                "assetName": db_contents.assetName,
-                "backgroundImgUrl": db_background.backgroundImgUrl,
-                "description": db_contents.description
-            })
+            db_background = db.query(models.BackgroundImg)\
+                .filter(models.BackgroundImg.originalImageId == db_contents.originalImageId)\
+                .first()
+            if db_background:
+                result.append({
+                    "createdAt": db_contents.createdAt,
+                    "assetName": db_contents.assetName,
+                    "backgroundImgUrl": db_background.backgroundImgUrl,
+                    "description": db_contents.description
+                })
+            else:
+                raise HTTPException(status_code=400, detail="Bad Request: BackgroundImg not found")
         return result
     else:
         raise HTTPException(status_code=400, detail="Bad Request: Webtoon not found")
