@@ -4,7 +4,7 @@ import { Form, useActionData} from 'react-router-dom'
 const AddWebtoonModal = function Modal({ open, handleClose }) {
   const dialog = useRef();
   let data=useActionData();
-  const [error, setError] = useState(data ? data.error : null);
+  const [error, setError] = useState(data&&data.error ? data.error : null);
   const [name, setName] = useState('');
 
   useEffect(()=>{
