@@ -32,9 +32,7 @@ function RootLayout() {
       <Menu />
       <div className="flex flex-col w-full h-screen overflow-hidden no-scrollbar">
          {/* {navigation.state === 'loading' && <p>Loading...</p>} */}
-        {/* <div className=""> */}
         <Outlet />
-        {/* </div> */}
       </div>
     </div>
   );
