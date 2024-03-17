@@ -55,7 +55,7 @@ export default function Menu(){
                 <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
                         <Await resolve={webtoons}>
                             {(loadedWebtoons) => {
-                                if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className="flex flex-row h-11 p-1 hover:bg-gray-950">
+                                if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className={`flex flex-row h-11 p-1 ${webtoonName===webtoon ? 'text-yellow-500 bg-gray-950' : 'text-white'} hover:bg-gray-950`}>
                                 <div className={`bg-yellow-500${webtoonName!==webtoon ? '/0' : ''} mr-4 h-full w-1`} />
                                 <Link key={index} to={`/${webtoon}/assets`} className={`pb-1 w-full flex ${webtoonName===webtoon ? 'text-yellow-500 bg-gray-950' : 'text-white'}`} ><p className="text-left my-auto  text-md">{webtoon}</p></Link>
                                 <div className="flex h-full ml-auto w-5 justify-center"><DeleteMenu subject={{webtoonName: webtoon}}/></div>
