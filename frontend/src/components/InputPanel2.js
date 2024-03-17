@@ -3,7 +3,7 @@ import arrowImg from '../assets/arrow.png';
 export default function InputPanel({characterUrl, poseUrl, isFetching, handleCharacter, handlePose, handleSubmit}){
 
     return  <div className="flex flex-col shadow-xl bg-white bg-opacity-90 rounded-3xl h-[95%] m-5 p-3 gap-4">
-        <div className="flex flex-row h-full">
+        <div className="flex flex-row h-[91%]">
             <div className="w-full h-full flex-grow flex-col pb-16 my-auto relative shadow-xl bg-white bg-opacity-90  border-#7264a9 rounded-3xl p-5 py-4 mx-3">
                 <div className="flex flex-row mb-2">
                     <h3 className="text-black text-lg font-bold">Target Character</h3>
@@ -32,11 +32,11 @@ export default function InputPanel({characterUrl, poseUrl, isFetching, handleCha
             </div>
 
         </div>
-        <button className="flex flex-row h-12 w-full ml-auto bg-yellow-500 font-bold rounded-full disabled:bg-gray-400 disabled:text-gray-700 disabled:cursor-not-allowed"
+        <button disabled={isFetching} className="flex flex-row h-12 w-full ml-auto bg-yellow-500 font-bold rounded-full disabled:bg-gray-400 disabled:text-gray-700 disabled:cursor-not-allowed"
             onClick={handleSubmit}>
             <p className="flex flex-row m-auto">
                 RUN
-                <img className="h-4 mt-1.5 ml-3 transform rotate-90" onClick={handleSubmit} disabled={isFetching} src={arrowImg} />
+                <img className="h-4 mt-1.5 ml-3 transform rotate-90" src={arrowImg} />
             </p>
             
         </button>
@@ -44,4 +44,4 @@ export default function InputPanel({characterUrl, poseUrl, isFetching, handleCha
 
     </div>
 
-}
+};
