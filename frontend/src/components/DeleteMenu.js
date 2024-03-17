@@ -31,7 +31,7 @@ export default function DeleteMenu({subject}) {
         else result = await deletePoseAsset(subject);
 
         if(result==='tokenError') return redirect('/auth');
-        navigate('.', { replace: true });
+        window.location.reload();
     }
 
     async function handleDelete(event){
