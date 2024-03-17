@@ -51,7 +51,7 @@ export default function Menu(){
 
         <div className="flex flex-col py-4 h-2/3">
             <p className=" text-gray-600 pl-3 text-md my-3"> WEBTOONS </p>
-            <div className="flex flex-col h-auto max-h-1/2 overflow-auto">
+            <div className="flex flex-col h-auto max-h-1/2 overflow-hidden">
                 <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
                         <Await resolve={webtoons}>
                             {(loadedWebtoons) => {
