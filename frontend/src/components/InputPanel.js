@@ -16,6 +16,8 @@ export default function InputPanel({imageUrl, isFetching, handleChange, handleSu
 
         <h3 className="text-black h-[5%] text-lg">Prompt(optional)</h3>
         <input className=" w-full h-[10%] flex border rounded-lg p-3 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" id="prompt" name="prompt" type="text" value={prompt} onChange={handlePromptChange}/>
-        <img className="h-[5%] mt-4 ml-auto my-auto disabled:bg-gray-400 cursor-pointer disabled:text-gray-700 disabled:cursor-not-allowed" onClick={handleSubmit} disabled={isFetching} src={arrowImg} />
+        <button className="flex h-[5%] mt-4 ml-auto my-auto cursor-pointer disabled:cursor-not-allowed" onClick={handleSubmit} disabled={isFetching}>
+            <img className="h-full"  src={arrowImg} />
+        </button>
     </div>
 }
