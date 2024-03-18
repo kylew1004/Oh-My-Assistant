@@ -34,7 +34,7 @@ export default function AssetList(){
                 <Await resolve={assets} className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex justify-center shadow-lg">
                         {(loadedAssets) =>  loadedAssets.length>0 ? loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={active==='Scenes' ? asset.backgroundImgUrl : asset.characterImgUrl} />)
                                             : <div className="flex flex-col w-full h-full justify-center items-center overflow-hidden">
-                                                <img src={emptyImg} className="h-1/4 aspect-square mb-7" />
+                                                <img src={emptyImg} className="h-1/4 aspect-square mb-10" />
                                                 <h3 className="text-[#19162a] font-bold text-xl">아직 생성된 에셋이 없습니다.</h3>
                                                 </div>}
                     </Await>
