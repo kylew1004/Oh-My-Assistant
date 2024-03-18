@@ -61,8 +61,6 @@ def delete_webtoon(db: Session, webtoon_name: str, user_id: int):
         if db_model:
             db.delete(db_model)
             db.commit()
-        else:
-            raise HTTPException(status_code=400, detail="Bad Request: Model not found")
         db.delete(db_webtoon)
         db.commit()
         return {"message": "Webtoon deleted successfully"}
