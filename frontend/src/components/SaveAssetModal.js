@@ -57,7 +57,7 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
 
     if(result==='tokenError') return redirect('/auth');
     if(result.detail && result.detail==="Bad Request: Asset already exists") setError("Asset name already exists. Please use a different asset name.");
-    else if(result.error) setError("Could not save asset.");
+    else if(result.error || result.detail) setError("Could not save asset.");
     else window.location.reload();
     setIsSubmitting(false);
 
