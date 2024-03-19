@@ -10,17 +10,19 @@ export default function TrainUpload({handleState}){
 
 
     function handleChange(e){
-        const imgFile = e.target.files[0];
-        let extension;
-        if(imgFile.name) extension=imgFile.name.split('.').pop();
-
-        if(ALLOW_EXTENSION.includes(extension)){
-            setFiles((prev)=>{
-                const updated=[...prev];
-                updated.push(e.target.files[0]);
-                return updated;
-            });
-        }else alert('The file must have jpg, jpeg or png extension!')
+        for(let i = 0; i < e.target.files.length; i++){
+            let imgFile = e.target.files[i];
+            let extension;
+            if(imgFile.name) extension=imgFile.name.split('.').pop();
+    
+            if(ALLOW_EXTENSION.includes(extension)){
+                setFiles((prev)=>{
+                    const updated=[...prev];
+                    updated.push(imgFile);
+                    return updated;
+                });
+            }else alert('The file must have jpg, jpeg or png extension!')    
+        } 
     
     }
 
