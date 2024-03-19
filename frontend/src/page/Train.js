@@ -17,7 +17,7 @@ export default function Train(){
         {state===0 && <TrainUpload handleState={handleState} />}
         {state===1 && <TrainLoading />}
         {state===2 && <TrainComplete />}
-        {state===3 && <TrainError />}
+        {state===3 && <TrainError handleState={handleState}/>} 
     </div>
 }
 
