@@ -66,7 +66,7 @@ export default function AssetDetail(){
                                             </div>
                                             <div className="flex flex-row w-full mx-auto bg-violet-300 bg-opacity-30 rounded-lg itemes-center justify-center">
                                                 <h3 className="flex-1 text-center font-bold bg-violet-300 bg-opacity-40 rounded-l-lg py-3">Created At</h3>
-                                                <p className="flex-1 text-center py-3 text-gray-300">{loadedAsset.createdAt}</p>
+                                                <p className="flex-1 text-center py-3 text-gray-300">{loadedAsset.createdAt.replace("T", " ")}</p>
                                             </div>
                                             {loadedAsset.originalImageUrl && <div className="flex flex-col w-full mx-auto bg-violet-300 bg-opacity-30 rounded-lg itemes-center justify-center gap-2">
                                                 <h3 className="flex-1 text-center font-bold bg-violet-300 bg-opacity-40 rounded-l-lg py-3">Input Image</h3>
