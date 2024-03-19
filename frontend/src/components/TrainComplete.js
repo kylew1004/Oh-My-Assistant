@@ -12,7 +12,7 @@ export default function TrainComplete(){
         <div className="flex flex-col mx-auto max-h-[90%] justify-center">
             <img src={checkSvg} className="h-[17%] mb-5" />
             <h2 className="text-yellow-500">&nbsp;Training complete!</h2>
-            <p className="text-gray-300">Style transfser is now available.</p>
+            <p className="text-gray-300">Style transfer is now available.</p>
         </div>
         
         <button onClick={handleClick} className="rounded-full text-[#342C5A] text-xl py-3 px-10
