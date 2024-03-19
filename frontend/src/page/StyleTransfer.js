@@ -37,6 +37,10 @@ function StyleTransfer() {
       setPrompt(e.target.value);
     }
 
+    function cancelChange(){
+      setFile(null);
+    }
+
     async function handleSubmit(){
       console.log(prompt, webtoonName);
       console.log(file);
@@ -77,7 +81,7 @@ function StyleTransfer() {
 
 
         <div className="flex font-sans flex-row items-center h-[90%] my-auto py-4">
-          <InputPanel imageUrl={fileUrl} prompt={prompt} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit} handlePromptChange={handlePromptChange}/>
+          <InputPanel imageUrl={fileUrl} prompt={prompt} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit} handlePromptChange={handlePromptChange} cancelChange={cancelChange}/>
           <OutputPanel images={outputs} isFetching={isFetching} error={errorFetching} originalImg={file} />    
         </div>
       </div>
