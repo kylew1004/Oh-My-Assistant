@@ -97,7 +97,7 @@ export default function DeleteMenu({activeImage, loadedAsset}) {
           onClick={handleClick}
           className="flex w-auto p-0"
         >
-         <img className="h-[80%] m-auto" src={downloadIcon}/>
+         <img className="h-[70%] m-auto" src={downloadIcon}/>
         </Button>
         <Menu
           id="basic-menu"
