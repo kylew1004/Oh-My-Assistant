@@ -41,43 +41,35 @@ def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile,
               webtoonName: str, assetName: str, description: str, db: Session,
               user_id: int):
     
+    if db.query(models.PoseImg).join(models.Webtoon, models.PoseImg.webtoonId == models.Webtoon.id)\
+        .filter(models.Webtoon.webtoonName == webtoonName, models.PoseImg.assetName == assetName, 
+                models.Webtoon.userId == user_id).first():
+        raise HTTPException(status_code=400, detail="Bad Request: Asset already exists")
+    originalCharacterImgName = f"{uuid.uuid4()}__{originalCharacterImg.filename}"
+    originalPoseImgName = f"{uuid.uuid4()}__{originalPoseImg.filename}"
+    characterImageName = f"{uuid.uuid4()}__{characterImage.filename}"
+    poseImageName = f"{uuid.uuid4()}__{poseImage.filename}"
+    s3.upload_fileobj(originalCharacterImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{originalCharacterImgName}")
+    s3.upload_fileobj(originalPoseImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{originalPoseImgName}")
+    s3.upload_fileobj(characterImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"pose/{characterImageName}")
+    s3.upload_fileobj(poseImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"pose/{poseImageName}")
+    originalCharacterImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalCharacterImgName}"
+    originalPoseImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalPoseImgName}"
+    characterImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{characterImageName}"
+    poseImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{poseImageName}"
+    webtoonId = db.query(models.Webtoon).filter(models.Webtoon.webtoonName == webtoonName, 
+                                                models.Webtoon.userId == user_id).first().id
+    db_pose = models.PoseImg(webtoonId=webtoonId, originalCharacterImgUrl=originalCharacterImgPath, originalPoseImgUrl=originalPoseImgPath, 
+                             characterImgUrl=characterImagePath, poseImgUrl=poseImagePath,
+                             createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), assetName=assetName, description=description)
     try:
-        if db.query(models.PoseImg).join(models.Webtoon, models.PoseImg.webtoonId == models.Webtoon.id)\
-            .filter(models.Webtoon.webtoonName == webtoonName, models.PoseImg.assetName == assetName, 
-                    models.Webtoon.userId == user_id).first():
-
-            raise HTTPException(status_code=400, detail="Bad Request: Asset already exists")
-
-        originalCharacterImgName = f"{uuid.uuid4()}__{originalCharacterImg.filename}"
-        originalPoseImgName = f"{uuid.uuid4()}__{originalPoseImg.filename}"
-        characterImageName = f"{uuid.uuid4()}__{characterImage.filename}"
-        poseImageName = f"{uuid.uuid4()}__{poseImage.filename}"
-
-        s3.upload_fileobj(originalCharacterImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{originalCharacterImgName}")
-        s3.upload_fileobj(originalPoseImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{originalPoseImgName}")
-        s3.upload_fileobj(characterImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"pose/{characterImageName}")
-        s3.upload_fileobj(poseImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"pose/{poseImageName}")
-
-        originalCharacterImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalCharacterImgName}"
-        originalPoseImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalPoseImgName}"
-        characterImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{characterImageName}"
-        poseImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{poseImageName}"
-
-        webtoonId = db.query(models.Webtoon).filter(models.Webtoon.webtoonName == webtoonName, 
-                                                    models.Webtoon.userId == user_id).first().id
-
-        db_pose = models.PoseImg(webtoonId=webtoonId, originalCharacterImgUrl=originalCharacterImgPath, originalPoseImgUrl=originalPoseImgPath, 
-                                 characterImgUrl=characterImagePath, poseImgUrl=poseImagePath,
-                                 createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), assetName=assetName, description=description)
         db.add(db_pose)
         db.commit()
         db.refresh(db_pose)
-
-        return {"result": "Pose asset saved successfully"}
-    
     except Exception as e:
         db.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
+    return {"result": "Pose asset saved successfully"}
 
 
 def get_pose_asset_list(webtoon_name: str, db: Session, user_id: int):
@@ -113,17 +105,17 @@ def get_pose_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int
 
 
 def delete_pose_asset(webtoon_name: str, asset_name: str, db: Session, user_id: int):
-    try:
-        db_pose = db.query(models.PoseImg).join(models.Webtoon, models.PoseImg.webtoonId == models.Webtoon.id)\
-                    .filter(models.Webtoon.webtoonName == webtoon_name,
-                            models.PoseImg.assetName == asset_name, 
-                            models.Webtoon.userId == user_id).first()
-        if db_pose:
+    db_pose = db.query(models.PoseImg).join(models.Webtoon, models.PoseImg.webtoonId == models.Webtoon.id)\
+                .filter(models.Webtoon.webtoonName == webtoon_name,
+                        models.PoseImg.assetName == asset_name, 
+                        models.Webtoon.userId == user_id).first()
+    if db_pose:
+        try:
             db.delete(db_pose)
             db.commit()
             return {"detail": "Asset deleted successfully"}
-        else:
-            raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
-    except Exception as e:
-        db.rollback()
-        raise HTTPException(status_code=500, detail="Internal Server Error")
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(status_code=500, detail="Internal Server Error")
+    else:
+        raise HTTPException(status_code=400, detail="Bad Request: Asset not found")
