@@ -27,34 +27,42 @@ def get_user_by_email(db: Session, userEmail: str):
         return {"detail": "Email is available"}
 
 def create_user(db: Session, user: user_schemas.UserCreate):
-    if db.query(models.User).filter(models.User.userEmail == user.userEmail).first():
-        raise HTTPException(status_code=404, detail="Email already registered")
-    db_user = models.User(userEmail=user.userEmail, 
-                          hashed_password=pwd_context.hash(user.userPw), 
-                          userNickname=user.userNickname)
-    if db_user is None:
-        raise HTTPException(status_code=404, detail="Failed to create user")
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    re_user = db.query(models.User)\
-                .filter(models.User.userEmail == user.userEmail)\
-                .first()
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = token.create_access_token(data={"userEmail": user.userEmail, 
-                                                   "userNickname":user.userNickname, 
-                                                   "userId":re_user.id},
-                                             expires_delta=access_token_expires
-                                             )
-    return {"access_token": access_token, "token_type": "bearer"}
+    try:
+        if db.query(models.User).filter(models.User.userEmail == user.userEmail).first():
+            raise HTTPException(status_code=404, detail="Email already registered")
+        db_user = models.User(userEmail=user.userEmail, 
+                              hashed_password=pwd_context.hash(user.userPw), 
+                              userNickname=user.userNickname)
+        if db_user is None:
+            raise HTTPException(status_code=404, detail="Failed to create user")
+        db.add(db_user)
+        db.commit()
+        db.refresh(db_user)
+        re_user = db.query(models.User)\
+                    .filter(models.User.userEmail == user.userEmail)\
+                    .first()
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = token.create_access_token(data={"userEmail": user.userEmail, 
+                                                       "userNickname":user.userNickname, 
+                                                       "userId":re_user.id},
+                                                 expires_delta=access_token_expires
+                                                 )
+        return {"access_token": access_token, "token_type": "bearer"}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 def delete_user(db: Session, user_id: int):
-    user = db.query(models.User).filter(models.User.id == user_id).first()
-    if user is None:
-        raise HTTPException(status_code=404, detail="User not found")
-    db.delete(user)
-    db.commit()
-    return user
+    try:
+        user = db.query(models.User).filter(models.User.id == user_id).first()
+        if user is None:
+            raise HTTPException(status_code=404, detail="User not found")
+        db.delete(user)
+        db.commit()
+        return user
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 def login(request, db: Session):
     user = db.query(models.User)\
