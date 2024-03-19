@@ -45,20 +45,25 @@ def pose_save(originalCharacterImg: UploadFile, originalPoseImg: UploadFile,
         .filter(models.Webtoon.webtoonName == webtoonName, models.PoseImg.assetName == assetName, 
                 models.Webtoon.userId == user_id).first():
         raise HTTPException(status_code=400, detail="Bad Request: Asset already exists")
+    
     originalCharacterImgName = f"{uuid.uuid4()}__{originalCharacterImg.filename}"
     originalPoseImgName = f"{uuid.uuid4()}__{originalPoseImg.filename}"
     characterImageName = f"{uuid.uuid4()}__{characterImage.filename}"
     poseImageName = f"{uuid.uuid4()}__{poseImage.filename}"
+    
     s3.upload_fileobj(originalCharacterImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{originalCharacterImgName}")
     s3.upload_fileobj(originalPoseImg.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"original/{originalPoseImgName}")
     s3.upload_fileobj(characterImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"pose/{characterImageName}")
     s3.upload_fileobj(poseImage.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"pose/{poseImageName}")
+    
     originalCharacterImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalCharacterImgName}"
     originalPoseImgPath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/original/{originalPoseImgName}"
     characterImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{characterImageName}"
     poseImagePath = f"https://{os.environ.get('AWS_S3_BUCKET')}.s3.{os.environ.get('AWS_S3_REGION')}.amazonaws.com/pose/{poseImageName}"
+    
     webtoonId = db.query(models.Webtoon).filter(models.Webtoon.webtoonName == webtoonName, 
                                                 models.Webtoon.userId == user_id).first().id
+    
     db_pose = models.PoseImg(webtoonId=webtoonId, originalCharacterImgUrl=originalCharacterImgPath, originalPoseImgUrl=originalPoseImgPath, 
                              characterImgUrl=characterImagePath, poseImgUrl=poseImagePath,
                              createdAt=datetime.now().strftime("%Y-%m-%d %H:%M:%S"), assetName=assetName, description=description)

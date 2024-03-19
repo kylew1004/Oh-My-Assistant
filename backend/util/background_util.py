@@ -123,7 +123,7 @@ def background_save(webtoonName: str, assetName: str, description: str, db: Sess
         db.rollback()
         raise HTTPException(status_code=500, detail="Internal Server Error")
     
-    original_image_id = db.query(models.ContentImg).filter(models.ContentImg.assetName == assetName).first().originalImageId
+    original_image_id = db.query(models.ContentImg).filter(models.ContentImg.webtoonId == webtoonId, models.ContentImg.assetName == assetName).first().originalImageId
     for image in generated_images:
         image_name = f"{uuid.uuid4()}__{image.filename}"
         s3.upload_fileobj(image.file, Bucket=os.environ.get("AWS_S3_BUCKET"), Key=f"background/{image_name}")
