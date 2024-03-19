@@ -15,11 +15,11 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 origins = [
-    "http://223.130.131.6.tiangolo.com",
-    "https://223.130.131.6.tiangolo.com",
-    "http://223.130.131.6",
-    "http://223.130.131.6:8000",
-    "http://223.130.131.6:3000",
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://localhost:8000",
+    "http://localhost:3000",
 ]
 
 app.add_middleware(

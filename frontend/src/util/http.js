@@ -2,7 +2,7 @@ import {getAuthToken} from '../util/auth.js';
 import {redirect} from 'react-router-dom';
 
 import qs from 'qs';
-const URL = "http://223.130.131.6:8000";
+const URL = "http://localhost:8000";
 
 async function sleep(milliseconds) {
     await new Promise(resolve => setTimeout(resolve, milliseconds));
