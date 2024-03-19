@@ -32,7 +32,8 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     # check training server is busy, 사전에 cli_lora_pti.py를 수정해야 합니다.
     if len(state_running_process) > 0:
         return TrainResponse(
-            result = "training server is busy!"
+            result = False,
+            model_path = ""
         )
 
     # set unique model name
@@ -95,7 +96,8 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     # shutil.rmtree(os.path.join(train_config.data_dir, model_name), ignore_errors=True) 
     
     return TrainResponse(
-        result = generated_result.result
+        result = True,
+        model_path = generated_result.result
     )
 
 @router.post("/api/model/background/img2img/{model_id}")
