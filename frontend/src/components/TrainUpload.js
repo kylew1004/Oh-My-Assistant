@@ -47,7 +47,8 @@ export default function TrainUpload({handleState}){
             const result = await postModelTrain(webtoonName, data);
             console.log(result);
             if(result==='tokenError') redirect('/auth');
-            handleState(2);
+            if(result.status == 500) handleState(3);
+            else handleState(2);
 
         }
         

@@ -3,6 +3,7 @@ import {useState} from 'react';
 import TrainUpload from '../components/TrainUpload.js';
 import TrainComplete from '../components/TrainComplete.js';
 import TrainLoading from '../components/TrainLoading.js';
+import TrainError from '../components/TrainError.js';
 
 export default function Train(){
     
@@ -16,6 +17,7 @@ export default function Train(){
         {state===0 && <TrainUpload handleState={handleState} />}
         {state===1 && <TrainLoading />}
         {state===2 && <TrainComplete />}
+        {state===3 && <TrainError />}
     </div>
 }
 
