@@ -61,7 +61,7 @@ def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId:
     if webtoon_id is None:
         raise HTTPException(status_code=404, detail="Webtoon not found")
     
-    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).first().modelPath
+    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).order_by(models.Model.id.desc()).first().modelPath
     if model_path is None:
         raise HTTPException(status_code=404, detail="Model not found")
     files = {'content_image': (file_name, file_content, file_content_type)}
@@ -82,7 +82,7 @@ def background_txt2img(webtoon_name: str, prompt: str, db: Session, userId: int)
     if webtoon_id is None:
         raise HTTPException(status_code=404, detail="Webtoon not found")
     
-    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).first().modelPath
+    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).order_by(models.Model.id.desc()).first().modelPath
     if model_path is None:
         raise HTTPException(status_code=404, detail="Model not found")
     
