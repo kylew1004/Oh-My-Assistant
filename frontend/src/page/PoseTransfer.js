@@ -5,6 +5,8 @@ import InputPanel from '../components/InputPanel2.js';
 
 import { postPoseTransfer } from '../util/http.js';
 import BackButton from "../components/BackButton.js";
+
+import { validateExt } from "../util/util.js";
  
 function PoseTransfer() {
     const [character, setCharacter] = useState();
@@ -29,17 +31,23 @@ function PoseTransfer() {
     };
 
     function handleCharacter(e) {
-      setCharacter(e.target.files[0]);
-      setErrorFetching(null);
-      setIsFetching(false);
-      setOutputs(null);   
+      const currFile = e.target.files[0];
+      if(validateExt(currFile)){
+        setCharacter(currFile);
+        setErrorFetching(null);
+        setIsFetching(false);
+        setOutputs(null);   
+      }else alert('The file must have jpg, jpeg or png extension!');
     }
 
     function handlePose(e) {
-      setPose(e.target.files[0]);
-      setErrorFetching(null);
-      setIsFetching(false);   
-      setOutputs(null);
+      const currFile = e.target.files[0];
+      if(validateExt(currFile)){
+        setPose(currFile);
+        setErrorFetching(null);
+        setIsFetching(false);
+        setOutputs(null);   
+      }else alert('The file must have jpg, jpeg or png extension!');
   }
 
     async function handleSubmit(){

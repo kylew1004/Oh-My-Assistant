@@ -7,6 +7,8 @@ import InputPanel from '../components/InputPanel.js';
 import { postStyleTransfer } from "../util/http.js";
 import BackButton from "../components/BackButton.js";
 
+import { validateExt } from "../util/util.js";
+
  
 function StyleTransfer() {
     const [file, setFile] = useState();
@@ -20,12 +22,15 @@ function StyleTransfer() {
     if(file) {fileUrl = URL.createObjectURL(file);}
 
     function handleChange(e) {
-        console.log(e.target.files[0]);
-        setPrompt("");
-        setFile(e.target.files[0]);
-        setErrorFetching(null);
-        setIsFetching(false);
-        setOutputs(null);
+        const currFile = e.target.files[0];
+        if(validateExt(currFile)){
+          setPrompt("");
+          setFile(currFile);
+          setErrorFetching(null);
+          setIsFetching(false);
+          setOutputs(null);
+        }else alert('The file must have jpg, jpeg or png extension!');
+        
     }
 
     function handlePromptChange(e){

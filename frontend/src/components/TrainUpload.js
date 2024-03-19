@@ -2,21 +2,17 @@ import {redirect, useParams} from 'react-router-dom';
 import {useState} from 'react';
 import {postModelTrain} from '../util/http.js';
 import BackButton from './BackButton.js';
-
-const ALLOW_EXTENSION = ['jpg','jpeg','png'];
+import { validateExt } from '../util/util.js';
 
 export default function TrainUpload({handleState}){
     const [files,setFiles] = useState([]);
     const {webtoonName} = useParams();
 
-
     function handleChange(e){
         for(let i = 0; i < e.target.files.length; i++){
-            let imgFile = e.target.files[i];
-            let extension;
-            if(imgFile.name) extension=imgFile.name.split('.').pop();
+            const imgFile = e.target.files[i];
     
-            if(ALLOW_EXTENSION.includes(extension)){
+            if(validateExt(imgFile)){
                 setFiles((prev)=>{
                     const updated=[...prev];
                     updated.push(imgFile);
