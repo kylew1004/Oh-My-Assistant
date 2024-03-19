@@ -33,7 +33,10 @@ def background_train(webtoon_name: str, db: Session, userId: int, images: List[U
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Failed to train style model")
     else:
-        model_path = response.json()['result']
+        result = response.json()['result']
+        if not result:
+            raise HTTPException(status_code=500, detail="Failed to train style model")
+        model_path = response.json()['model_path']
         webtoon_id = db.query(models.Webtoon).join(models.User).filter(models.User.id == userId, 
                                                     models.Webtoon.webtoonName == webtoon_name).first().id
         db_model = models.Model(webtoonId=webtoon_id, modelPath=model_path)
