@@ -1,7 +1,7 @@
 import {useNavigate, useParams} from 'react-router-dom';
 import nopePng from '../assets/nope.png';
 
-export default function TrainComplete(){
+export default function TrainError(){
     const navigate = useNavigate();
     const {webtoonName} = useParams();
 
