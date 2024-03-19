@@ -1,11 +1,12 @@
-import React, { useState , useEffect} from "react";
+import React, { useState } from "react";
 import {useParams} from 'react-router-dom';
 
 import OutputPanel from '../components/OutputPanel.js';
 import InputPanel from '../components/InputPanel.js';
 
-import { fetchOutput, postInput } from '../util/http.js';
 import { postStyleTransfer } from "../util/http.js";
+import BackButton from "../components/BackButton.js";
+
  
 function StyleTransfer() {
     const [file, setFile] = useState();
@@ -63,9 +64,9 @@ function StyleTransfer() {
  
     return (
       <div className="flex flex-col w-full h-[89%]">
-          <header className="flex h-[10%] font-sans flex-row items-center justify-center pt-5 pb-3">
-            <h2 className="text-gray-600">SCENE STYLE TRANSFER</h2>
-            {/* <button>Back</button> */}
+          <header className="flex h-[10%] font-sans flex-row items-center justify-center pt-5 pb-3 ml-5">
+            <BackButton />
+            <h2 className="text-gray-600 w-full text-center mr-28 m-auto">SCENE STYLE TRANSFER</h2>
           </header>
           <hr className="bg-gray-700 h-[0.4px] w-11/12 mx-auto" />
 

@@ -1,6 +1,7 @@
 import {redirect, useParams} from 'react-router-dom';
 import {useState} from 'react';
 import {postModelTrain} from '../util/http.js';
+import BackButton from './BackButton.js';
 
 const ALLOW_EXTENSION = ['jpg','jpeg','png'];
 
@@ -57,10 +58,13 @@ export default function TrainUpload({handleState}){
 
 
     return <>
-        <h1 className=" text-white font-bold text-2xl mx-auto mb-6">Add your illustrations</h1>
+        <div className="flex flex-row h-[7%] mb-3">
+            <BackButton />
+            <h1 className=" text-white font-bold text-2xl text-center mx-auto mb-6 pr-28">Add your illustrations</h1>
+        </div>
         <p className="text-gray-400 text-md mx-auto">해당 웹툰의 그림체, 채색 스타일이 잘 드러나는 웹툰 이미지를 업로드해주세요. 업로드 된 사진들은 모델 학습에 사용됩니다. <br /> ** 허용 파일 확장자: jpg, jpeg, png  &nbsp;/&nbsp; 이미지 수: 1 - 10장 사이로 업로드</p>
         
-        <div className="flex flex-col h-full overflow-auto">
+        <div className="flex flex-col h-full overflow-auto no-scrollbar">
             <label className={`mx-auto my-4 rounded-full px-10 ${files.length>9 ? "text-gray-700 bg-gray-500" : "text-[#342C5A] bg-gradient-to-r from-[#F6C443] to-[#F3AC58] font-bold cursor-pointer"}`}>
                 <input className="hidden" type="file" id="input" name="input" multiple onChange={handleChange} disabled={files.length>9}/>
                 <p className="mx-1 my-2">Upload Image</p>

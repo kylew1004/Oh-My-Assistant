@@ -2,6 +2,7 @@ import {useState, Suspense, useEffect} from 'react';
 import {Await, defer, useLoaderData, useSearchParams} from 'react-router-dom';
 import {getPoseAlbum, getStyleAlbum} from '../util/http.js';
 import DeleteMenu from './DownloadMenu.js';
+import BackButton from './BackButton.js';
 
 export default function AssetDetail(){
     const [activeImage, setActiveImage] = useState();
@@ -29,8 +30,8 @@ export default function AssetDetail(){
     return <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
                         <Await resolve={asset} >
                                 {(loadedAsset) =>  loadedAsset && <div className="flex flex-col h-[89%]">
-                                <div className="flex flex-row h-[10%]">
-                                    
+                                <div className="flex flex-row h-[10%] py-2 ml-10">
+                                    <BackButton />
                                 </div>
                                 <div className="flex flex-row bg-[#1c1a2e] p-4 rounded-xl w-11/12 max-h-[90%] mx-auto mb-3">
                                     <div className="flex flex-col h-full w-[60%] rounded-l-xl p-2">
