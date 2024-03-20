@@ -1,6 +1,5 @@
-import React, { useState } from "react";
-import { RouterProvider, createBrowserRouter, Outlet } from 'react-router-dom';
-import {tokenLoader, checkAuthLoader} from './util/auth';
+import React from "react";
+import { RouterProvider, createBrowserRouter, Outlet, redirect } from 'react-router-dom';
 import Welcome, {action as authAction, loader as authLoader} from "./page/Welcome.js";
 import {action as logoutAction} from './page/Logout.js';
 import RootLayout, {loader as rootLoader} from "./components/Root.js";
@@ -53,7 +52,6 @@ const router = createBrowserRouter([
           {
             path: 'createNew',
             element: <Outlet />,
-            // action: authAction,
             children:[
               { index: true, element: <CreateNew /> },
               {
@@ -70,7 +68,6 @@ const router = createBrowserRouter([
           {
             path: 'train',
             element: <Train />,
-            // action: authAction,
           },
 
         ]

@@ -1,5 +1,5 @@
-import { NavLink, useParams, defer, useLoaderData, Await, redirect } from 'react-router-dom';
-import {Suspense } from 'react';
+import { NavLink, useParams, defer, useLoaderData, Await, redirect, useRouteLoaderData, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, Suspense } from 'react';
 import { getIsTrained } from '../util/http';
 import { getAuthToken } from '../util/auth';
 
@@ -9,6 +9,33 @@ const inactiveStyle = "flex flex-col pl-3 text-black font-bold text-md"
 export default function Panel(){
     const {webtoonName} = useParams();
     const {isTrained} = useLoaderData();
+    const {webtoons} = useRouteLoaderData('root');
+    const navigate = useNavigate();
+    const location = useLocation();
+
+
+    const fetchData = () => {
+        return new Promise((resolve, reject) => {
+            resolve(webtoons);
+        });
+      };
+
+    useEffect(()=>{
+        fetchData()
+        .then((webtoons) => {
+            if (!webtoons.webtoonList.includes(webtoonName)) navigate(`/`);
+            else{
+                let currPath = location.pathname
+                if(currPath.endsWith('/')) currPath=currPath.slice(0,-1);
+
+                if (currPath.split('/').length<3) navigate(currPath+'/assets');
+                return;
+
+            }
+        })
+
+    },[]);
+    
 
     return <div className="flex flex-row bg-gray-100 h-[11%] min-h-[11%] w-full">
     <div className="flex flex-col pl-3 h-full">
