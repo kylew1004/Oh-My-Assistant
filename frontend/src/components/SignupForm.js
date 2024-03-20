@@ -70,7 +70,7 @@ export default function SignupForm({isSubmitting}) {
 
         <input id="verified" name="verified" type="text" value={verified} hidden /> 
 
-        <button type="submit" disabled={isSubmitting} className="flex m-auto h-12 my-6 w-1/2 bg-gradient-to-r from-[#F6C443] to-[#F3AC58] rounded-full text-black">
+        <button type="submit" disabled={isSubmitting} className="flex m-auto h-12 my-6 mt-10 w-1/2 bg-gradient-to-r from-[#F6C443] to-[#F3AC58] rounded-full text-black">
           {isSubmitting ? <img className="h-[60%] w-auto m-auto" src={generalLoading}/> : <p className="m-auto">Sign up</p>}
           </button>
 
