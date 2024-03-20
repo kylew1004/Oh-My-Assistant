@@ -1,5 +1,5 @@
 import {useState, useEffect} from 'react';
-import spinner from '../assets/loading.gif';
+import spinner from '../assets/loading.svg';
 import Error from './Error.js';
 import SaveAssetModal from './SaveAssetModal.js';
 
@@ -14,7 +14,7 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
     let styling = "h-full w-full object-contain mx-auto"
     if(isFetching) {
         images=spinner;
-        styling="h-1/6 object-contain mx-auto";
+        styling="h-1/3 object-contain mx-auto";
     }
 
     useEffect(()=>{
@@ -61,7 +61,11 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
         <div className="w-full h-full my-auto relative shadow-xl bg-white bg-opacity-90  border-#7264a9 rounded-3xl p-4 py-5 mx-3">
             <span className={`h-[75%] flex flex-col border rounded-lg p-3 ${error ? 'bg-red-300/20': 'bg-violet-300'} bg-opacity-20 justify-center items-center object-contain mx-auto`} >
             {error ? <Error message={error.message} /> : <>
-            {isFetching ? <img className={styling} src={images}/> 
+            {isFetching ? <div className="flex flex-col justify-center gap-1 text-sm">
+                <img className={styling} src={images}/> 
+                <p className="mx-auto ml-2">이미지 생성중...</p><p className="mx-auto">(약 1분 소요)</p>
+            
+            </div>
                 : (activeImage && <img className={styling} src={"data:image/jpeg;base64,"+activeImage}/>) }</>
             }
             </span>
