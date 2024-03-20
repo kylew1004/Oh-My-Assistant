@@ -28,12 +28,13 @@ const OutputPanel =  forwardRef(function OutputPanel({images, isFetching, error,
        
 
         <div ref={ref} className="flex flex-row shadow-xl bg-white bg-opacity-90 rounded-3xl h-[95%] m-5 p-5 gap-4">
-            {error ? <Error message={error.message} /> : 
-            <span className=" h-full w-[55%] flex border rounded-lg p-3 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
+            <span className={`h-full w-[55%] flex flex-col border rounded-lg p-3 ${error ? 'bg-red-300' : 'bg-violet-300'} bg-opacity-20 justify-center items-center object-contain mx-auto`} >
+            {error ? <Error message={error.message} /> : <>
             {isFetching ? <img className={styling} src={images}/> 
                 : (images && <img className={styling} src={"data:image/jpeg;base64,"+images[0]}/>) }
-            
-            </span>}
+            </>        
+            }
+            </span>
 
             <div className="flex flex-col w-[45%] h-full gap-3">
                 <p className="text-black h-[6%] text-lg font-bold">Process Image</p>

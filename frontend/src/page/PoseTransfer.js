@@ -62,9 +62,15 @@ function PoseTransfer() {
 
         postPoseTransfer(data)
           .then(imgArray =>{
-            console.log(imgArray);
-            setOutputs(imgArray);
-            setErrorFetching(null);
+            if(imgArray.error){
+              setErrorFetching({
+                message: 
+                  imgArray.error || 'Could not process image, please try again later.',
+              });
+            }else{
+              setOutputs(imgArray);
+              setErrorFetching(null);
+            }
             setIsFetching(false);
           })
           .catch(error => {

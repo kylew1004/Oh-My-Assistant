@@ -51,9 +51,15 @@ function StyleTransfer() {
 
         postStyleTransfer(file,prompt,webtoonName)
           .then(imgArr =>{
-            console.log(imgArr);
-            setOutputs(imgArr);
-            setErrorFetching(null);
+            if(imgArr.error){
+              setErrorFetching({
+                message: 
+                  imgArr.error || 'Could not process image, please try again later.',
+              });
+            }else{
+              setOutputs(imgArr);
+              setErrorFetching(null);
+            }
             setIsFetching(false);
           })
           .catch(error => {

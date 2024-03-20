@@ -58,16 +58,13 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
 
     return  <>
             <SaveAssetModal open={isModal} handleClose={handleClose} images={selected} originalImg={originalImg}/>
-        
-        
-       
         <div className="w-full h-full my-auto relative shadow-xl bg-white bg-opacity-90  border-#7264a9 rounded-3xl p-4 py-5 mx-3">
-            {error ? <Error message={error.message} /> : 
-            <span className=" h-[75%] flex border rounded-lg p-3 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
+            <span className={`h-[75%] flex flex-col border rounded-lg p-3 ${error ? 'bg-red-300/20': 'bg-violet-300'} bg-opacity-20 justify-center items-center object-contain mx-auto`} >
+            {error ? <Error message={error.message} /> : <>
             {isFetching ? <img className={styling} src={images}/> 
-                : (activeImage && <img className={styling} src={"data:image/jpeg;base64,"+activeImage}/>) }
-            
-            </span>}
+                : (activeImage && <img className={styling} src={"data:image/jpeg;base64,"+activeImage}/>) }</>
+            }
+            </span>
             <ul className="h-[14%] gap-3 mt-3 flex flex-row rounded-lg p-3 pr-5 bg-violet-300 bg-opacity-20 justify-center items-center object-contain mx-auto" >
             {images && !isFetching && images.map((item,index)=>{
                 return <li className="relative inline-block" key={index}>
@@ -77,7 +74,6 @@ export default function OutputPanel({images, isFetching, error, originalImg}){
                 </li>
             })}
             </ul>
-            {/* <DownloadBtn imageUrl={imageUrl} isFetching={isFetching}/> */}
             <div className="flex flex-row">
                 {isSelect && <>
                     <button className="mr-auto my-auto rounded-full bg-red-500 px-5 text-white py-1 mt-4" onClick={handleCancel}>Cancel</button>
