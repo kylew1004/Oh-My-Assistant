@@ -569,13 +569,12 @@ export async function postStyleTransfer(file, prompt, webtoonName){
             }
           
             if(!response.ok){
-                const resData = await response.json();
-                console.log(resData);
-                return resData.images;
+                // const resData = await response.json();
+                // console.log(resData);
+                // return resData.images;
                 throw {error: 'Could not process inference.',
                        status:500}
             }
-          
             //manage the token returned 
             const resData = await response.json();
             return resData.images;
@@ -632,9 +631,9 @@ export async function postPoseTransfer(data){
             }
           
             if(!response.ok){
-                const resData = await response.json();
-                console.log(resData);
-                return resData.images;
+                // const resData = await response.json();
+                // console.log(resData);
+                // return resData.images;
                 throw {error: 'Could not process inference.',
                        status:500}
             }
