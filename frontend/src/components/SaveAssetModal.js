@@ -2,6 +2,7 @@ import { useRef, useEffect, useState } from 'react';
 import { useLocation, redirect } from 'react-router-dom';
 import { postPoseAsset, postStyleAsset } from '../util/http.js';
 import ErrorMessage from './ErrorMessage.js';
+import generalLoading from '../assets/generalLoading.gif';
 
 function base64toFile(base64Data){
   const byteCharacters = atob(base64Data);
@@ -54,7 +55,6 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
       
       result = await postPoseAsset(fd, files);
     }
-    console.log(result);
 
     if(result==='tokenError') return redirect('/auth');
     if(result.detail && result.detail==="Bad Request: Asset already exists") setError("Asset name already exists. Please use a different asset name.");
@@ -90,7 +90,7 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
 
 
         <button  className="button mx-auto h-12 my-6 w-full  bg-yellow-500 rounded-full text-black font-bold">
-        {isSubmitting ? 'Creating asset...' : 'Create Asset'}
+        {isSubmitting ? <img className="h-[50%] w-auto m-auto" src={generalLoading}/> : 'Create Asset'}
         </button>
 
       </form>

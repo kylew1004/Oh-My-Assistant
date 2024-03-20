@@ -1,5 +1,6 @@
 import {useState} from 'react'; 
 import { Form } from 'react-router-dom';
+import generalLoading from '../assets/generalLoading.gif';
 
 export default function LoginForm({isSubmitting}){
     const [pwNotEqual, setPwNotEqual] = useState(false);
@@ -38,8 +39,8 @@ export default function LoginForm({isSubmitting}){
 
 
 
-          <button type="submit" disabled={isSubmitting} className={`m-auto h-12 my-6 w-1/2  ${isSubmitting ? 'bg-gray-400' :'bg-gradient-to-r from-[#F6C443] to-[#F3AC58]'} rounded-full text-black`}>
-          {isSubmitting ? 'Submitting...' : 'Log in'}
+          <button type="submit" disabled={isSubmitting} className="flex m-auto h-12 my-6 w-1/2 bg-gradient-to-r from-[#F6C443] to-[#F3AC58] rounded-full text-black">
+          {isSubmitting ? <img className="h-[60%] w-auto m-auto" src={generalLoading}/> : <p className="m-auto">Log in</p>}
           </button>
 
       </Form>

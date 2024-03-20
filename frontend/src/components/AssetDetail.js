@@ -3,6 +3,7 @@ import {Await, defer, useLoaderData, useSearchParams} from 'react-router-dom';
 import {getPoseAlbum, getStyleAlbum} from '../util/http.js';
 import DeleteMenu from './DownloadMenu.js';
 import BackButton from './BackButton.js';
+import generalLoading from '../assets/generalLoading.gif';
 
 export default function AssetDetail(){
     const [activeImage, setActiveImage] = useState();
@@ -27,7 +28,7 @@ export default function AssetDetail(){
       
 
 
-    return <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
+    return <Suspense fallback={<img className="h-[5%] w-auto m-auto" src={generalLoading}/>}>
                         <Await resolve={asset} >
                                 {(loadedAsset) =>  loadedAsset && <div className="flex flex-col h-[89%]">
                                 <div className="flex flex-row h-[10%] py-2 ml-10">

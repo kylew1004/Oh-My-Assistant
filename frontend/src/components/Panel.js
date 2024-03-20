@@ -29,7 +29,7 @@ export default function Panel(){
         </div>
     </div>
 
-    <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
+    <Suspense fallback={<p></p>}>
                <Await resolve={isTrained}>
                     {(loadedIsTrained) =>  loadedIsTrained && <NavLink to={`/${webtoonName}/train`} className={`ml-auto my-auto mr-12 h-[45px] px-8 rounded-full bg-gradient-to-b ${loadedIsTrained.isTrained ? 'from-[#2f2750] to-[#4a3ba0] text-yellow-500 ' 
                     : ' from-[#E9522E] via-pink-600 to-[#D58ABD] text-white'} font-bold`}>

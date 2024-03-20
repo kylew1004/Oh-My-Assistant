@@ -1,6 +1,7 @@
 import {useState} from 'react'; 
 import { Form } from 'react-router-dom';
 import { postVerifyEmail } from '../util/http.js';
+import generalLoading from '../assets/generalLoading.gif';
 
 export default function SignupForm({isSubmitting}) {
     const [pwNotEqual, setPwNotEqual] = useState(false);
@@ -69,9 +70,9 @@ export default function SignupForm({isSubmitting}) {
 
         <input id="verified" name="verified" type="text" value={verified} hidden /> 
 
-        <button type="submit" disabled={isSubmitting} className={`m-auto h-12 my-6 w-1/2  ${isSubmitting ? 'bg-gray-400' :'bg-gradient-to-r from-[#F6C443] to-[#F3AC58]'} rounded-full text-black`}>
-            {isSubmitting ? 'Submitting...' : 'Sign up'}
-        </button>
+        <button type="submit" disabled={isSubmitting} className="flex m-auto h-12 my-6 w-1/2 bg-gradient-to-r from-[#F6C443] to-[#F3AC58] rounded-full text-black">
+          {isSubmitting ? <img className="h-[60%] w-auto m-auto" src={generalLoading}/> : <p className="m-auto">Sign up</p>}
+          </button>
 
   
 

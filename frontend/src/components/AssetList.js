@@ -4,6 +4,7 @@ import Asset from '../components/Asset.js';
 import { getStyleAssets, getPoseAssets } from '../util/http';
 import { getAuthToken } from '../util/auth.js';
 import emptyImg from '../assets/empty-box.png';
+import generalLoading from '../assets/generalLoading.gif';
 
 export default function AssetList(){
     const {assets} = useLoaderData();
@@ -30,7 +31,7 @@ export default function AssetList(){
         </div>
 
         <div className="p-4 bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex flex-wrap justify-start gap-5 shadow-lg">
-            <Suspense fallback={<h3 className="text-md pb-1 my-auto" >loading...</h3>}>
+            <Suspense fallback={<img className="h-[8%] w-auto m-auto" src={generalLoading}/>}>
                 <Await resolve={assets} className="bg-white bg-opacity-30 m-auto rounded-xl w-11/12 h-5/6 mt-0 overflow-auto flex justify-center shadow-lg">
                         {(loadedAssets) =>  loadedAssets.length>0 ? loadedAssets.map((asset,index)=><Asset key={index} name={asset.assetName} imageUrl={active==='Scenes' ? asset.backgroundImgUrl : asset.characterImgUrl} />)
                                             : <div className="flex flex-col w-full h-full justify-center items-center overflow-hidden">

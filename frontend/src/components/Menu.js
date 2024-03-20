@@ -4,6 +4,7 @@ import menuLogo from '../assets/menu-logo.png';
 import profileImg from '../assets/profile.png';
 import AddWebtoonModal from './AddWebtoonModal';
 import DeleteMenu from './DeleteMenu.js';
+import generalLoading from '../assets/generalLoading.gif';
 
 export default function Menu(){
     const [isModal, setIsModal] = useState(false);
@@ -29,7 +30,7 @@ export default function Menu(){
         <div className="flex flex-row mt-3  pl-4 bg-gray-950 py-4">
             <img src={profileImg} className="w-9 h-9 mt-1"/>
             <div className="flex flex-col pl-3">
-            <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 my-auto" >loading...</h3>}>
+            <Suspense fallback={<img className="h-[8%] w-auto m-auto" src={generalLoading}/>}>
                     <Await resolve={userInfo}>
                         {(loadedInfo) => <>
                             <h3 className="text-white text-md pb-1" >{loadedInfo.userNickname}</h3>
@@ -51,7 +52,7 @@ export default function Menu(){
         <div className="flex flex-col py-4 h-2/3">
             <p className=" text-gray-600 pl-3 text-md my-3"> WEBTOONS </p>
             <div className="flex flex-col h-auto max-h-1/2 overflow-y-auto overflow-x-hidden no-scrollbar">
-                <Suspense fallback={<h3 className="text-gray-100 text-md pb-1 m-auto ml-4" >loading...</h3>}>
+                <Suspense fallback={<img className="h-[8%] w-auto m-auto" src={generalLoading}/>}>
                         <Await resolve={webtoons}>
                             {(loadedWebtoons) => {
                                 if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className={`flex flex-row h-11 p-1 ${webtoonName===webtoon ? 'text-yellow-500 bg-gray-950' : 'text-white'} hover:bg-gray-950`}>
