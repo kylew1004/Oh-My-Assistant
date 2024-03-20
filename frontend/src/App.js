@@ -11,6 +11,7 @@ import Panel, {loader as isTrainedLoader} from './components/Panel.js';
 import AssetList, {loader as assetsLoader} from './components/AssetList.js';
 import AssetDetail, {loader as assetDetailLoder} from './components/AssetDetail.js';
 import InitialPage from './page/InitialPage.js';
+import PageNotFound from "./components/PageNotFound.js";
 
  
 const router = createBrowserRouter([
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
     action: authAction,
     loader: authLoader,
   },
+  {
+    path:'*',
+    element: <PageNotFound />,
+  }
 ]);
 
 function App() {
