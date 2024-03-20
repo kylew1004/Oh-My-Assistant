@@ -24,7 +24,7 @@ const AddWebtoonModal = function Modal({ open, handleClose }) {
   async function handleSubmit(e){
     e.preventDefault();
     const data = {
-      webtoonName: name,
+      webtoonName: name.trim(),
     }
     const result = await postWebtoon(data);
   

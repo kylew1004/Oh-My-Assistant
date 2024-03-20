@@ -35,6 +35,8 @@ const SaveAssetModal = function Modal({ open, handleClose, images, originalImg})
   async function handleSubmit(event){
     event.preventDefault();
     let fd = new FormData(event.target);
+    const assetName=fd.get('assetName');
+    fd.set('assetName',assetName.trim());
     fd.append('webtoonName',location.pathname.split("/")[1]);
 
     let files = new FormData();
