@@ -75,7 +75,7 @@ export default function TrainUpload({handleState}){
             <ul className="flex flex-row flex-wrap justify-start px-5 py-3 h-full w-full mx-auto no-scrollbar bg-white bg-opacity-50 overflow-scroll rounded-3xl">
                     {
                         files.map((item,index)=>{
-                            return <li className="flex w-[20%] max-h-[60%] aspect-square m-4 relative " key={index}> 
+                            return <li className="flex w-[20%] aspect-square m-4 relative " key={index}> 
                                 <img className="aspect-square" src={URL.createObjectURL(item)}/> 
                                 <button className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 border-2 border-gray-500 text-gray-500 bg-white bg-opacity-50 rounded-full px-2 text-lg font-bold"
                                 onClick={()=>handleImageClick(index)}>x</button> 
