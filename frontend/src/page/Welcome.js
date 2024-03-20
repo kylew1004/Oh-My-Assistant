@@ -25,13 +25,13 @@ export default function Welcome() {
     <div className="welcome-bg flex justify-center items-center h-screen">
         <WelcomeSlide />
 
-        <div className=" py-10 h-[680px] w-[470px] flex flex-col shadow-xl justify-center items-center rounded-r-3xl bg-gray-50/20">
-          <div className="h-10 flex flex-row mx-auto my-4">
+        <div className=" pt-10 pb-7 h-[680px] w-[470px] flex flex-col shadow-xl justify-center items-center rounded-r-3xl bg-gray-50/20">
+          {/* <div className="h-10 flex flex-row mx-auto my-4">
               <img src={logoImg} className="h-6 w-auto mt-1" />
-              <h2 className="text-2xl text-blue-950">&nbsp;SERVICE&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
-          </div>
+              <h2 className="text-2xl text-blue-950">&nbsp;ASSISTANT AI&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</h2>
+          </div> */}
           
-          <div className="h-[470px] w-full flex flex-col">
+          <div className="min-h-[260px] w-full flex flex-col">
             <h2 className="text-3xl text-gray-800 mx-auto mb-1 ">Welcome!</h2>
             <p className="text-2xl text-gray-700 mx-auto mb-10">Sign up to start the service.</p>
             
