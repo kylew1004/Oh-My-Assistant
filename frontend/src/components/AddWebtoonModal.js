@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState} from 'react';
-import { Form, useActionData, redirect, useNavigate} from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 import { postWebtoon} from '../util/http.js';
+import ErrorMessage from './ErrorMessage.js';
 
 const AddWebtoonModal = function Modal({ open, handleClose }) {
   const dialog = useRef();
@@ -44,10 +45,7 @@ const AddWebtoonModal = function Modal({ open, handleClose }) {
         <h2 className="font-bold ">Add New Webtoon</h2>
         <hr className="h-[2px] bg-black"></hr>
         <div className="control control-row w-full my-5 flex flex-col">
-          {error && <div className="flex w-full p-2 bg-red-400/30 rounded-md">
-              <p className="text-red-700 mx-auto">{error}</p>
-            </div>
-          }
+          {error && <ErrorMessage>{error}</ErrorMessage>}
           <label className="font-bold mb-3">Name</label>
           <input className="h-16 w-full rounded-lg bg-gray-300 text-gray-700 text-lg p-4 focus:outline-none focus:border-yellow-100 focus:ring-4 focus:ring-yellow-500 placeholder-gray-400" id="name" type="text" name="name" placeholder="Enter Webtoon name" required 
           value={name} onChange={e=>setName(e.target.value)}/>

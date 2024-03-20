@@ -5,6 +5,7 @@ import logoImg from '../assets/logo.png';
 import WelcomeSlide from '../components/WelcomeSlide.js';
 import { postLogin, postSignup } from '../util/http.js';
 import {tokenLoader} from '../util/auth.js';
+import ErrorMessage from '../components/ErrorMessage.js';
 
 
 
@@ -15,7 +16,6 @@ export default function Welcome() {
     const navigation=useNavigation();
 
     const isSubmitting = navigation.state==='submitting';
-    console.log(navigation.state);
 
     const active = !isLogin ? 'left-[23px]  bg-gradient-to-r from-[#F6C443] to-[#F3AC58]' : 'right-[23px]  bg-gradient-to-l from-[#F6C443] to-[#F3AC58]';
     const inactive = !isLogin ? 'right' : 'left';
@@ -44,7 +44,7 @@ export default function Welcome() {
               </Link>
             </p>
             <hr className=" h-[0.9px] w-5/6 mx-auto px-3 bg-blue-950 my-7"/>
-            {data && data.error && <p className="mx-auto text-red-700 mb-2">{data.error}</p>}
+            {data && data.error && <div className="w-[80%] mx-auto mb-2"><ErrorMessage>{data.error}</ErrorMessage></div>}
 
           </div>
 
