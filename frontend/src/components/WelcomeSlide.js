@@ -2,8 +2,7 @@ import {useState} from 'react';
 import slide1Img from '../assets/slide1.png';
 import slide2Img from '../assets/slide2.png';
 import slide3Img from '../assets/slide3.png';
-
-import logoImg from '../assets/logo.png';
+import mainLogoImg from '../assets/main-logo.png';
 
 export default function WelcomeSlide(){
     const [slide, setSlide] = useState(1);
@@ -28,12 +27,11 @@ export default function WelcomeSlide(){
         <div className="flex flex-row my-auto w-full h-full justify-center items-center">
             <div className={`w3-left mr-auto ml-5 ${towards==3 ? 'text-white/0 cursor-default hover:cursor-default' : 'text-white cursor-pointer hover:cursor-pointer' }`} onClick={towards==1 ? handleClick : ()=>{}}>&#10094;</div>
             <div className="flex flex-col h-full w-full mx-auto text-gray-50">
-                <div className="h-10 flex flex-row mr-auto mt-6">
-                    <img src={logoImg} className="h-6 w-auto mt-1" />
-                    <h2 className="text-2xl text-yellow-500">&nbsp;ASSISTANT AI</h2>
+                <div className="h-12 flex flex-row mr-auto mt-8">
+                    <img src={mainLogoImg} className="h-full w-auto mt-1" />
                 </div>
                 {slide==1 && <>
-                    <div className="h-[60%] flex flex-col mr-3 mt-20">
+                    <div className="h-[60%] flex flex-col mr-3 mt-12">
                         <img src={slide1Img} className="h-[70%] w-[72%] mx-auto" />
                     </div>
                     <div className="mx-auto mb-10">
@@ -42,7 +40,7 @@ export default function WelcomeSlide(){
                     </div>
                     </>}
                 {slide==2 && <>
-                    <div className="h-[65%] w-full flex flex-col mt-10 mb-0">
+                    <div className="h-[65%] w-full flex flex-col mt-6 mb-0">
                         <img src={slide2Img} className="m-auto h-[90%] w-[80%]"/>
                     </div>
                     <div className="mx-auto mt-3">
@@ -51,7 +49,7 @@ export default function WelcomeSlide(){
                     </div>
                     </>}
                 {slide==3 && <>
-                    <div className="h-[70%] flex flex-col mt-7">
+                    <div className="h-[70%] flex flex-col">
                         <img src={slide3Img} className="h-[60%] w-[75%] m-auto" />
                     </div>
                     <div className="mx-auto">
