@@ -2,14 +2,14 @@ from pydantic import BaseModel
 
 
 class ModelBase(BaseModel):
-    webtoonName: str
-    model_path: str
+    webtoonId: str
+    modelPath: str
 
 class ModelCreate(ModelBase):
     pass
 
 class Model(ModelBase):
-    model_id: int
+    id: int
 
     class Config:
         orm_mode = True

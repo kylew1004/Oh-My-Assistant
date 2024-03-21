@@ -10,6 +10,7 @@ class WebtoonCreate(WebtoonBase):
     webtoonName: str
 
 class Webtoon(WebtoonBase):
+    id: int
     createdAt: datetime
     userId: int
 
