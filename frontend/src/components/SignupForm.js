@@ -8,13 +8,16 @@ export default function SignupForm({isSubmitting}) {
     const [verified, setVerified] = useState('false');
     const [email, setEmail] = useState('');
 
-    async function handleVerify({isSubmitting}){
-      const result = await postVerifyEmail({userEmail:email});
-      console.log(result)
-      if(result.detail==="Email is available"){
-        setVerified('true');
-        alert('Email verified!');
-      }else alert('Email already exists!');
+    async function handleVerify(){
+      if(email.trim().length===0) alert('Please enter an email!');
+      else{
+        const result = await postVerifyEmail({userEmail:email});
+        if(result.detail==="Email is available"){
+          setVerified('true');
+          alert('Email verified!');
+        }else alert('Email already exists!');
+
+      }
       
     }
 
