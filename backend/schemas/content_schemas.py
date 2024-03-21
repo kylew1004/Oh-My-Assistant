@@ -4,7 +4,7 @@ from datetime import datetime
 
 
 class ContentImgBase(BaseModel):
-    webtoonName: str
+    webtoonId: str
     originalImageUrl: str
     assetName: str
     description: Optional[str] = None

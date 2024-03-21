@@ -4,19 +4,21 @@ from datetime import datetime
 
 
 class PoseImgBase(BaseModel):
-    webtoonName: str
-    originalImageUrl: str
-    pose_image_url: str
-    asset_name: str
+    webtoonId: int
+    poseImgUrl: str
+    assetName: str
     description: Optional[str] = None
+    characterImgUrl: str
+    originalPoseImgUrl: str
+    originalCharacterImgUrl: str
 
 class PoseImgCreate(PoseImgBase):
     pass
 
 
 class PoseImg(PoseImgBase):
-    pose_image_id: int
-    created_at: datetime
+    id: int
+    createdAt: datetime
 
     class Config:
         orm_mode = True
