@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 
 class ModelBase(BaseModel):
-    webtoonId: str
+    webtoonId: int
     modelPath: str
 
 class ModelCreate(ModelBase):

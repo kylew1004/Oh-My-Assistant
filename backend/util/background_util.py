@@ -2,7 +2,7 @@ from sqlalchemy.orm import Session
 import os
 import boto3
 import uuid
-from fastapi import UploadFile, File, HTTPException
+from fastapi import UploadFile, File, HTTPException, Form
 from sqlalchemy.orm import Session
 from typing import List
 import requests
@@ -49,7 +49,7 @@ def background_train(webtoon_name: str, db: Session, userId: int, images: List[U
                 db.rollback()
                 raise HTTPException(status_code=500, detail="Internal Server Error")
 
-def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId: int):
+def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId: int, prompt: str = Form(...)):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -64,7 +64,8 @@ def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId:
     model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).order_by(models.Model.id.desc()).first().modelPath
     if model_path is None:
         raise HTTPException(status_code=404, detail="Model not found")
-    files = {'content_image': (file_name, file_content, file_content_type)}
+    files = {'content_image': (file_name, file_content, file_content_type), 'prompt': (None, prompt)}
+    print(files)
     response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
     
     if response.status_code != 200:
