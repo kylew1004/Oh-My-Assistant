@@ -551,6 +551,7 @@ export async function postStyleTransfer(file, prompt, webtoonName){
             }else{
                 let data=new FormData();
                 data.append('image',file);
+                data.append('prompt',prompt);
                 
                 response = await fetch(`${URL}/api/background/img2img/${webtoonName}`,{
                     method:'POST',
