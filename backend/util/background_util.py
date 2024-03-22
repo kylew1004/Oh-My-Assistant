@@ -49,7 +49,7 @@ def background_train(webtoon_name: str, db: Session, userId: int, images: List[U
                 db.rollback()
                 raise HTTPException(status_code=500, detail="Internal Server Error")
 
-def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId: int, prompt: str = Form(...)):
+def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId: int, prompt: str):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
         raise HTTPException(status_code=404, detail="User not found")
     
