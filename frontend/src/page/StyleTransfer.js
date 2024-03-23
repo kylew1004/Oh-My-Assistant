@@ -42,8 +42,6 @@ function StyleTransfer() {
     }
 
     async function handleSubmit(){
-      console.log(prompt, webtoonName);
-      console.log(file);
       if(file || prompt){
         //send data to backend
         setErrorFetching(null);
