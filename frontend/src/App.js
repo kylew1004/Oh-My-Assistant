@@ -1,3 +1,5 @@
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
 import React from "react";
 import { RouterProvider, createBrowserRouter, Outlet, redirect } from 'react-router-dom';
 import Welcome, {action as authAction, loader as authLoader} from "./page/Welcome.js";
@@ -12,6 +14,8 @@ import AssetList, {loader as assetsLoader} from './components/AssetList.js';
 import AssetDetail, {loader as assetDetailLoder} from './components/AssetDetail.js';
 import InitialPage from './page/InitialPage.js';
 import PageNotFound from "./components/PageNotFound.js";
+
+const queryClient = new QueryClient()
 
  
 const router = createBrowserRouter([
@@ -93,7 +97,10 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return <QueryClientProvider client={queryClient}>
+    <RouterProvider router={router} />
+    <ReactQueryDevtools />
+    </QueryClientProvider>;
 }
 
 export default App;

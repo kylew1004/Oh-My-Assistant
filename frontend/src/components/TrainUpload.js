@@ -1,12 +1,25 @@
-import {redirect, useParams} from 'react-router-dom';
+import {useParams} from 'react-router-dom';
 import {useState} from 'react';
 import {postModelTrain} from '../util/http.js';
 import BackButton from './BackButton.js';
 import { validateExt } from '../util/util.js';
 
+import {useMutation} from '@tanstack/react-query';
+import {waitFunc} from '../util/http.js';
+
 export default function TrainUpload({handleState}){
     const [files,setFiles] = useState([]);
     const {webtoonName} = useParams();
+    const mutation = useMutation({
+        mutationKey: ['train',webtoonName],
+        mutationFn: (file)=>{
+            return waitFunc(file);
+        },
+        onSuccess:()=>{
+            handleState(2);
+            console.log('done');
+        }
+    });
 
     function handleChange(e){
         for(let i = 0; i < e.target.files.length; i++){
@@ -41,11 +54,11 @@ export default function TrainUpload({handleState}){
             });
             
             handleState(1);
-            const result = await postModelTrain(webtoonName, data);
-            console.log(result);
-            if(result==='tokenError') redirect('/auth');
-            if(result.status == 500) handleState(3);
-            else handleState(2);
+            mutation.mutate(data);
+            // const result = await postModelTrain(webtoonName, data);
+            // if(result==='tokenError') redirect('/auth');
+            // if(result.status == 500) handleState(3);
+            // else handleState(2);
 
         }
         

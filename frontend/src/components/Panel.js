@@ -3,15 +3,33 @@ import { useEffect, Suspense } from 'react';
 import { getIsTrained } from '../util/http';
 import { getAuthToken } from '../util/auth';
 
+import { useIsMutating, useMutation} from '@tanstack/react-query';
+
 const activeStyle = "flex flex-col mx-4 text-gray-600 text-md h-full"
 const inactiveStyle = "flex flex-col pl-3 text-black font-bold text-md"
 
 export default function Panel(){
     const {webtoonName} = useParams();
+
+    const mutation = useMutation({
+        mutationKey: ['train',webtoonName],
+        mutationFn: (file)=>{
+            return null;
+        },
+        onSuccess:()=>{
+            console.log('done');
+        }
+    });
+    
+    const mutationKey = ['train',webtoonName];
+    const isMutatingTrain = useIsMutating({mutationKey: mutationKey});
     const {isTrained} = useLoaderData();
     const {webtoons} = useRouteLoaderData('root');
     const navigate = useNavigate();
     const location = useLocation();
+    // console.log(mutationKey,'real',useIsMutating({mutationKey: mutationKey}));
+    // console.log(['train','1234'],'fake',useIsMutating({mutationKey: ['train','1234']}));
+    
 
 
     const fetchData = () => {
@@ -33,6 +51,8 @@ export default function Panel(){
 
             }
         })
+
+
 
     },[]);
     
@@ -61,7 +81,8 @@ export default function Panel(){
                     {(loadedIsTrained) =>  loadedIsTrained && <NavLink to={`/${webtoonName}/train`} className={`ml-auto my-auto mr-12 h-[45px] px-8 rounded-full bg-gradient-to-b ${loadedIsTrained.isTrained ? 'from-[#2f2750] to-[#4a3ba0] text-yellow-500 ' 
                     : ' from-[#E9522E] via-pink-600 to-[#D58ABD] text-white'} font-bold`}>
         <p className="text-center mt-3">
-         {loadedIsTrained.isTrained ? "Re-initialize " : "Initialize "}Style Reference
+         {isMutatingTrain ? "Training..." : 
+         (loadedIsTrained.isTrained ? "Re-initialize Style Reference" : "Initialize Style Reference")}
         </p>
     </NavLink>}
                 </Await>
