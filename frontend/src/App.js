@@ -14,6 +14,7 @@ import AssetList, {loader as assetsLoader} from './components/AssetList.js';
 import AssetDetail, {loader as assetDetailLoder} from './components/AssetDetail.js';
 import InitialPage from './page/InitialPage.js';
 import PageNotFound from "./components/PageNotFound.js";
+import WebtoonPage from './page/WebtoonPage.js';
 
 const queryClient = new QueryClient()
 
@@ -31,10 +32,7 @@ const router = createBrowserRouter([
       },
       {
         path:':webtoonName',
-        element: <>
-          <Panel />
-          <Outlet />
-        </>,
+        element: <WebtoonPage />,
         id:'webtoonRoot',
         loader: isTrainedLoader,
         children:[
