@@ -16,8 +16,7 @@ export default function TrainUpload({handleState}){
             return waitFunc(file);
         },
         onSuccess:()=>{
-            handleState(2);
-            console.log('done');
+            
         }
     });
 
