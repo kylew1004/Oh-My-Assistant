@@ -18,7 +18,16 @@ import WebtoonPage from './page/WebtoonPage.js';
 
 import { NotiProvider } from './store/noti_context.js';
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnReconnect: false,
+      retry: 1,
+      staleTime: 1000 * 60 * 5,
+      cacheTime: 1000 * 60 * 5,
+    },
+  },
+});
 
  
 const router = createBrowserRouter([

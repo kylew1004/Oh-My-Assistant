@@ -1,6 +1,6 @@
 import {useEffect} from 'react';
 import { Outlet, useLoaderData, defer, redirect, useSubmit } from 'react-router-dom';
-import {getUser, getWebtoons, postWebtoon} from '../util/http.js';
+import { getWebtoons } from '../util/http.js';
 
 import Menu from "./Menu.js";
 import {getAuthToken, getTokenDuration} from '../util/auth.js';
@@ -46,7 +46,6 @@ export function loader(){
   
 
   return defer({
-    userInfo: getUser(),
     webtoons: getWebtoons()
   });
 }

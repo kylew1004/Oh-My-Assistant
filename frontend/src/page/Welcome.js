@@ -1,11 +1,12 @@
 import {useSearchParams, Link, useActionData, useNavigation, json, redirect} from 'react-router-dom';
 import SignupForm from '../components/SignupForm.js';
 import LoginForm from '../components/LoginForm.js';
-import logoImg from '../assets/logo.png';
 import WelcomeSlide from '../components/WelcomeSlide.js';
 import { postLogin, postSignup } from '../util/http.js';
 import {tokenLoader} from '../util/auth.js';
 import ErrorMessage from '../components/ErrorMessage.js';
+import { Query, QueryClient, useQueryClient } from '@tanstack/react-query';
+import {useEffect} from 'react';
 
 
 
@@ -19,6 +20,12 @@ export default function Welcome() {
 
     const active = !isLogin ? 'left-[23px]  bg-gradient-to-r from-[#F6C443] to-[#F3AC58]' : 'right-[23px]  bg-gradient-to-l from-[#F6C443] to-[#F3AC58]';
     const inactive = !isLogin ? 'right' : 'left';
+
+    const queryClient = useQueryClient();
+    useEffect(()=>{
+      queryClient.clear();
+
+    },[]);
 
 
     return (
@@ -110,7 +117,6 @@ export default function Welcome() {
       
     }
 
-    console.log(result);
 
     return result;
   }
