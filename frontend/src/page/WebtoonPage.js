@@ -9,7 +9,7 @@ export default function WebtoonPage(){
 
     return <>
     <Panel />
-    <div className="flex flex-col  w-full h-[89%] ">
+    <div className="relative flex flex-col  w-full h-[89%]">
     <Notification />
     <Outlet />
 
