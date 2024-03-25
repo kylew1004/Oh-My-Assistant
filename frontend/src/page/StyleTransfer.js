@@ -13,6 +13,8 @@ import { validateExt } from "../util/util.js";
 function StyleTransfer() {
     const [file, setFile] = useState();
     const [prompt, setPrompt] = useState();
+    const [model, setModel] = useState('Lora');
+
     const [outputs, setOutputs] = useState();
     const [isFetching, setIsFetching] = useState(false);
     const [errorFetching, setErrorFetching] = useState();
@@ -37,6 +39,10 @@ function StyleTransfer() {
       setPrompt(e.target.value);
     }
 
+    function handleModelChange(e){
+      setModel(e.target.value);
+    }
+
     function cancelChange(){
       setFile(null);
     }
@@ -47,7 +53,7 @@ function StyleTransfer() {
         setErrorFetching(null);
         setIsFetching(true);
 
-        postStyleTransfer(file,prompt,webtoonName)
+        postStyleTransfer(file,prompt,webtoonName,model)
           .then(imgArr =>{
             if(imgArr.error){
               setErrorFetching({
@@ -85,7 +91,7 @@ function StyleTransfer() {
 
 
         <div className="flex font-sans flex-row items-center h-[90%] my-auto py-4">
-          <InputPanel imageUrl={fileUrl} prompt={prompt} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit} handlePromptChange={handlePromptChange} cancelChange={cancelChange}/>
+          <InputPanel imageUrl={fileUrl} prompt={prompt} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit} handlePromptChange={handlePromptChange} cancelChange={cancelChange} handleModelChange={handleModelChange}/>
           <OutputPanel images={outputs} isFetching={isFetching} error={errorFetching} originalImg={file} />    
         </div>
       </>
