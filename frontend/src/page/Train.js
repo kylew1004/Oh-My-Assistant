@@ -1,19 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useParams } from "react-router-dom";
 import { useState } from "react";
 import TrainUpload from "../components/TrainUpload.js";
 import TrainComplete from "../components/TrainComplete.js";
 import TrainLoading from "../components/TrainLoading.js";
 import TrainError from "../components/TrainError.js";
 import { useIsMutating } from "@tanstack/react-query";
-import { useIsMutating } from "@tanstack/react-query";
 
 export default function Train() {
-  const { webtoonName } = useParams();
-  const isMutatingTrain = useIsMutating({
-    mutationKey: ["train", webtoonName],
-  });
-  const [state, setState] = useState(isMutatingTrain ? 1 : 0);
   const { webtoonName } = useParams();
   const isMutatingTrain = useIsMutating({
     mutationKey: ["train", webtoonName],

@@ -3,11 +3,13 @@ import {
   useParams,
   defer,
   useLoaderData,
+  Await,
   redirect,
+  useRouteLoaderData,
   useNavigate,
   useLocation,
 } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, Suspense } from "react";
 import { getIsTrained } from "../util/http";
 import { getAuthToken } from "../util/auth";
 
@@ -101,24 +103,43 @@ export default function Panel() {
         </div>
       </div>
 
-      {trainData && (
-        <NavLink
-          to={`/${webtoonName}/train`}
-          className={`ml-auto my-auto mr-12 h-[45px] px-8 rounded-full bg-gradient-to-b ${
-            trainData.isTrained
-              ? "from-[#2f2750] to-[#4a3ba0] text-yellow-500 "
-              : " from-[#E9522E] via-pink-600 to-[#D58ABD] text-white"
-          } font-bold`}
-        >
-          <p className="text-center mt-3">
-            {isMutatingTrain
-              ? "Training..."
-              : loadedIsTrained.isTrained
-              ? "Re-initialize Style Reference"
-              : "Initialize Style Reference"}
-          </p>
-        </NavLink>
-      )}
+      <Suspense fallback={<p></p>}>
+        <Await resolve={isTrained}>
+          {(loadedIsTrained) =>
+            loadedIsTrained && (
+              <NavLink
+                to={`/${webtoonName}/train`}
+                className={`ml-auto my-auto mr-12 h-[45px] px-8 rounded-full bg-gradient-to-b ${
+                  loadedIsTrained.isTrained
+                    ? "from-[#2f2750] to-[#4a3ba0] text-yellow-500 "
+                    : " from-[#E9522E] via-pink-600 to-[#D58ABD] text-white"
+                } font-bold`}
+              >
+                <p className="text-center mt-3">
+                  {isMutatingTrain
+                    ? "Training..."
+                    : loadedIsTrained.isTrained
+                    ? "Re-initialize Style Reference"
+                    : "Initialize Style Reference"}
+                </p>
+              </NavLink>
+            )
+          }
+        </Await>
+      </Suspense>
     </div>
   );
+}
+
+export async function loader({ params }) {
+  const token = getAuthToken();
+  if (!token || token == "EXPIRED") return redirect("/auth");
+
+  const data = {
+    webtoonName: params.webtoonName,
+  };
+
+  return defer({
+    isTrained: getIsTrained(data),
+  });
 }

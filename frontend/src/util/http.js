@@ -17,15 +17,6 @@ const convertURLtoFile = async (url) => {
   return new File([data], filename, metadata);
 };
 
-export async function waitFunc(file) {
-  // Use setTimeout to wait for 10 seconds
-  await new Promise((resolve) => setTimeout(resolve, 10000));
-  throw { err: "error" };
-
-  // After 5 seconds, return a value
-  return "result";
-}
-
 export async function fetchOutput() {
   const response = await fetch(`${URL}/get-image`);
   const resData = await response.json();
@@ -472,41 +463,46 @@ export async function postModelTrain(webtoonName, data) {
   // return data.get('images');
   const token = getAuthToken();
   if (token && token != "EXPIRED") {
-    const response = await fetch(`${URL}/api/background/train/${webtoonName}`, {
-      method: "POST",
-      headers: {
-        //   'Content-Type' : 'application/json',
-        Authorization: token,
-      },
-      body: data,
-    });
+    try {
+      const response = await fetch(
+        `${URL}/api/background/train/${webtoonName}`,
+        {
+          method: "POST",
+          headers: {
+            //   'Content-Type' : 'application/json',
+            Authorization: token,
+          },
+          body: data,
+        }
+      );
 
-    //handle response
-    if (
-      response.status === 422 ||
-      response.status == 401 ||
-      response.stastus == 400
-    ) {
-      throw { error: "Could not process train.", status: response.status };
+      //handle response
+      if (
+        response.status === 422 ||
+        response.status == 401 ||
+        response.stastus == 400
+      ) {
+        throw { error: "Could not process train.", status: response.status };
+      }
+
+      if (!response.ok) {
+        throw { error: "Could not process train.", status: 500 };
+      }
+
+      //manage the token returned
+      const resData = await response.json();
+      return resData;
+    } catch (e) {
+      console.log(e);
+      if (e.error) return e;
+      else return { error: "Could not process train.", status: "unknown" };
     }
-
-    if (!response.ok) {
-      throw { error: "Could not process train.", status: 500 };
-    }
-
-    //manage the token returned
-    const resData = await response.json();
-    console.log(resData);
-    if (resData.error) throw resData;
-    return resData;
   }
 
-  throw { error: "tokenError" };
+  return "tokenError";
 }
 
-export async function postStyleTransfer(file, prompt, webtoonName, model) {
-  //model : Lora or DreamStyler
-
+export async function postStyleTransfer(file, prompt, webtoonName) {
   //dummy
   // const urls=["https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
   //     "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
@@ -650,36 +646,41 @@ export async function postPoseTransfer(data) {
 export async function postWebtoon(data) {
   const token = getAuthToken();
   if (token && token != "EXPIRED") {
-    const response = await fetch(`${URL}/api/webtoon/create`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: token,
-      },
-      body: JSON.stringify(data),
-    });
+    try {
+      const response = await fetch(`${URL}/api/webtoon/create`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: token,
+        },
+        body: JSON.stringify(data),
+      });
 
-    //handle response
-    if (
-      response.status === 422 ||
-      response.status == 401 ||
-      response.stastus == 400
-    ) {
-      throw { error: "Could not add webtoon.", status: response.status };
+      //handle response
+      if (
+        response.status === 422 ||
+        response.status == 401 ||
+        response.stastus == 400
+      ) {
+        throw { error: "Could not add webtoon.", status: response.status };
+      }
+
+      //manage the token returned
+      const resData = await response.json();
+
+      if (!response.ok) {
+        if (resData.detail === "Bad Request: Webtoon already registered")
+          throw { error: "Webtoon name already exists!", status: 500 };
+        throw { error: resData.detail, status: 500 };
+      }
+      return resData;
+    } catch (e) {
+      if (e.error) return e;
+      else return { error: "Could not add webtoon.", status: "unkown" };
     }
-
-    //manage the token returned
-    const resData = await response.json();
-
-    if (!response.ok) {
-      if (resData.detail === "Bad Request: Webtoon already registered")
-        throw { error: "Webtoon name already exists!", status: 500 };
-      throw { error: resData.detail, status: 500 };
-    }
-    return resData;
   }
 
-  throw { error: "tokenError" };
+  return "tokenError";
 }
 
 export async function postPoseAsset(fd, files) {
@@ -861,37 +862,43 @@ export async function deleteBackgroundAsset(data) {
 export async function deleteWebtoon(data) {
   const token = getAuthToken();
   if (token && token != "EXPIRED") {
-    const response = await fetch(
-      `${URL}/api/webtoon/delete/${data.webtoonName}`,
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: token,
-        },
-        body: JSON.stringify(data),
+    try {
+      const response = await fetch(
+        `${URL}/api/webtoon/delete/${data.webtoonName}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+          body: JSON.stringify(data),
+        }
+      );
+
+      //handle response
+      if (
+        response.status === 422 ||
+        response.status == 401 ||
+        response.stastus == 400
+      ) {
+        throw { error: "Could not delete webtoon.", status: response.status };
       }
-    );
 
-    //handle response
-    if (
-      response.status === 422 ||
-      response.status == 401 ||
-      response.stastus == 400
-    ) {
-      throw { error: "Could not delete webtoon.", status: response.status };
+      if (!response.ok) {
+        throw { error: "Could not delete webtoon.", status: 500 };
+      }
+
+      //manage the token returned
+      const resData = await response.json();
+      console.log(resData);
+      return resData;
+    } catch (e) {
+      if (e.error) return e;
+      else return { error: "Could not delete webtoon.", status: "unknown" };
     }
-
-    if (!response.ok) {
-      throw { error: "Could not delete webtoon.", status: 500 };
-    }
-
-    //manage the token returned
-    const resData = await response.json();
-    return resData;
   }
 
-  throw { error: "tokenError" };
+  return "tokenError";
 }
 
 export async function getIsTrained(data) {
