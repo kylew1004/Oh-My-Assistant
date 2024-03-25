@@ -23,7 +23,7 @@ def background_train(webtoon_name:str, modelType: str, images: List[UploadFile] 
 
 
 @api_background.post('/img2img/{webtoon_name}')
-def background_inference(webtoon_name: str, prompt: str, image: UploadFile, db: Session = Depends(get_db),
+def background_inference(webtoon_name: str,  prompt: str, image: UploadFile, db: Session = Depends(get_db),
                          current_user: user_schemas.User = Depends(get_current_user)):
     return background_util.background_img2img(webtoon_name, image, db, current_user['userId'],prompt)
 

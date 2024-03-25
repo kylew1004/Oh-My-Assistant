@@ -31,5 +31,21 @@ services:
       - db
     env_file: .env
 
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    command: npm start
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      # - ${PWD}:/frontend
+      - /frontend/node_modules
+      - ./frontend/:/frontend/
+    expose:
+      - 3000
+
 volumes:
   mysql_data_dev: null
