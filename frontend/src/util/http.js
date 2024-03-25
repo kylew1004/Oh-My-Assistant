@@ -523,7 +523,8 @@ export async function postModelTrain(webtoonName, data){
 
 }
 
-export async function postStyleTransfer(file, prompt, webtoonName){
+export async function postStyleTransfer(file, prompt, webtoonName, model){
+    //model : Lora or DreamStyler
 
     //dummy 
     // const urls=["https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true", 
