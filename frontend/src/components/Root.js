@@ -1,18 +1,17 @@
 import {useEffect} from 'react';
-import { Outlet, useLoaderData, defer, redirect, useSubmit } from 'react-router-dom';
-import { getWebtoons } from '../util/http.js';
+import { Outlet, useSubmit } from 'react-router-dom';
 
 import Menu from "./Menu.js";
 import {getAuthToken, getTokenDuration} from '../util/auth.js';
 
 function RootLayout() {
-  const token = useLoaderData();
+  const token = getAuthToken();
   const submit = useSubmit();
 
   useEffect(()=>{
-    if(!token){
-      return null;
-    }
+    // if(!token){
+    //   return null;
+    // }
     if(token==="EXPIRED"){
       submit(null,{action:'/logout', method:'post'})
       return null ;
@@ -39,13 +38,3 @@ function RootLayout() {
 }
 
 export default RootLayout;
-
-export function loader(){
-  const token = getAuthToken();
-  if(!token || token=='EXPIRED') return redirect('/auth');
-  
-
-  return defer({
-    webtoons: getWebtoons()
-  });
-}
