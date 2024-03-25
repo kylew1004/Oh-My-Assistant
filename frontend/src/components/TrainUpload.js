@@ -1,25 +1,39 @@
-import {useParams} from 'react-router-dom';
-import {useState} from 'react';
+import {useParams, redirect} from 'react-router-dom';
+import {useState, useContext} from 'react';
 import {postModelTrain} from '../util/http.js';
 import BackButton from './BackButton.js';
 import { validateExt } from '../util/util.js';
+import NotiContext from '../store/noti_context.js';
+
 
 import {useMutation} from '@tanstack/react-query';
 import {waitFunc} from '../util/http.js';
 
 export default function TrainUpload({handleState}){
+    const {addNoti} = useContext(NotiContext);
     const [files,setFiles] = useState([]);
     const {webtoonName} = useParams();
     const mutation = useMutation({
         mutationKey: ['train',webtoonName],
         mutationFn: (data)=>{
-            console.log(webtoonName,data);
             return postModelTrain(webtoonName,data);
-            // return waitFunc(data);
+            //return waitFunc(data);
         }
         ,
         onSuccess:()=>{
-            
+            handleState(2);
+            addNoti({
+                state:'success',
+                message:`The train for <${webtoonName}> completed successfully.`,
+            });
+        },
+        onError:(error)=>{
+            if(error.error==='tokenError') redirect('/auth');
+            handleState(3);
+            addNoti({
+                state:'error',
+                message:`The train for <${webtoonName}> failed.`,
+            });
         }
     });
 

@@ -17,6 +17,15 @@ const convertURLtoFile = async (url) => {
     return new File([data], filename, metadata);
 };
 
+export async function waitFunc(file) {
+    // Use setTimeout to wait for 10 seconds
+    await new Promise(resolve => setTimeout(resolve, 10000));
+    throw {err:'error'};
+  
+    // After 5 seconds, return a value
+    return "result";
+  }
+
 
 export async function fetchOutput() {
 
@@ -480,42 +489,36 @@ export async function postModelTrain(webtoonName, data){
     // return data.get('images');
     const token=getAuthToken();
     if(token && token!='EXPIRED'){
-        try{
-            const response = await fetch(`${URL}/api/background/train/${webtoonName}`,{
-                method:'POST',
-                headers:{
-                //   'Content-Type' : 'application/json',
-                  'Authorization' : token,
-                },
-                body: data
-              });
-        
-            //handle response
-            if(response.status===422 || response.status ==401 || response.stastus==400){
-                throw {error: 'Could not process train.',
-                      status:response.status}
-            }
-          
-            if(!response.ok){
-                throw {error: 'Could not process train.',
-                       status:500}
-            }
-          
-            //manage the token returned 
-            const resData = await response.json();
-            return resData;
+        const response = await fetch(`${URL}/api/background/train/${webtoonName}`,{
+            method:'POST',
+            headers:{
+            //   'Content-Type' : 'application/json',
+              'Authorization' : token,
+            },
+            body: data
+          });
     
-        }catch(e){
-            console.log(e);
-            if(e.error) return e;
-            else return {error: 'Could not process train.',
-            status:'unknown'}
+        //handle response
+        if(response.status===422 || response.status ==401 || response.stastus==400){
+            throw {error: 'Could not process train.',
+                  status:response.status}
         }
+      
+        if(!response.ok){
+            throw {error: 'Could not process train.',
+                   status:500}
+        }
+      
+        //manage the token returned 
+        const resData = await response.json();
+        console.log(resData);
+        if(resData.error) throw resData;
+        return resData;
     
 
     }
 
-    return 'tokenError';
+    throw {error:'tokenError'};
 
 
 }
@@ -545,7 +548,7 @@ export async function postStyleTransfer(file, prompt, webtoonName){
                         'Content-Type' : 'application/json',
                         'Authorization' : token,
                       },
-                    body:JSON.stringify({})
+                    body:JSON.stringify({prompt}),
                   });
 
             }else{

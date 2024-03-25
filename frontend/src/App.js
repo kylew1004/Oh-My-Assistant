@@ -16,6 +16,8 @@ import InitialPage from './page/InitialPage.js';
 import PageNotFound from "./components/PageNotFound.js";
 import WebtoonPage from './page/WebtoonPage.js';
 
+import { NotiProvider } from './store/noti_context.js';
+
 const queryClient = new QueryClient()
 
  
@@ -96,8 +98,10 @@ const router = createBrowserRouter([
 
 function App() {
   return <QueryClientProvider client={queryClient}>
-    <RouterProvider router={router} />
-    <ReactQueryDevtools />
+    <NotiProvider>
+      <RouterProvider router={router} />
+      <ReactQueryDevtools />
+    </NotiProvider>
     </QueryClientProvider>;
 }
 
