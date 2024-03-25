@@ -17,9 +17,9 @@ from util import user_util
 api_background = APIRouter(prefix="/api/background")
 
 @api_background.post('/train/{webtoon_name}')
-def background_train(webtoon_name:str, modelType: str, images: List[UploadFile] = File(...),  db: Session = Depends(get_db), 
+def background_train(webtoon_name:str, images: List[UploadFile] = File(...),  db: Session = Depends(get_db), 
                      current_user: user_schemas.User = Depends(get_current_user)):
-    return background_util.background_train(webtoon_name, modelType, db, current_user['userId'], images)
+    return background_util.background_train(webtoon_name, db, current_user['userId'], images)
 
 
 @api_background.post('/img2img/{webtoon_name}')
