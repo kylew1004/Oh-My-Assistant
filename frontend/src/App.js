@@ -9,7 +9,6 @@ import StyleTransfer, {action as saveBackgroundAssetAction} from './page/StyleTr
 import PoseTransfer, {action as savePoseAssetAction} from './page/PoseTransfer.js';
 import CreateNew from './page/CreateNew.js';
 import Train from './page/Train.js';
-import {loader as isTrainedLoader} from './components/Panel.js';
 import AssetList, {loader as assetsLoader} from './components/AssetList.js';
 import AssetDetail, {loader as assetDetailLoder} from './components/AssetDetail.js';
 import InitialPage from './page/InitialPage.js';
@@ -42,8 +41,6 @@ const router = createBrowserRouter([
       {
         path:':webtoonName',
         element: <WebtoonPage />,
-        id:'webtoonRoot',
-        loader: isTrainedLoader,
         children:[
           {
             path: 'assets',

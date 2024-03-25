@@ -1,9 +1,9 @@
-import { NavLink, useParams, defer, useLoaderData, Await, redirect, useRouteLoaderData, useNavigate, useLocation } from 'react-router-dom';
-import { useEffect, Suspense } from 'react';
+import { NavLink, useParams, defer, useLoaderData, redirect, useNavigate, useLocation } from 'react-router-dom';
+import { useEffect } from 'react';
 import { getIsTrained } from '../util/http';
 import { getAuthToken } from '../util/auth';
 
-import { useIsMutating, useMutation, useQueryClient} from '@tanstack/react-query';
+import { useIsMutating, useMutation, useQueryClient, useQuery} from '@tanstack/react-query';
 
 const activeStyle = "flex flex-col mx-4 text-gray-600 text-md h-full"
 const inactiveStyle = "flex flex-col pl-3 text-black font-bold text-md"
@@ -12,8 +12,6 @@ export default function Panel(){
     const {webtoonName} = useParams();
     const mutationKey = ['train',webtoonName];
     const isMutatingTrain = useIsMutating({mutationKey: mutationKey});
-    const {isTrained} = useLoaderData();
-    // const {webtoons} = useRouteLoaderData('root');
     const navigate = useNavigate();
     const location = useLocation();
     const queryClient = useQueryClient();
@@ -26,6 +24,18 @@ export default function Panel(){
             return null;
         },
     });
+
+    const {
+        isLoading: isLoadingTrain,
+        isError: isErrorTrain,
+        data: trainData,
+        isSuccess: isSuccessTrain,
+      } = useQuery({queryKey: ['train',webtoonName], queryFn: ()=>getIsTrained({webtoonName:webtoonName}), options: {
+        refetchOnWindowFocus:true,
+        refetchOnMount: true,
+        staleTime: Infinity,
+        cacheTime: Infinity,
+      }});
     
 
     useEffect(()=>{
@@ -58,29 +68,12 @@ export default function Panel(){
         </div>
     </div>
 
-    <Suspense fallback={<p></p>}>
-               <Await resolve={isTrained}>
-                    {(loadedIsTrained) =>  loadedIsTrained && <NavLink to={`/${webtoonName}/train`} className={`ml-auto my-auto mr-12 h-[45px] px-8 rounded-full bg-gradient-to-b ${loadedIsTrained.isTrained ? 'from-[#2f2750] to-[#4a3ba0] text-yellow-500 ' 
+    {trainData && <NavLink to={`/${webtoonName}/train`} className={`ml-auto my-auto mr-12 h-[45px] px-8 rounded-full bg-gradient-to-b ${trainData.isTrained ? 'from-[#2f2750] to-[#4a3ba0] text-yellow-500 ' 
                     : ' from-[#E9522E] via-pink-600 to-[#D58ABD] text-white'} font-bold`}>
         <p className="text-center mt-3">
          {isMutatingTrain ? "Training..." : 
-         (loadedIsTrained.isTrained ? "Re-initialize Style Reference" : "Initialize Style Reference")}
+         (trainData.isTrained ? "Re-initialize Style Reference" : "Initialize Style Reference")}
         </p>
     </NavLink>}
-                </Await>
-    </Suspense>
 </div>
-}
-
-export async function loader({params}){
-    const token = getAuthToken();
-    if(!token || token=='EXPIRED') return redirect('/auth');
-
-    const data={
-        webtoonName: params.webtoonName,
-    }
-
-    return defer({
-        isTrained: getIsTrained(data),
-      });
 }

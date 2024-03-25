@@ -6,13 +6,15 @@ import { validateExt } from '../util/util.js';
 import NotiContext from '../store/noti_context.js';
 
 
-import {useMutation} from '@tanstack/react-query';
+import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {waitFunc} from '../util/http.js';
 
 export default function TrainUpload({handleState}){
     const {addNoti} = useContext(NotiContext);
     const [files,setFiles] = useState([]);
     const {webtoonName} = useParams();
+    const queryClient = useQueryClient();
+
     const mutation = useMutation({
         mutationKey: ['train',webtoonName],
         mutationFn: (data)=>{
@@ -21,6 +23,7 @@ export default function TrainUpload({handleState}){
         }
         ,
         onSuccess:()=>{
+            queryClient.invalidateQueries(['train',webtoonName]);
             handleState(2);
             addNoti({
                 state:'success',
@@ -71,10 +74,6 @@ export default function TrainUpload({handleState}){
             
             handleState(1);
             mutation.mutate(data);
-            // const result = await postModelTrain(webtoonName, data);
-            // if(result==='tokenError') redirect('/auth');
-            // if(result.status == 500) handleState(3);
-            // else handleState(2);
 
         }
         
