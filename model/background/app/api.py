@@ -1,3 +1,5 @@
+from typing import Optional
+
 from typing import List 
 
 from fastapi import APIRouter, File, UploadFile, Form
@@ -101,7 +103,7 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     )
 
 @router.post("/api/model/background/img2img/{model_id}")
-def background_img2img(model_id: str = str(...), content_image: UploadFile = File(...)):
+def background_img2img(model_id: str, prompt: str = Form(None), content_image: UploadFile = File(...)):
     # make dir
     os.makedirs(f'results/{model_id}', exist_ok=True)
     
@@ -122,7 +124,7 @@ def background_img2img(model_id: str = str(...), content_image: UploadFile = Fil
     content = io.BytesIO(request_object_content)
 
     # generate
-    generated_images = img2img_generate(img2img_pipe, content, alpha_unet=0.3, alpha_text=0.3)
+    generated_images = img2img_generate(img2img_pipe, content, prompt=prompt, alpha_unet=0.3, alpha_text=0.3)
     generated_image_bytes = []
 
     # save
@@ -143,8 +145,6 @@ def background_img2img(model_id: str = str(...), content_image: UploadFile = Fil
 
 @router.post("/api/model/background/txt2img/{model_id}")
 def background_txt2img(model_id: str = str(...), prompt: str = Form(...)):
-    print(prompt)
-
     # make dir
     os.makedirs(f'results/{model_id}', exist_ok=True)
     
