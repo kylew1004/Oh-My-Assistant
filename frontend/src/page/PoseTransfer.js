@@ -89,7 +89,7 @@ function PoseTransfer() {
 
  
     return (
-        <div className="flex flex-col w-full h-[89%]">
+        <>
         <header className="flex font-sans flex-row items-center justify-center pt-5 pb-3 ml-5">
           <BackButton />
           <h2 className="text-gray-600 w-full m-auto text-center mr-32">CHARACTER POSE TRANSFER</h2>
@@ -107,7 +107,7 @@ function PoseTransfer() {
             />
           <OutputPanel ref={bottomRef} images={outputs} isFetching={isFetching} error={errorFetching} originalImages={[character,pose]} />    
         </div>
-        </div>
+        </>
     );
 }
  

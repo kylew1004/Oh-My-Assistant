@@ -76,7 +76,7 @@ function StyleTransfer() {
 
  
     return (
-      <div className="flex flex-col w-full h-[89%]">
+      <>
           <header className="flex h-[10%] font-sans flex-row items-center justify-center pt-5 pb-3 ml-5">
             <BackButton />
             <h2 className="text-gray-600 w-full text-center mr-28 m-auto">SCENE STYLE TRANSFER</h2>
@@ -88,7 +88,7 @@ function StyleTransfer() {
           <InputPanel imageUrl={fileUrl} prompt={prompt} isFetching={isFetching} handleChange={handleChange} handleSubmit={handleSubmit} handlePromptChange={handlePromptChange} cancelChange={cancelChange}/>
           <OutputPanel images={outputs} isFetching={isFetching} error={errorFetching} originalImg={file} />    
         </div>
-      </div>
+      </>
     );
 }
  

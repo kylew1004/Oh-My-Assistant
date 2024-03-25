@@ -19,7 +19,7 @@ export default function AssetList(){
         }
     }, [searchParams, setSearchParams]);
 
-    return <div className="flex flex-col  w-full h-[89%] pb-1">
+    return <>
         <div className="flex justify-center items-center w-full m-auto py-1">
             <Link to={`?mode=${inactive}`} className={ `flex flex-row bg-gray-300 rounded-full w-1/4`}>
                 {active==='Scenes' && <p className="text-center m-auto text-gray-500 font-bold">{inactive}</p>}
@@ -42,7 +42,7 @@ export default function AssetList(){
             </Suspense>
         </div> 
 
-    </div>
+    </>
     
 }
 
