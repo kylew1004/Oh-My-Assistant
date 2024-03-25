@@ -5,11 +5,26 @@ import menuIcon from '../assets/dot-menu-more-svgrepo-com.svg';
 import {useState} from 'react';
 import {deleteWebtoon, deletePoseAsset, deleteBackgroundAsset } from '../util/http.js';
 import {redirect, useNavigate} from 'react-router-dom';
+import { useQueryClient, useMutation } from '@tanstack/react-query';
 
 export default function DeleteMenu({subject}) {
     const [anchorEl, setAnchorEl] = useState(null);
     const open = Boolean(anchorEl);
     const navigate = useNavigate()
+    const queryClient = useQueryClient();
+
+    const {mutate} = useMutation({
+      mutationFn: (data)=>{
+          return deleteWebtoon(data);
+      },
+      onSuccess:(data)=>{
+          queryClient.invalidateQueries(['webtoons']);
+          navigate('.', { replace: true });
+      },
+      onError:(error)=>{
+        if(error.error==='tokenError') return redirect('/auth');
+      }
+  });
 
     const handleClick = (event) => {
       event.preventDefault();
@@ -17,12 +32,9 @@ export default function DeleteMenu({subject}) {
     };
 
     async function handleDeleteWebtoon(webtoon){
-        const result = await deleteWebtoon({
-            webtoonName: webtoon,
+        mutate({
+          webtoonName: webtoon,
         });
-
-        if(result==='tokenError') return redirect('/auth');
-        navigate('.', { replace: true });
     }
 
     async function handleDeleteAsset(subject){
