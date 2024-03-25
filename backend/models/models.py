@@ -73,6 +73,5 @@ class Model(Base):
     id = Column(Integer, primary_key=True, index=True)
     webtoonId = Column(Integer, ForeignKey("webtoon.id"), nullable=False)
     modelPath = Column(String(255), index=True)
-    modelType = Column(String(50), index=True)
 
     webtoon = relationship("Webtoon", back_populates="model")
