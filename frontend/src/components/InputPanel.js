@@ -3,7 +3,7 @@ import Help from "./Help.js";
 
 export default function InputPanel({imageUrl, isFetching, handleChange, handleSubmit, handlePromptChange, prompt, cancelChange, handleModelChange}){
 
-    return  <div className="flex flex-col w-full h-full my-auto relative shadow-xl bg-white bg-opacity-90  border-#7264a9 rounded-3xl p-5 py-4 mx-3 no-scrollbar">
+    return  <div className="flex flex-col w-full h-full my-auto relative shadow-xl bg-white bg-opacity-90  border-#7264a9 rounded-3xl p-5 py-4 mx-3 overflow-auto no-scrollbar">
         <div className="h-[7%] flex flex-row mb-2">
             <h3 className="text-black text-lg font-bold my-auto mr-1.5">Input Image</h3>
             <Help />
