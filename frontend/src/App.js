@@ -104,7 +104,7 @@ function App() {
   return <QueryClientProvider client={queryClient}>
     <NotiProvider>
       <RouterProvider router={router} />
-      <ReactQueryDevtools />
+      {/* <ReactQueryDevtools /> */}
     </NotiProvider>
     </QueryClientProvider>;
 }
