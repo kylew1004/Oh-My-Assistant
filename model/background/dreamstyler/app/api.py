@@ -7,7 +7,7 @@ from schemas import GenerationRequest, GenerationResponse, TrainResponse   # 통
 from database import GenerationResult, TrainResult
 from model import get_img2img_pipe, get_txt2img_pipe, img2img_generate, txt2img_generate, train, load_img2img_pipeline, load_txt2img_pipeline
 from config import config, train_config
-from env import env
+#from env import env
 
 from PIL import Image
 
@@ -15,16 +15,10 @@ import shutil
 import io
 import os 
 import uuid 
-import boto3
+#import boto3
 import base64
 
 router = APIRouter()
-s3 = boto3.client(
-        's3',
-        aws_access_key_id=env.access_key_id,
-        aws_secret_access_key=env.access_key,
-        region_name=env.region
-    )
 
 @router.post("/api/model/background/train")
 def background_train(style_images: List[UploadFile] = File(...)) -> None:
@@ -57,15 +51,14 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
         style_image.save(os.path.join(train_config.data_dir, model_name, f"{file_name}"))
 
     # train
-    output_dir = os.path.join(train_config.model_dir, model_name+"_r"+str(train_config.rank))
-   
+   # output_dir = os.path.join(train_config.model_dir, model_name+"_r"+str(train_config.rank))
     train(
          {
         "train_image_path": os.path.join(train_config.data_dir, model_name, f"{file_name}"),
         "context_prompt":"A painting in the style of {}",
         "pretrained_model_name_or_path":train_config.pipeline_name,
-        "output_dir": output_dir,
-        "placeholder_token":"<sks03>",
+        "output_dir": os.path.join("./outputs", model_name, f"{file_name}"),
+        "placeholder_token":"<hwasan>",
         "initializer_token":"painting",
         "learnable_property":"style",
         "revision":None,
@@ -123,7 +116,7 @@ def background_img2img(model_id: str = str(...), content_image: UploadFile = Fil
     # make dir
     os.makedirs(f'results/{model_id}', exist_ok=True)
     
-    load_img2img_pipeline(config.pipeline_name, embedding_path=f"./models/{model_id}")
+    load_img2img_pipeline(config.pipeline_name, embedding_path="../embedding/final.bin")
     
     # load pipeline
     img2img_pipe = get_img2img_pipe()
@@ -133,7 +126,7 @@ def background_img2img(model_id: str = str(...), content_image: UploadFile = Fil
     content = io.BytesIO(request_object_content)
 
     # generate
-    generated_images = img2img_generate(img2img_pipe, content, placeholder_token="<sks03>", num_stages=6)
+    generated_images = img2img_generate(img2img_pipe, content, placeholder_token="<hwasan>", num_stages=6)
     generated_image_bytes = []
 
     # save

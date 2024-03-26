@@ -4,14 +4,12 @@ from contextlib import asynccontextmanager
 from loguru import logger
 
 from config import config
-from model import load_img2img_pipeline, load_txt2img_pipeline, load_sr_pipeline, load_vae
+from model import load_img2img_pipeline, load_txt2img_pipeline
 from api import router
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # 모델 로드
-    logger.info(f"Loading vae: {config.vae_name}")
-    load_vae(vae_id=config.vae_name)
     logger.info(f"Loading img2img model: {config.pipeline_name}")
     load_img2img_pipeline(model_id=config.pipeline_name)
     logger.info(f"Loading txt2img model: {config.pipeline_name}")

@@ -14,7 +14,6 @@ from loguru import logger
 import torch 
 
 # diffusion
-from lora_diffusion import tune_lora_scale, patch_pipe
 from diffusers import StableDiffusionPipeline, StableDiffusionImg2ImgPipeline, EulerAncestralDiscreteScheduler, StableDiffusionUpscalePipeline, AutoencoderKL
 
 from config import train_config
@@ -45,8 +44,8 @@ def set_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-def load_img2img_pipeline(model_id, controlnet_path="lllyasviel/control_v11f1p_sd15_depth", embedding_path=None, placeholder_token="<sks3>", num_stages=6):
-    global img2img_pipe, precessor
+def load_img2img_pipeline(model_id, controlnet_path="lllyasviel/control_v11f1p_sd15_depth", embedding_path=None, placeholder_token="<hwasan>", num_stages=6):
+    global img2img_pipe, processor
     
     tokenizer = CLIPTokenizer.from_pretrained(model_id, subfolder="tokenizer")
     text_encoder = CLIPTextModel.from_pretrained(model_id, subfolder="text_encoder")
@@ -58,6 +57,8 @@ def load_img2img_pipeline(model_id, controlnet_path="lllyasviel/control_v11f1p_s
         raise ValueError("The tokens are already in the tokenizer")
     placeholder_token_id = tokenizer.convert_tokens_to_ids(placeholder_token)
     text_encoder.resize_token_embeddings(len(tokenizer))
+    
+    embedding_path = "../embedding/final.bin"
 
     learned_embeds = torch.load(embedding_path)
     token_embeds = text_encoder.get_input_embeddings().weight.data
@@ -78,11 +79,13 @@ def load_img2img_pipeline(model_id, controlnet_path="lllyasviel/control_v11f1p_s
     
     return img2img_pipe
 
-def load_txt2img_pipeline(model_id, embedding_path=None, placeholder_token="<sks3>", num_stages=6):
+def load_txt2img_pipeline(model_id, embedding_path=None, placeholder_token="<hwasan>", num_stages=6):
     global txt2img_pipe
     
     tokenizer = CLIPTokenizer.from_pretrained(model_id, subfolder="tokenizer")
     text_encoder = CLIPTextModel.from_pretrained(model_id, subfolder="text_encoder")
+
+    embedding_path = "../embedding/final.bin"
 
     placeholder_token = [f"{placeholder_token}-T{t}" for t in range(num_stages)]
     num_added_tokens = tokenizer.add_tokens(placeholder_token)
@@ -151,7 +154,7 @@ def img2img_generate(pipe, content_image, placeholder_token, num_stages,
 def txt2img_generate(pipe,
                      prompt="A painting in the style of {}",
                      seed=42, num_inference_steps=25, guidance_scale=7, embedding_path=None,
-                    placeholder_token="<sks3>",
+                    placeholder_token="<hwasan>",
                     num_stages=6,
                     use_sc_guidance=False,
                     sty_gamma=0.5,
