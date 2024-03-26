@@ -26,30 +26,38 @@ def background_train(webtoon_name: str, db: Session, userId: int, images: List[U
     for file in images:
         file_content = file.file.read()
         files.append(('style_images', (file.filename, file_content, file.content_type)))
-    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/train", files=files)
-    if response.status_code != 200:
+        
+    response_lora = requests.post(f"{os.environ.get('LORA_MODEL_SERVER')}/api/model/background/train", files=files)
+    response_dreamstyler = requests.post(f"{os.environ.get('DREAMSTYLER_MODEL_SERVER')}/api/model/background/train", files=files)
+
+    if response_lora.status_code != 200 or response_dreamstyler.status_code != 200:
         raise HTTPException(status_code=500, detail="Failed to train style model")
     else:
-        result = response.json()['result']
-        if not result:
+        result_lora = response_lora.json()['result']
+        result_dreamstyler = response_dreamstyler.json()['result']
+        if not result_lora or not result_dreamstyler:
             raise HTTPException(status_code=500, detail="Failed to train style model")
-        model_path = response.json()['model_path']
+        model_path_lora = response_lora.json()['model_path']
+        model_path_dreamstyler = response_dreamstyler.json()['model_path']
         webtoon_id = db.query(models.Webtoon).join(models.User).filter(models.User.id == userId, 
                                                     models.Webtoon.webtoonName == webtoon_name).first().id
-        db_model = models.Model(webtoonId=webtoon_id, modelPath=model_path)
-        if db_model is None:
+        db_model_lora = models.Model(webtoonId=webtoon_id, modelPath=model_path_lora, modelType="LORA")
+        db_model_dreamstyler = models.Model(webtoonId=webtoon_id, modelPath=model_path_dreamstyler, modelType="DREAMSTYLER")
+        if db_model_lora is None or db_model_dreamstyler is None:
             raise HTTPException(status_code=500, detail="Failed to save model path")
         else:
             try:
-                db.add(db_model)
+                db.add(db_model_lora)
+                db.add(db_model_dreamstyler)
                 db.commit()
-                db.refresh(db_model)
+                db.refresh(db_model_lora)
+                db.refresh(db_model_dreamstyler)
                 return {"result": "model has been trained successfully"}
             except Exception as e:
                 db.rollback()
                 raise HTTPException(status_code=500, detail="Internal Server Error")
 
-def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId: int, prompt: str):
+def background_img2img(webtoon_name: str, model_type: str, file: UploadFile, db: Session, userId: int, prompt: str):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -61,20 +69,24 @@ def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId:
     if webtoon_id is None:
         raise HTTPException(status_code=404, detail="Webtoon not found")
     
-    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).order_by(models.Model.id.desc()).first().modelPath
+    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id, models.Model.modelType == model_type).order_by(models.Model.id.desc()).first().modelPath
     if model_path is None:
         raise HTTPException(status_code=404, detail="Model not found")
     files = {'content_image': (file_name, file_content, file_content_type), 'prompt': (None, prompt)}
     print(files)
-    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
-    
+    if model_type == "LORA":
+        response = requests.post(f"{os.environ.get('LORA_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
+    elif model_type == "DREAMSTYLER":
+        response = requests.post(f"{os.environ.get('DREAMSTYLER_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
+    else:
+        raise HTTPException(status_code=400, detail="Bad Request: Model Type not found")
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Failed to inference style model")
     else:
         return response.json()
     
 
-def background_txt2img(webtoon_name: str, prompt: str, db: Session, userId: int):
+def background_txt2img(webtoon_name: str, model_type: str, prompt: str, db: Session, userId: int):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -83,13 +95,17 @@ def background_txt2img(webtoon_name: str, prompt: str, db: Session, userId: int)
     if webtoon_id is None:
         raise HTTPException(status_code=404, detail="Webtoon not found")
     
-    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id).order_by(models.Model.id.desc()).first().modelPath
+    model_path = db.query(models.Model).filter(models.Model.webtoonId == webtoon_id, models.Model.modelType == model_type).order_by(models.Model.id.desc()).first().modelPath
     if model_path is None:
         raise HTTPException(status_code=404, detail="Model not found")
     
     data = {"prompt": prompt}
-    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/txt2img/{model_path}", data=data)
-    
+    if model_type == "LORA":
+        response = requests.post(f"{os.environ.get('LORA_MODEL_SERVER')}/api/model/background/txt2img/{model_path}", data=data)
+    elif model_type == "DREAMSTYLER":
+        response = requests.post(f"{os.environ.get('DREAMSTYLER_MODEL_SERVER')}/api/model/background/txt2img/{model_path}", data=data)
+    else:
+        raise HTTPException(status_code=400, detail="Bad Request: Model Type not found")
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Failed to inference style model")
     else:

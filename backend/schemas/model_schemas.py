@@ -4,6 +4,7 @@ from pydantic import BaseModel
 class ModelBase(BaseModel):
     webtoonId: int
     modelPath: str
+    modelType: str
 
 class ModelCreate(ModelBase):
     pass
