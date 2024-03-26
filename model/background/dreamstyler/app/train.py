@@ -257,6 +257,7 @@ def train(opt):
 
 def init_accelerator_and_logger(logger, opt):
     logging_dir = ospj(opt.output_dir, opt.logging_dir)
+    print(logging_dir)
     accelerator_project_config = ProjectConfiguration(
         project_dir=opt.output_dir,
         logging_dir=logging_dir,
