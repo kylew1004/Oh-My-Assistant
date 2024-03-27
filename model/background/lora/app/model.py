@@ -96,7 +96,6 @@ def get_sr_pipe():
     return sr_pipe
     
 def train() -> None:
-    # os.path.append("/home/kcw/webtoon-background-generator/lora")
     os.system(f"""lora_pti \
         --pretrained_model_name_or_path={train_config.pipeline_name}  \
         --instance_data_dir={os.path.join(train_config.data_dir, train_config.model_name)} \
@@ -139,74 +138,37 @@ def img2img_generate(pipe, content_image,
     tune_lora_scale(pipe.unet, alpha_unet)
     tune_lora_scale(pipe.text_encoder, alpha_text)
     
-    torch.manual_seed(seed) # 동일 조건 동일 결과 보장
+    # torch.manual_seed(seed) # 동일 조건 동일 결과 보장
     
     generated_images = []
-    for _ in range(3): 
-        if prompt:
+    
+    prompt = f"{prompt}, style of <s1><s2>" if prompt else "style of <s1><s2>"
+    print(prompt)
+    
+    for i in range(3):
+        for _ in range(2):
             generated_images.append(
-                pipe(prompt=f"{prompt}, style of <s1><s2>", 
-                    image=init_image, strength=0.55, guidance_scale=guidance_scale
-                    ).images[0].resize((w, h))
-                # sr_pipe(
-                #     prompt="",
-                #     image=pipe(prompt=f"{prompt}, style of <s1><s2>", 
-                #         image=init_image, strength=0.55, guidance_scale=guidance_scale
-                #         ).images[0].resize((128,128))
-                # ).images[0]
-            )
-        else:
-            generated_images.append(
-                pipe(prompt="style of <s1><s2>", 
-                    image=init_image, strength=0.55, guidance_scale=guidance_scale
-                    ).images[0].resize((w, h))
-                # sr_pipe(
-                #     prompt="",
-                #     image=pipe(prompt="style of <s1><s2>", 
-                #         image=init_image, strength=0.55, guidance_scale=guidance_scale
-                #         ).images[0].resize((128,128))
-                # ).images[0]
-            )
-    for _ in range(3): 
-        if prompt:
-            generated_images.append(
-                pipe(prompt=f"{prompt}, style of <s1><s2>", 
-                        image=init_image, strength=0.45, guidance_scale=guidance_scale
+                pipe(prompt=prompt, 
+                        image=init_image, strength=0.45+.10*i, guidance_scale=guidance_scale
                         ).images[0].resize((w, h))
-                # sr_pipe(
-                #     prompt="",
-                #     image=pipe(prompt=f"{prompt}, style of <s1><s2>", 
-                #         image=init_image, strength=0.45, guidance_scale=guidance_scale
-                #         ).images[0].resize((128,128))
-                # ).images[0]
             )
-        else:
-            generated_images.append(
-                pipe(prompt="style of <s1><s2>", 
-                        image=init_image, strength=0.45, guidance_scale=guidance_scale
-                        ).images[0].resize((w, h))
-                # sr_pipe(
-                #     prompt="",
-                #     image=pipe(prompt="style of <s1><s2>", 
-                #         image=init_image, strength=0.45, guidance_scale=guidance_scale
-                #         ).images[0].resize((128,128))
-                # ).images[0]
-            )
-        
     return generated_images 
 
 def txt2img_generate(pipe, prompt, 
              seed=42, num_inference_steps=50, guidance_scale=7) -> Image:
     
-    torch.manual_seed(seed) # 동일 조건 동일 결과 보장
+    # torch.manual_seed(seed) # 동일 조건 동일 결과 보장
     
-    tune_lora_scale(pipe.unet, 0.5) # 0.8
-    tune_lora_scale(pipe.text_encoder, 0.5) # 0.9
+    tune_lora_scale(pipe.unet, 0.8) # 0.8
+    tune_lora_scale(pipe.text_encoder, 0.9) # 0.9
     
     generated_images = []
+    prompt = f"{prompt}, style of <s1><s2>"
+    print(prompt)
+    
     for _ in range(6): 
         generated_images.append(
-           pipe(prompt=f"{prompt}, style of <s1><s2>", 
+           pipe(prompt=prompt, 
                 num_inference_steps=num_inference_steps, 
                 guidance_scale=guidance_scale).images[0]
         )

@@ -1,7 +1,10 @@
+from typing import Optional
 from typing import List 
 
+from lora_diffusion.cli_lora_pti import train, state_running_process
 from fastapi import APIRouter, File, UploadFile, Form
 from fastapi.responses import JSONResponse
+from googletrans import Translator
 
 from schemas import GenerationRequest, GenerationResponse, TrainResponse   # 통신에 활용하는 자료 형태를 정의합니다.
 from database import GenerationResult, TrainResult
@@ -10,7 +13,6 @@ from config import config, train_config
 from env import env
 
 from PIL import Image
-from lora_diffusion.cli_lora_pti import train, state_running_process
 import shutil
 import io
 import os 
@@ -18,7 +20,7 @@ import uuid
 import boto3
 import base64
 
-
+translator = Translator()
 router = APIRouter()
 s3 = boto3.client(
         's3',
@@ -32,7 +34,8 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     # check training server is busy, 사전에 cli_lora_pti.py를 수정해야 합니다.
     if len(state_running_process) > 0:
         return TrainResponse(
-            result = "training server is busy!"
+            result = False,
+            model_path = ""
         )
 
     # set unique model name
@@ -95,11 +98,18 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     # shutil.rmtree(os.path.join(train_config.data_dir, model_name), ignore_errors=True) 
     
     return TrainResponse(
-        result = generated_result.result
+        result = True,
+        model_path = generated_result.result
     )
 
 @router.post("/api/model/background/img2img/{model_id}")
-def background_img2img(model_id: str = str(...), content_image: UploadFile = File(...)):
+def background_img2img(model_id: str, prompt: str = Form(None), content_image: UploadFile = File(...)):
+    # convert prompt to english
+    if prompt and translator.detect(prompt).lang != 'en': 
+        en_prompt = translator.translate(prompt, src='ko', dest='en').text
+        print("convert other language prompt to english prompt:", prompt, '\n->', en_prompt)
+        prompt = en_prompt
+    
     # make dir
     os.makedirs(f'results/{model_id}', exist_ok=True)
     
@@ -120,7 +130,7 @@ def background_img2img(model_id: str = str(...), content_image: UploadFile = Fil
     content = io.BytesIO(request_object_content)
 
     # generate
-    generated_images = img2img_generate(img2img_pipe, content, alpha_unet=0.3, alpha_text=0.3)
+    generated_images = img2img_generate(img2img_pipe, content, prompt=prompt, alpha_unet=0.3, alpha_text=0.3)
     generated_image_bytes = []
 
     # save
@@ -141,7 +151,11 @@ def background_img2img(model_id: str = str(...), content_image: UploadFile = Fil
 
 @router.post("/api/model/background/txt2img/{model_id}")
 def background_txt2img(model_id: str = str(...), prompt: str = Form(...)):
-    print(prompt)
+    # convert prompt to english
+    if prompt and translator.detect(prompt).lang != 'en': 
+        en_prompt = translator.translate(prompt, src='ko', dest='en').text
+        print("convert other language prompt to english prompt:", prompt, '\n->', en_prompt)
+        prompt = en_prompt
 
     # make dir
     os.makedirs(f'results/{model_id}', exist_ok=True)
