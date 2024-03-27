@@ -112,7 +112,8 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     # shutil.rmtree(os.path.join(train_config.data_dir, model_name), ignore_errors=True) 
     
     return TrainResponse(
-        result = generated_result.result
+        model_path = generated_result.result,
+        result = True
     )
 
 @router.post("/api/model/background/img2img/{model_id}")
