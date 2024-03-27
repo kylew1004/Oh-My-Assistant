@@ -44,14 +44,12 @@ def set_seed(seed):
     torch.backends.cudnn.deterministic = True
     torch.backends.cudnn.benchmark = False
 
-def load_img2img_pipeline(model_id, controlnet_path="lllyasviel/control_v11f1p_sd15_depth", embedding_path=None, placeholder_token="<dd>", num_stages=6):
+def load_img2img_pipeline(model_id, controlnet_path="lllyasviel/control_v11f1p_sd15_depth", embedding_path=None, placeholder_token="<sks>", num_stages=6):
     global img2img_pipe, processor
     
     tokenizer = CLIPTokenizer.from_pretrained(model_id, subfolder="tokenizer")
     text_encoder = CLIPTextModel.from_pretrained(model_id, subfolder="text_encoder")
     controlnet = ControlNetModel.from_pretrained(controlnet_path, torch_dtype=torch.float16)
-
-    embedding_path = os.path.join("./outputs", model_id, "embedding", "final.bin")
 
     placeholder_token = [f"{placeholder_token}-T{t}" for t in range(num_stages)]
     num_added_tokens = tokenizer.add_tokens(placeholder_token)
@@ -79,7 +77,7 @@ def load_img2img_pipeline(model_id, controlnet_path="lllyasviel/control_v11f1p_s
     
     return img2img_pipe
 
-def load_txt2img_pipeline(model_id, embedding_path=None, placeholder_token="<dd>", num_stages=6):
+def load_txt2img_pipeline(model_id, embedding_path=None, placeholder_token="<sks>", num_stages=6):
     global txt2img_pipe
     
     tokenizer = CLIPTokenizer.from_pretrained(model_id, subfolder="tokenizer")
@@ -121,7 +119,7 @@ def train_dreamstyler(opt_dict) -> None:
     train(opt)
 
 def img2img_generate(pipe, content_image, placeholder_token, num_stages,
-             seed=42, prompt="A painting in the style of {}", 
+             seed=42, prompt="A painting", 
              alpha_unet=0.4, alpha_text=0.8,
              guidance_scale=7.5) -> Image:
     
@@ -134,8 +132,9 @@ def img2img_generate(pipe, content_image, placeholder_token, num_stages,
     
     generated_images = []
     
+    prompt = prompt + " in the style of {}"
     pos_prompt = [prompt.format(f"{placeholder_token}-T{t}") for t in range(num_stages)]
-    print(prompt)
+    print(pos_prompt)
     
     for i in range(3):
         for _ in range(2):
@@ -150,9 +149,9 @@ def img2img_generate(pipe, content_image, placeholder_token, num_stages,
     return generated_images 
 
 def txt2img_generate(pipe,
-                     prompt="A painting in the style of {}",
+                     prompt="A painting",
                      seed=42, num_inference_steps=25, guidance_scale=7, embedding_path=None,
-                    placeholder_token="<dd>",
+                    placeholder_token= "<sks>",
                     num_stages=6,
                     use_sc_guidance=False,
                     sty_gamma=0.5,
@@ -174,6 +173,7 @@ def txt2img_generate(pipe,
         " normal quality, blurry image, artifact"
     )
 
+    prompt = prompt + " in the style of {}"
     pos_prompt = [prompt.format(f"{placeholder_token}-T{t}") for t in range(num_stages)]
     print(prompt)
     generated_images = []

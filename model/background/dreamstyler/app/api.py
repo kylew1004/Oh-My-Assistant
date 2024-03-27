@@ -18,6 +18,9 @@ import uuid
 #import boto3
 import base64
 
+from googletrans import Translator
+translator = Translator()
+
 router = APIRouter()
 
 @router.post("/api/model/background/train")
@@ -59,7 +62,7 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
         "context_prompt":"A painting in the style of {}",
         "pretrained_model_name_or_path":train_config.pipeline_name,
         "output_dir": os.path.join("./outputs", model_name),
-        "placeholder_token":"<ghibli>",
+        "placeholder_token":"<sks>",
         "initializer_token":"painting",
         "learnable_property":"style",
         "revision":None,
@@ -113,7 +116,14 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     )
 
 @router.post("/api/model/background/img2img/{model_id}")
-def background_img2img(model_id: str = str(...), content_image: UploadFile = File(...)):
+def background_img2img(model_id: str = str(...), prompt: str = Form(None), content_image: UploadFile = File(...)):
+    
+    # convert prompt to english
+    if prompt and translator.detect(prompt).lang != 'en': 
+        en_prompt = translator.translate(prompt, src='ko', dest='en').text
+        print("convert other language prompt to english prompt:", prompt, '\n->', en_prompt)
+        prompt = en_prompt
+    
     # make dir
     os.makedirs(f'results/{model_id}', exist_ok=True)
     
@@ -121,15 +131,13 @@ def background_img2img(model_id: str = str(...), content_image: UploadFile = Fil
     
     # load pipeline
     img2img_pipe = get_img2img_pipe()
-    print('VVVVVVVVVVVVVVVVVVVVVVVVVV')
     # load content image
     request_object_content = content_image.file.read()
     content = io.BytesIO(request_object_content)
-    print('---------------------------------')
     
     #content.seek(0)
     # generate
-    generated_images = img2img_generate(img2img_pipe, content, placeholder_token="<ghibli>", num_stages=6)
+    generated_images = img2img_generate(img2img_pipe, content, placeholder_token="<sks>", num_stages=6, prompt=prompt)
     generated_image_bytes = []
 
     # save
