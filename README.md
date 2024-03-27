@@ -47,7 +47,7 @@ https://github.com/kylew1004/doraemon_web/assets/20416616/59ba6d9f-e47d-4781-a62
 |:--:|:--:|:--:|:--:|:--:|:--:|
 |<a href='https://github.com/uowol'><img src='https://avatars.githubusercontent.com/u/20416616?v=4' width='100px'/></a>|<a href='https://github.com/nhw2417'><img src='https://avatars.githubusercontent.com/u/103584775?s=88&v=4' width='100px'/></a>|<a href='https://github.com/kylew1004'><img src='https://avatars.githubusercontent.com/u/5775698?s=88&v=4' width='100px'/></a>|<a href='https://github.com/9sub'><img src='https://avatars.githubusercontent.com/u/113101019?s=88&v=4' width='100px'/></a>|<a href='https://github.com/solee328'><img src='https://avatars.githubusercontent.com/u/22787039?s=88&v=4' width='100px'/></a>|<a href='https://github.com/jh7316'><img src='https://avatars.githubusercontent.com/u/95545960?s=88&v=4' width='100px'/></a>|
 |Modeling|Modeling|Backend|Backend|Modeling|Frontend|
-|Background<br>Image<br>Generate|Background<br>Image<br>Generate|...|Implement BE|Pose<br>Image<br>Generate|UI/UX Design<br>Implement FE |
+|Background<br>Image<br>Generate|Background<br>Image<br>Generate|Implement BE|Implement BE|Pose<br>Image<br>Generate|UI/UX Design<br>Implement FE |
 |[detail]()|[detail]()|[detail]()|[detail]()|[detail]()|[detail]()|    
 - 프로필 사진을 누르면 개인 Github 프로필로 넘어갑니다.
 - detail 페이지에서 개인이 공헌한 내용에 대해 더 자세한 정보를 열람하실 수 있습니다.
@@ -155,10 +155,8 @@ Noise로부터 포즈가 변경된 캐릭터 이미지가 생성되도록 Denois
 <!-- 합치면 -->
 
 ## Links
-- 발표PPT
-- Wrapup Reports
-
-
+- [발표영상](https://youtu.be/huVYC4bZgOg)
+- [Wrapup Reports](https://pebble-ziconium-f61.notion.site/Wrap-up-Reports-42bf8884d38244afbb5ef24a6f06ed3e?pvs=4)
 
 
 
