@@ -15,4 +15,5 @@ class GenerationRequest(BaseModel):
 class GenerationResponse(BaseModel):
     result: str
 class TrainResponse(BaseModel):
-    result: str
+    result: bool
+    model_path: str
