@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  db:
+    container_name: db
+    image: mysql:latest
+    volumes:
+      - mysql_data_dev:/var/lib/mysql
+    environment:
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    restart: always
+    ports:
+      - 3306:3306
+
+  backend:
+    container_name: backend
+    build: ./backend
+    restart: always
+    ports:
+      - 8000:8000
+    command: >
+      ash -c "python wait_for_mysql.py 
+      && uvicorn main:app --host 0.0.0.0 --reload"
+    volumes:
+      - ./backend/:/backend/
+      - ./images/:/images/
+    expose:
+      - 8000
+    depends_on:
+      - db
+    env_file: .env
+
+  frontend:
+    container_name: frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    command: npm start
+    restart: always
+    ports:
+      - 3000:3000
+    volumes:
+      # - ${PWD}:/frontend
+      - /frontend/node_modules
+      - ./frontend/:/frontend/
+    expose:
+      - 3000
+
+volumes:
+  mysql_data_dev: null
