@@ -96,7 +96,6 @@ def get_sr_pipe():
     return sr_pipe
     
 def train() -> None:
-    # os.path.append("/home/kcw/webtoon-background-generator/lora")
     os.system(f"""lora_pti \
         --pretrained_model_name_or_path={train_config.pipeline_name}  \
         --instance_data_dir={os.path.join(train_config.data_dir, train_config.model_name)} \
@@ -146,18 +145,6 @@ def img2img_generate(pipe, content_image,
     prompt = f"{prompt}, style of <s1><s2>" if prompt else "style of <s1><s2>"
     print(prompt)
     
-    # for _ in range(4): 
-    #     generated_images.append(
-    #         pipe(prompt=prompt, 
-    #             image=init_image, strength=0.55, guidance_scale=guidance_scale
-    #             ).images[0].resize((w, h))
-    #     )
-    # for _ in range(4): 
-    #     generated_images.append(
-    #         pipe(prompt=prompt, 
-    #                 image=init_image, strength=0.65, guidance_scale=guidance_scale
-    #                 ).images[0].resize((w, h))
-    #     )
     for i in range(3):
         for _ in range(2):
             generated_images.append(

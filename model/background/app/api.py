@@ -1,9 +1,10 @@
 from typing import Optional
-
 from typing import List 
 
+from lora_diffusion.cli_lora_pti import train, state_running_process
 from fastapi import APIRouter, File, UploadFile, Form
 from fastapi.responses import JSONResponse
+from googletrans import Translator
 
 from schemas import GenerationRequest, GenerationResponse, TrainResponse   # 통신에 활용하는 자료 형태를 정의합니다.
 from database import GenerationResult, TrainResult
@@ -12,7 +13,6 @@ from config import config, train_config
 from env import env
 
 from PIL import Image
-from lora_diffusion.cli_lora_pti import train, state_running_process
 import shutil
 import io
 import os 
@@ -20,7 +20,7 @@ import uuid
 import boto3
 import base64
 
-
+translator = Translator()
 router = APIRouter()
 s3 = boto3.client(
         's3',
@@ -104,6 +104,12 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
 
 @router.post("/api/model/background/img2img/{model_id}")
 def background_img2img(model_id: str, prompt: str = Form(None), content_image: UploadFile = File(...)):
+    # convert prompt to english
+    if prompt and translator.detect(prompt).lang != 'en': 
+        en_prompt = translator.translate(prompt, src='ko', dest='en').text
+        print("convert other language prompt to english prompt:", prompt, '\n->', en_prompt)
+        prompt = en_prompt
+    
     # make dir
     os.makedirs(f'results/{model_id}', exist_ok=True)
     
@@ -145,6 +151,12 @@ def background_img2img(model_id: str, prompt: str = Form(None), content_image: U
 
 @router.post("/api/model/background/txt2img/{model_id}")
 def background_txt2img(model_id: str = str(...), prompt: str = Form(...)):
+    # convert prompt to english
+    if prompt and translator.detect(prompt).lang != 'en': 
+        en_prompt = translator.translate(prompt, src='ko', dest='en').text
+        print("convert other language prompt to english prompt:", prompt, '\n->', en_prompt)
+        prompt = en_prompt
+
     # make dir
     os.makedirs(f'results/{model_id}', exist_ok=True)
     
