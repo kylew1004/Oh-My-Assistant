@@ -13,11 +13,11 @@ export default function CreateNew(){
     console.log(trainedData);
 
     return <div className="flex flex-row h-full w-full m-auto overflow-auto">
-        {trainedData && <CreateNewPanel link={`/${webtoonName}/createNew/styleTransfer`} 
+        <CreateNewPanel link={`/${webtoonName}/createNew/styleTransfer`} 
                             type="SCENE&STYLE TRANSFER"
                             detail="학습된 웹툰의 그림체로 실사 배경 이미지를 웹툰 배경으로 변환합니다."
                             img={styleTransferImg}
-                            disable={!trainedData.isTrained}/>}
+                            disable={!trainedData.isTrained}/>
         
         <CreateNewPanel link={`/${webtoonName}/createNew/poseTransfer`} 
             type="CHARACTER&POSE TRANSFER"
