@@ -5,7 +5,7 @@ from fastapi.responses import JSONResponse
 
 from schemas import GenerationRequest, GenerationResponse, TrainResponse   # 통신에 활용하는 자료 형태를 정의합니다.
 from database import GenerationResult, TrainResult
-from model import get_img2img_pipe, get_txt2img_pipe, img2img_generate, txt2img_generate, train_dreamstyler, load_img2img_pipeline, load_txt2img_pipeline
+from model import get_img2img_pipe, get_txt2img_pipe, img2img_generate, txt2img_generate, train_dreamstyler, load_img2img_pipeline, load_txt2img_pipeline, state_running_process
 from config import config, train_config
 #from env import env
 
@@ -26,7 +26,12 @@ router = APIRouter()
 @router.post("/api/model/background/train")
 def background_train(style_images: List[UploadFile] = File(...)) -> None:
     # check training server is busy, 사전에 cli_lora_pti.py를 수정해야 합니다.
-    
+    if len(state_running_process) > 0:
+        return TrainResponse(
+            result = False,
+            model_path = ""
+        )
+
     # 모델 돌리는 중에 다른 모델을 돌리지 못하게 하는 코드 구현
     
     # set unique model name

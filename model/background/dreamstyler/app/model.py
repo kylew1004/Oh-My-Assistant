@@ -35,6 +35,7 @@ from train import train
 img2img_pipe = None 
 txt2img_pipe = None 
 processor = None
+state_running_process = {}
     
 def set_seed(seed):
     random.seed(seed)
@@ -115,8 +116,12 @@ def get_processor():
     return processor
     
 def train_dreamstyler(opt_dict) -> None:
+    global state_running_process
+    model_name = opt_dict['output_dir'].split('/')[-1]
+    state_running_process[model_name] = True
     opt=Namespace(**opt_dict)
     train(opt)
+    del state_running_process[model_name]
 
 def img2img_generate(pipe, content_image, placeholder_token, num_stages,
              seed=42, prompt="A painting", 
