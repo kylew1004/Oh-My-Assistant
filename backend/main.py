@@ -8,6 +8,7 @@ from router import webtoon_router
 from router import background_router
 from router import pose_router
 from router import background_router
+import os
 
 
 models.Base.metadata.create_all(bind=engine)
@@ -15,11 +16,11 @@ models.Base.metadata.create_all(bind=engine)
 app = FastAPI()
 
 origins = [
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://localhost:8000",
-    "http://localhost:3000",
+    "http://"+os.environ.get('HOSTNAME')+".tiangolo.com",
+    "https://"+os.environ.get('HOSTNAME')+".tiangolo.com",
+    "http://"+os.environ.get('HOSTNAME'),
+    "http://"+os.environ.get('HOSTNAME')+":8000",
+    "http://"+os.environ.get('HOSTNAME')+":3000",
 ]
 
 app.add_middleware(
