@@ -50,7 +50,7 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
             break
         
         request_object_content = style_image.file.read()
-        file_name = style_image.filename
+        file_name = style_image.filename.lower()
         style_image = Image.open(io.BytesIO(request_object_content)).convert("RGB").resize((512, 512))
         style_image.save(os.path.join(train_config.data_dir, model_name, f"{file_name}"))
 
