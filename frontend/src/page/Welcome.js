@@ -128,7 +128,9 @@ export async function action({ request }) {
     //쿠키를 쓰는 옵션도 있음
     localStorage.setItem("token", result);
     const expiration = new Date();
-    expiration.setHours(expiration.getHours() + 1);
+    // expiration.setHours(expiration.getHours()+1);
+    console.log(expiration.getSeconds());
+    expiration.setSeconds(expiration.getSeconds() + 3);
     localStorage.setItem("expiration", expiration.toISOString());
 
     return redirect("/");
