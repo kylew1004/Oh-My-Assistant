@@ -534,13 +534,13 @@ export async function postStyleTransfer(file, prompt, webtoonName, model) {
               "Content-Type": "application/json",
               Authorization: token,
             },
-            body: JSON.stringify({ prompt }),
+            body: JSON.stringify({}),
           }
         );
       } else {
         let data = new FormData();
         data.append("image", file);
-        data.append("prompt", prompt);
+        // data.append('prompt',prompt);
 
         response = await fetch(
           `${URL}/api/background/img2img/${webtoonName}?prompt=${encodeURIComponent(
