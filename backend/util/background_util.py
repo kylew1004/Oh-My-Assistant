@@ -2,15 +2,15 @@ from sqlalchemy.orm import Session
 import os
 import boto3
 import uuid
-from fastapi import UploadFile, File, HTTPException, Form
-from fastapi import UploadFile, File, HTTPException, Form
+from fastapi import UploadFile, File, HTTPException, Form, BackgroundTasks
 from sqlalchemy.orm import Session
 from typing import List
 import requests
 from datetime import datetime
 from models import models
 from sqlalchemy.orm import Session, load_only
-
+import aiohttp
+import asyncio
 
 s3 = boto3.client(
     's3',
@@ -19,44 +19,64 @@ s3 = boto3.client(
     region_name=os.environ.get("AWS_S3_REGION")
 )
 
+async def send_request(url, files):
+    data = aiohttp.FormData()
+    timeout = aiohttp.ClientTimeout(total=1200)
 
-def background_train(webtoon_name: str, db: Session, userId: int, images: List[UploadFile] = File(...)):
+    for file in files:
+        data.add_field('style_images', file[1][1], filename=file[1][0], content_type=file[1][2])
+
+    async with aiohttp.ClientSession(timeout=timeout) as session:
+        async with session.post(url, data=data) as response:
+            return await response.json()
+
+# async def send_request(url, files):
+#     async with aiohttp.Formdata() as session:
+#         async with session.post(url, data=files) as response:
+#             return await response.json()
+
+async def background_train(webtoon_name: str, db: Session, userId: int, images: List[UploadFile] = File(...)):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
         raise HTTPException(status_code=404, detail="User not found")
     files = []
     for file in images:
         file_content = file.file.read()
         files.append(('style_images', (file.filename, file_content, file.content_type)))
-        
-    response_lora = requests.post(f"{os.environ.get('LORA_MODEL_SERVER')}/api/model/background/train", files=files)
-    response_dreamstyler = requests.post(f"{os.environ.get('DREAMSTYLER_MODEL_SERVER')}/api/model/background/train", files=files)
 
-    if response_lora.status_code != 200 or response_dreamstyler.status_code != 200:
+    dreamstyler_url =f"{os.environ.get('DREAMSTYLER_MODEL_SERVER')}/api/model/background/train"   
+    lora_url = f"{os.environ.get('LORA_MODEL_SERVER')}/api/model/background/train"
+    tasks = [
+        send_request(lora_url, files),
+        send_request(dreamstyler_url, files)
+    ]
+
+    responses = await asyncio.gather(*tasks)
+    result_lora = responses[0]['result']
+    result_dreamstyler = responses[1]['result']
+    model_path_lora = responses[0]['model_path']
+    model_path_dreamstyler = responses[1]['model_path']
+
+    if not result_lora or not result_dreamstyler:
         raise HTTPException(status_code=500, detail="Failed to train style model")
+    
+    webtoon_id = db.query(models.Webtoon).join(models.User).filter(models.User.id == userId, 
+                                                models.Webtoon.webtoonName == webtoon_name).first().id
+    db_model_lora = models.Model(webtoonId=webtoon_id, modelPath=model_path_lora, modelType="LORA")
+    db_model_dreamstyler = models.Model(webtoonId=webtoon_id, modelPath=model_path_dreamstyler, modelType="DREAMSTYLER")
+
+    if db_model_lora is None or db_model_dreamstyler is None:
+        raise HTTPException(status_code=500, detail="Failed to save model path")
     else:
-        result_lora = response_lora.json()['result']
-        result_dreamstyler = response_dreamstyler.json()['result']
-        if not result_lora or not result_dreamstyler:
-            raise HTTPException(status_code=500, detail="Failed to train style model")
-        model_path_lora = response_lora.json()['model_path']
-        model_path_dreamstyler = response_dreamstyler.json()['model_path']
-        webtoon_id = db.query(models.Webtoon).join(models.User).filter(models.User.id == userId, 
-                                                    models.Webtoon.webtoonName == webtoon_name).first().id
-        db_model_lora = models.Model(webtoonId=webtoon_id, modelPath=model_path_lora, modelType="LORA")
-        db_model_dreamstyler = models.Model(webtoonId=webtoon_id, modelPath=model_path_dreamstyler, modelType="DREAMSTYLER")
-        if db_model_lora is None or db_model_dreamstyler is None:
-            raise HTTPException(status_code=500, detail="Failed to save model path")
-        else:
-            try:
-                db.add(db_model_lora)
-                db.add(db_model_dreamstyler)
-                db.commit()
-                db.refresh(db_model_lora)
-                db.refresh(db_model_dreamstyler)
-                return {"result": "model has been trained successfully"}
-            except Exception as e:
-                db.rollback()
-                raise HTTPException(status_code=500, detail="Internal Server Error")
+        try:
+            db.add(db_model_lora)
+            db.add(db_model_dreamstyler)
+            db.commit()
+            db.refresh(db_model_lora)
+            db.refresh(db_model_dreamstyler)
+            return {"result": "model has been trained successfully"}
+        except Exception as e:
+            db.rollback()
+            raise HTTPException(status_code=500, detail="Internal Server Error")
 
 def background_img2img(webtoon_name: str, model_type: str, file: UploadFile, db: Session, userId: int, prompt: str):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
@@ -74,7 +94,6 @@ def background_img2img(webtoon_name: str, model_type: str, file: UploadFile, db:
     if model_path is None:
         raise HTTPException(status_code=404, detail="Model not found")
     files = {'content_image': (file_name, file_content, file_content_type), 'prompt': (None, prompt)}
-    print(files)
     if model_type == "LORA":
         response = requests.post(f"{os.environ.get('LORA_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
     elif model_type == "DREAMSTYLER":
