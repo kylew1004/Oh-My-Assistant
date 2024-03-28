@@ -5,6 +5,7 @@ from datetime import datetime
 from fastapi import HTTPException
 from util import background_util, pose_util
 
+
 def get_webtoon_by_webtoon_name_and_userId(db: Session, webtoon_name: str, user_id: int):
     return db.query(models.Webtoon).filter(models.Webtoon.webtoonName == webtoon_name,
                                            models.Webtoon.userId == user_id
@@ -41,10 +42,11 @@ def read_webtoon_list(db: Session, userId: int):
         formatted_webtoons.append(webtoon.webtoonName)
     return {"webtoonList":formatted_webtoons}
 
-def check_train(db: Session, webtoon_name: str):
+def check_train(db: Session, webtoon_name: str, user_id: int):
     db_model = db.query(models.Model)\
         .join(models.Webtoon, models.Model.webtoonId == models.Webtoon.id)\
         .filter(models.Webtoon.webtoonName == webtoon_name)\
+        .filter(models.Webtoon.userId == user_id)\
         .first()
     if db_model and db_model.modelPath:
         return {"isTrained": True}

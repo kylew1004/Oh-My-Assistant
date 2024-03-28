@@ -30,10 +30,6 @@ async def send_request(url, files):
         async with session.post(url, data=data) as response:
             return await response.json()
 
-# async def send_request(url, files):
-#     async with aiohttp.Formdata() as session:
-#         async with session.post(url, data=files) as response:
-#             return await response.json()
 
 async def background_train(webtoon_name: str, db: Session, userId: int, images: List[UploadFile] = File(...)):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
