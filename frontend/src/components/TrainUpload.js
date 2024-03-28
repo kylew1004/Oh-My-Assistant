@@ -8,7 +8,6 @@ import { useMutation } from "@tanstack/react-query";
 import { waitFunc } from "../util/http.js";
 
 export default function TrainUpload({ handleState }) {
-  const { addNoti } = useContext(NotiContext);
   const [files, setFiles] = useState([]);
   const { webtoonName } = useParams();
   const mutation = useMutation({
@@ -16,10 +15,7 @@ export default function TrainUpload({ handleState }) {
     mutationFn: (file) => {
       return waitFunc(file);
     },
-    onSuccess: () => {
-      handleState(2);
-      console.log("done");
-    },
+    onSuccess: () => {},
   });
 
   function handleChange(e) {
