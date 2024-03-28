@@ -12,8 +12,10 @@ export default function TrainUpload({ handleState }) {
   const { webtoonName } = useParams();
   const mutation = useMutation({
     mutationKey: ["train", webtoonName],
-    mutationFn: (file) => {
-      return waitFunc(file);
+    mutationFn: (data) => {
+      console.log(webtoonName, data);
+      return postModelTrain(webtoonName, data);
+      // return waitFunc(data);
     },
     onSuccess: () => {},
   });

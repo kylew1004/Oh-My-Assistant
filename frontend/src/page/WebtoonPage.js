@@ -6,13 +6,19 @@ import Notification from "../components/Notification.js";
 export default function WebtoonPage() {
   const { noti, setNoti } = useState(true);
 
-  return (
-    <>
-      <Panel />
-      <Notification />
-      <Outlet />
 
-      {/* <div className="flex h-full w-full">
+    return <>
+    <Panel />
+    <div className="flex flex-col  w-full h-[89%] ">
+    <Notification />
+    <Outlet />
+
+    </div>
+    
+
+
+    
+    {/* <div className="flex h-full w-full">
         <Notification />
         {/* {noti && <Notification /> } 
         <Outlet />
