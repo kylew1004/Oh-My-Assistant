@@ -1,112 +1,111 @@
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import {ReactQueryDevtools} from '@tanstack/react-query-devtools';
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import React from "react";
-import { RouterProvider, createBrowserRouter, Outlet, redirect } from 'react-router-dom';
-import Welcome, {action as authAction, loader as authLoader} from "./page/Welcome.js";
-import {action as logoutAction} from './page/Logout.js';
+import {
+  RouterProvider,
+  createBrowserRouter,
+  Outlet,
+  redirect,
+} from "react-router-dom";
+import Welcome, {
+  action as authAction,
+  loader as authLoader,
+} from "./page/Welcome.js";
+import { action as logoutAction } from "./page/Logout.js";
 import RootLayout from "./components/Root.js";
-import StyleTransfer, {action as saveBackgroundAssetAction} from './page/StyleTransfer.js';
-import PoseTransfer, {action as savePoseAssetAction} from './page/PoseTransfer.js';
-import CreateNew from './page/CreateNew.js';
-import Train from './page/Train.js';
-import AssetList, {loader as assetsLoader} from './components/AssetList.js';
-import AssetDetail, {loader as assetDetailLoder} from './components/AssetDetail.js';
-import InitialPage from './page/InitialPage.js';
+import StyleTransfer, {
+  action as saveBackgroundAssetAction,
+} from "./page/StyleTransfer.js";
+import PoseTransfer, {
+  action as savePoseAssetAction,
+} from "./page/PoseTransfer.js";
+import CreateNew from "./page/CreateNew.js";
+import Train from "./page/Train.js";
+import AssetList, { loader as assetsLoader } from "./components/AssetList.js";
+import AssetDetail, {
+  loader as assetDetailLoder,
+} from "./components/AssetDetail.js";
+import InitialPage from "./page/InitialPage.js";
 import PageNotFound from "./components/PageNotFound.js";
-import WebtoonPage from './page/WebtoonPage.js';
 
-import { NotiProvider } from './store/noti_context.js';
+const queryClient = new QueryClient();
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      refetchOnReconnect: false,
-      retry: 1,
-      staleTime: 1000 * 60 * 5,
-      cacheTime: 1000 * 60 * 5,
-    },
-  },
-});
-
- 
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <RootLayout />,
     // errorElement: <ErrorPage />,
     children: [
-      { index: true,
-        element: <InitialPage />,
-      },
+      { index: true, element: <InitialPage /> },
       {
-        path:':webtoonName',
+        path: ":webtoonName",
         element: <WebtoonPage />,
-        children:[
+        children: [
           {
-            path: 'assets',
+            path: "assets",
             element: <Outlet />,
-            children:[
+            children: [
               {
-                index: true, 
+                index: true,
                 element: <AssetList />,
                 loader: assetsLoader,
               },
               {
-                path:':assetName',
-                element:<AssetDetail />,
+                path: ":assetName",
+                element: <AssetDetail />,
                 loader: assetDetailLoder,
-              }
-            ]
+              },
+            ],
           },
           {
-            path: 'createNew',
+            path: "createNew",
             element: <Outlet />,
-            children:[
+            children: [
               { index: true, element: <CreateNew /> },
               {
-                path: 'styleTransfer',
+                path: "styleTransfer",
                 element: <StyleTransfer />,
               },
               {
-                path: 'poseTransfer',
+                path: "poseTransfer",
                 element: <PoseTransfer />,
               },
-    
-            ]
+            ],
           },
           {
-            path: 'train',
+            path: "train",
             element: <Train />,
           },
-
-        ]
+        ],
       },
       {
-        path: 'logout',
+        path: "logout",
         action: logoutAction,
-      }
+      },
     ],
   },
   {
-    path: '/auth',
+    path: "/auth",
     element: <Welcome />,
     // errorElement: <ErrorPage />,
     action: authAction,
     loader: authLoader,
   },
   {
-    path:'*',
+    path: "*",
     element: <PageNotFound />,
-  }
+  },
 ]);
 
 function App() {
-  return <QueryClientProvider client={queryClient}>
-    <NotiProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-      {/* <ReactQueryDevtools /> */}
-    </NotiProvider>
-    </QueryClientProvider>;
+      <ReactQueryDevtools />
+    </QueryClientProvider>
+  );
 }
 
 export default App;
