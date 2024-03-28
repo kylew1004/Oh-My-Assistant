@@ -12,6 +12,8 @@ import { validateExt } from "../util/util.js";
 function StyleTransfer() {
   const [file, setFile] = useState();
   const [prompt, setPrompt] = useState();
+  const [model, setModel] = useState("Lora");
+
   const [outputs, setOutputs] = useState();
   const [isFetching, setIsFetching] = useState(false);
   const [errorFetching, setErrorFetching] = useState();
@@ -37,6 +39,10 @@ function StyleTransfer() {
     setPrompt(e.target.value);
   }
 
+  function handleModelChange(e) {
+    setModel(e.target.value);
+  }
+
   function cancelChange() {
     setFile(null);
   }
@@ -47,7 +53,7 @@ function StyleTransfer() {
       setErrorFetching(null);
       setIsFetching(true);
 
-      postStyleTransfer(file, prompt, webtoonName)
+      postStyleTransfer(file, prompt, webtoonName, model)
         .then((imgArr) => {
           if (imgArr.error) {
             setErrorFetching({
@@ -93,6 +99,7 @@ function StyleTransfer() {
           handleSubmit={handleSubmit}
           handlePromptChange={handlePromptChange}
           cancelChange={cancelChange}
+          handleModelChange={handleModelChange}
         />
         <OutputPanel
           images={outputs}
