@@ -1,4 +1,4 @@
-import {useParams, redirect} from 'react-router-dom';
+import {useParams, useNavigate} from 'react-router-dom';
 import {useState, useContext} from 'react';
 import {postModelTrain} from '../util/http.js';
 import BackButton from './BackButton.js';
@@ -9,11 +9,12 @@ import NotiContext from '../store/noti_context.js';
 import {useMutation, useQueryClient} from '@tanstack/react-query';
 import {waitFunc} from '../util/http.js';
 
-export default function TrainUpload({handleState}){
+export default function TrainUpload(){
     const {addNoti} = useContext(NotiContext);
     const [files,setFiles] = useState([]);
     const {webtoonName} = useParams();
     const queryClient = useQueryClient();
+    const navigate = useNavigate();
 
     const mutation = useMutation({
         mutationKey: ['train',webtoonName],
@@ -24,19 +25,18 @@ export default function TrainUpload({handleState}){
         ,
         onSuccess:()=>{
             queryClient.invalidateQueries(['train',webtoonName]);
-            handleState(2);
             addNoti({
                 state:'success',
-                message:`The train for <${webtoonName}> completed successfully.`,
+                message:`The train for [${webtoonName}] completed successfully.`,
             });
+            if(window.location.pathname.split('/')[2]==='train') navigate('?state=success');
         },
         onError:(error)=>{
-            if(error.error==='tokenError') redirect('/auth');
-            handleState(3);
             addNoti({
                 state:'error',
-                message:`The train for <${webtoonName}> failed.`,
+                message:`The train for [${webtoonName}] failed.`,
             });
+            if(window.location.pathname.split('/')[2]==='train') navigate('?state=error');
         }
     });
 
@@ -70,9 +70,7 @@ export default function TrainUpload({handleState}){
             const data = new FormData();
             files.forEach((file)=>{
                 data.append('images', file);
-            });
-            
-            handleState(1);
+            });  
             mutation.mutate(data);
 
         }

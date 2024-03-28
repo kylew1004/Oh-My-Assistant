@@ -1,6 +1,10 @@
 import nopePng from '../assets/nope.png';
+import {useNavigate} from 'react-router-dom';
 
-export default function TrainError({handleState}){
+
+export default function TrainError(){
+    const navigate=useNavigate();
+
 
     return <>
         <div className="flex flex-col mx-auto max-h-[90%] m-auto justify-center">
@@ -9,7 +13,7 @@ export default function TrainError({handleState}){
             <p className="text-gray-300 mx-auto">Please try again later.</p>
         </div>
         
-        <button onClick={()=>handleState(0)} className="rounded-full text-[#342C5A] text-xl py-3 px-10
+        <button onClick={()=>navigate(window.location.pathname.split('?')[0])} className="rounded-full text-[#342C5A] text-xl py-3 px-10
         bg-gradient-to-r from-[#F19E39] to-[#E34F6B] font-bold w-1/3 mx-auto">Go back to train page</button>
     </>
 }
