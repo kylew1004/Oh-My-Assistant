@@ -32,5 +32,4 @@ export default function InputPanel({imageUrl, isFetching, handleChange, handleSu
             <img className="h-full"  src={arrowImg} />
         </button>
     </div>
-  );
 }

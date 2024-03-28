@@ -22,6 +22,5 @@ export default function Train() {
         {isMutatingTrain ? <TrainLoading /> : null}
         {state==2 && <TrainComplete />}
         {state===3 && !isMutatingTrain && <TrainError handleState={handleState}/>} 
-    </div>
-  );
+    </div>;
 }

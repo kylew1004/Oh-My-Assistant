@@ -26,5 +26,4 @@ export default function CreateNew(){
             disable={false}/>
 
     </div>
-  );
 }

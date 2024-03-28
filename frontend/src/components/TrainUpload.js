@@ -54,7 +54,7 @@ export default function TrainUpload({handleState}){
         } 
     
     }
-  }
+  
 
   function handleImageClick(index) {
     setFiles((prev) => {
@@ -134,5 +134,5 @@ export default function TrainUpload({handleState}){
         </button>
       </div>
     </>
-  );
 }
+

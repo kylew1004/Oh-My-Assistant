@@ -20,9 +20,7 @@ const AddWebtoonModal = function Modal({ open, handleClose }) {
       setName("");
     }
   }, [open]);
-
-  },[open]);
-
+  
   const {mutate} = useMutation({
     mutationFn: (data)=>{
         return postWebtoon(data);
