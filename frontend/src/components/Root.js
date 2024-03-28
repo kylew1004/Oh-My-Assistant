@@ -6,7 +6,7 @@ import {
   redirect,
   useSubmit,
 } from "react-router-dom";
-import { getUser, getWebtoons, postWebtoon } from "../util/http.js";
+import { getWebtoons } from "../util/http.js";
 
 import Menu from "./Menu.js";
 import { getAuthToken, getTokenDuration } from "../util/auth.js";
@@ -48,7 +48,6 @@ export function loader() {
   if (!token || token == "EXPIRED") return redirect("/auth");
 
   return defer({
-    userInfo: getUser(),
     webtoons: getWebtoons(),
   });
 }

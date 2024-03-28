@@ -13,11 +13,29 @@ import profileImg from "../assets/profile.png";
 import AddWebtoonModal from "./AddWebtoonModal";
 import DeleteMenu from "./DeleteMenu.js";
 import generalLoading from "../assets/generalLoading.gif";
+import { useQuery } from "@tanstack/react-query";
+import { getUser } from "../util/http.js";
 
 export default function Menu() {
   const [isModal, setIsModal] = useState(false);
-  const { userInfo, webtoons } = useLoaderData();
+  const { webtoons } = useLoaderData();
   const { webtoonName } = useParams();
+
+  const {
+    isLoading: isLoadingUser,
+    isError: isErrorUser,
+    data: userData,
+    isSuccess: isSuccessUser,
+  } = useQuery({
+    queryKey: ["user"],
+    queryFn: getUser,
+    options: {
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  });
 
   function handleClick() {
     setIsModal(true);
@@ -38,25 +56,17 @@ export default function Menu() {
       <div className="flex flex-row mt-3  pl-4 bg-gray-950 py-4">
         <img src={profileImg} className="w-9 h-9 mt-1" />
         <div className="flex flex-col pl-3">
-          <Suspense
-            fallback={
-              <img className="h-[8%] w-auto m-auto" src={generalLoading} />
-            }
-          >
-            <Await resolve={userInfo}>
-              {(loadedInfo) => (
-                <>
-                  <h3 className="text-white text-md pb-1">
-                    {loadedInfo.userNickname}
-                  </h3>
-                  <p className=" text-gray-600 text-sm">
-                    {" "}
-                    {loadedInfo.userEmail}
-                  </p>
-                </>
-              )}
-            </Await>
-          </Suspense>
+          {isLoadingUser && (
+            <img className="h-[8%] w-auto m-auto" src={generalLoading} />
+          )}
+          {userData && (
+            <>
+              <h3 className="text-white text-md pb-1">
+                {userData.userNickname}
+              </h3>
+              <p className=" text-gray-600 text-sm"> {userData.userEmail}</p>
+            </>
+          )}
         </div>
       </div>
 
