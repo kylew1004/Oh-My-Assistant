@@ -1,16 +1,42 @@
 import { useEffect, useState } from "react";
-import {
-  useNavigate,
-  useRouteLoaderData,
-  useActionData,
-} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import AddWebtoonModal from "../components/AddWebtoonModal";
 import noWebtoonImg from "../assets/no-webtoon.png";
+import { useQuery } from "@tanstack/react-query";
+import { getWebtoons } from "../util/http.js";
 
 export default function InitialPage() {
   const navigate = useNavigate();
-  const { webtoons } = useRouteLoaderData("root");
   const [isModal, setIsModal] = useState(false);
+
+  const {
+    isLoading: isLoadingWebtoons,
+    isError: isErrorWebtoons,
+    data: webtoonsData,
+    isSuccess: isSuccessWebtoons,
+  } = useQuery({
+    queryKey: ["webtoons"],
+    queryFn: getWebtoons,
+    options: {
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  });
+
+  useEffect(() => {
+    if (
+      webtoonsData &&
+      webtoonsData.webtoonList &&
+      webtoonsData.webtoonList.length > 0
+    )
+      navigate(
+        `/${
+          webtoonsData.webtoonList[webtoonsData.webtoonList.length - 1]
+        }/assets`
+      );
+  }, [webtoonsData]);
 
   function handleClose() {
     setIsModal(false);
@@ -19,23 +45,6 @@ export default function InitialPage() {
   function handleOpen() {
     setIsModal(true);
   }
-
-  const fetchData = () => {
-    return new Promise((resolve, reject) => {
-      resolve(webtoons);
-    });
-  };
-
-  useEffect(() => {
-    fetchData().then((webtoons) => {
-      console.log(webtoons.webtoonList); // Access the value when the promise resolves
-      if (webtoons?.webtoonList && webtoons.webtoonList.length > 0) {
-        navigate(
-          `/${webtoons.webtoonList[webtoons.webtoonList.length - 1]}/assets`
-        );
-      }
-    });
-  }, []);
 
   return (
     <>

@@ -13,58 +13,45 @@ import { useEffect, Suspense } from "react";
 import { getIsTrained } from "../util/http";
 import { getAuthToken } from "../util/auth";
 
-import { useIsMutating, useMutation } from "@tanstack/react-query";
+import { useIsMutating, useMutation, useQueryClient} from '@tanstack/react-query';
 
 const activeStyle = "flex flex-col mx-4 text-gray-600 text-md h-full";
 const inactiveStyle = "flex flex-col pl-3 text-black font-bold text-md";
 
-export default function Panel() {
-  const { webtoonName } = useParams();
+export default function Panel(){
+    const {webtoonName} = useParams();
+    const mutationKey = ['train',webtoonName];
+    const isMutatingTrain = useIsMutating({mutationKey: mutationKey});
+    const {isTrained} = useLoaderData();
+    // const {webtoons} = useRouteLoaderData('root');
+    const navigate = useNavigate();
+    const location = useLocation();
+    const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationKey: ["train", webtoonName],
-    mutationFn: (file) => {
-      return null;
-    },
-    onSuccess: () => {
-      console.log("done");
-    },
-  });
+    const webtoons = queryClient.getQueryData(['webtoons']);
 
-  const mutationKey = ["train", webtoonName];
-  const isMutatingTrain = useIsMutating({ mutationKey: mutationKey });
-  const { isTrained } = useLoaderData();
-  const { webtoons } = useRouteLoaderData("root");
-  const navigate = useNavigate();
-  const location = useLocation();
-  // console.log(mutationKey,'real',useIsMutating({mutationKey: mutationKey}));
-  // console.log(['train','1234'],'fake',useIsMutating({mutationKey: ['train','1234']}));
-
-  const fetchData = () => {
-    return new Promise((resolve, reject) => {
-      resolve(webtoons);
+    const mutation = useMutation({
+        mutationKey: ['train',webtoonName],
+        mutationFn: (file)=>{
+            return null;
+        },
     });
-  };
+    
 
-  useEffect(() => {
-    fetchData().then((webtoons) => {
-      if (!webtoons.webtoonList.includes(webtoonName)) navigate(`/`);
-      else {
-        let currPath = location.pathname;
-        if (currPath.endsWith("/")) currPath = currPath.slice(0, -1);
+    useEffect(()=>{
+        if (webtoons && webtoons.webtoonList && !webtoons.webtoonList.includes(webtoonName)) navigate(`/`);
+        else{
+            let currPath = location.pathname
+            if(currPath.endsWith('/')) currPath=currPath.slice(0,-1);
+            if (currPath.split('/').length<3) navigate(currPath+'/assets');
+            return;
+        }
+    },[webtoons]);
+    
 
-        if (currPath.split("/").length < 3) navigate(currPath + "/assets");
-        return;
-      }
-    });
-  }, []);
-
-  return (
-    <div className="flex flex-row bg-gray-100 h-[11%] min-h-[11%] w-full">
-      <div className="flex flex-col pl-3 h-full">
-        <h1 className="text-gray-800 text-2xl my-auto ml-5 font-bold mb-0">
-          {webtoonName}
-        </h1>
+    return <div className="flex flex-row bg-gray-100 h-[11%] min-h-[11%] w-full">
+    <div className="flex flex-col pl-3 h-full">
+        <h1 className="text-gray-800 text-2xl my-auto ml-5 font-bold mb-0" >{webtoonName}</h1>
         <div className="flex flex-row mt-auto">
           <NavLink
             to={`/${webtoonName}/assets`}

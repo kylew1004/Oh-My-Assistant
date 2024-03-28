@@ -12,7 +12,7 @@ import Welcome, {
   loader as authLoader,
 } from "./page/Welcome.js";
 import { action as logoutAction } from "./page/Logout.js";
-import RootLayout, { loader as rootLoader } from "./components/Root.js";
+import RootLayout from "./components/Root.js";
 import StyleTransfer, {
   action as saveBackgroundAssetAction,
 } from "./page/StyleTransfer.js";
@@ -21,7 +21,7 @@ import PoseTransfer, {
 } from "./page/PoseTransfer.js";
 import CreateNew from "./page/CreateNew.js";
 import Train from "./page/Train.js";
-import Panel, { loader as isTrainedLoader } from "./components/Panel.js";
+import { loader as isTrainedLoader } from "./components/Panel.js";
 import AssetList, { loader as assetsLoader } from "./components/AssetList.js";
 import AssetDetail, {
   loader as assetDetailLoder,
@@ -48,8 +48,6 @@ const router = createBrowserRouter([
     path: "/",
     element: <RootLayout />,
     // errorElement: <ErrorPage />,
-    id: "root",
-    loader: rootLoader,
     children: [
       { index: true, element: <InitialPage /> },
       {
