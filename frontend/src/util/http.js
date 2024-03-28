@@ -504,7 +504,9 @@ export async function postModelTrain(webtoonName, data) {
   throw { error: "tokenError" };
 }
 
-export async function postStyleTransfer(file, prompt, webtoonName) {
+export async function postStyleTransfer(file, prompt, webtoonName, model) {
+  //model : Lora or DreamStyler
+
   //dummy
   // const urls=["https://www.akamai.com/site/im-demo/perceptual-standard.jpg?imbypass=true",
   //     "https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg",
