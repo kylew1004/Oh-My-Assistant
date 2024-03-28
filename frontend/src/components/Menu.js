@@ -14,7 +14,7 @@ import AddWebtoonModal from "./AddWebtoonModal";
 import DeleteMenu from "./DeleteMenu.js";
 import generalLoading from "../assets/generalLoading.gif";
 import { useQuery } from "@tanstack/react-query";
-import { getUser } from "../util/http.js";
+import { getUser, getWebtoons } from "../util/http.js";
 
 export default function Menu() {
   const [isModal, setIsModal] = useState(false);
@@ -29,6 +29,22 @@ export default function Menu() {
   } = useQuery({
     queryKey: ["user"],
     queryFn: getUser,
+    options: {
+      refetchOnWindowFocus: true,
+      refetchOnMount: true,
+      staleTime: Infinity,
+      cacheTime: Infinity,
+    },
+  });
+
+  const {
+    isLoading: isLoadingWebtoons,
+    isError: isErrorWebtoons,
+    data: webtoonsData,
+    isSuccess: isSuccessWebtoons,
+  } = useQuery({
+    queryKey: ["webtoons"],
+    queryFn: getWebtoons,
     options: {
       refetchOnWindowFocus: true,
       refetchOnMount: true,
@@ -80,46 +96,50 @@ export default function Menu() {
       <div className="flex flex-col py-4 h-2/3">
         <p className=" text-gray-600 pl-3 text-md my-3"> WEBTOONS </p>
         <div className="flex flex-col h-auto max-h-1/2 overflow-y-auto overflow-x-hidden no-scrollbar">
-          <Suspense
-            fallback={
-              <img className="h-[8%] w-auto m-auto" src={generalLoading} />
-            }
-          >
-            <Await resolve={webtoons}>
-              {(loadedWebtoons) => {
-                if (loadedWebtoons.webtoonList)
-                  return loadedWebtoons.webtoonList.map((webtoon, index) => (
-                    <div
-                      className={`flex flex-row h-11 p-1 ${
-                        webtoonName === webtoon
-                          ? "text-yellow-500 bg-gray-950"
-                          : "text-white"
-                      } hover:bg-gray-950`}
-                    >
-                      <div
-                        className={`bg-yellow-500${
-                          webtoonName !== webtoon ? "/0" : ""
-                        } mr-4 h-full w-1`}
-                      />
-                      <Link
-                        key={index}
-                        to={`/${webtoon}/assets`}
-                        className={`pb-1 w-full flex ${
-                          webtoonName === webtoon
-                            ? "text-yellow-500 bg-gray-950"
-                            : "text-white"
-                        }`}
-                      >
-                        <p className="text-left my-auto  text-md">{webtoon}</p>
-                      </Link>
-                      <div className="flex h-full ml-auto w-5 justify-center">
-                        <DeleteMenu subject={{ webtoonName: webtoon }} />
-                      </div>
-                    </div>
-                  ));
-              }}
-            </Await>
-          </Suspense>
+          {isLoadingWebtoons && (
+            <img className="h-[8%] w-auto m-auto" src={generalLoading} />
+          )}
+          {webtoonsData &&
+            webtoonsData.webtoonList &&
+            webtoonsData.webtoonList.map((webtoon, index) => (
+              <div
+                className={`flex flex-row h-11 p-1 ${
+                  webtoonName === webtoon
+                    ? "text-yellow-500 bg-gray-950"
+                    : "text-white"
+                } hover:bg-gray-950`}
+              >
+                <div
+                  className={`bg-yellow-500${
+                    webtoonName !== webtoon ? "/0" : ""
+                  } mr-4 h-full w-1`}
+                />
+                <Link
+                  key={index}
+                  to={`/${webtoon}/assets`}
+                  className={`pb-1 w-full flex ${
+                    webtoonName === webtoon
+                      ? "text-yellow-500 bg-gray-950"
+                      : "text-white"
+                  }`}
+                >
+                  <p className="text-left my-auto  text-md">{webtoon}</p>
+                </Link>
+                <div className="flex h-full ml-auto w-5 justify-center">
+                  <DeleteMenu subject={{ webtoonName: webtoon }} />
+                </div>
+              </div>
+            ))}
+          {/* <Suspense fallback={<img className="h-[8%] w-auto m-auto" src={generalLoading}/>}>
+                        <Await resolve={webtoons}>
+                            {(loadedWebtoons) => {
+                                if(loadedWebtoons.webtoonList) return loadedWebtoons.webtoonList.map((webtoon, index)=> <div className={`flex flex-row h-11 p-1 ${webtoonName===webtoon ? 'text-yellow-500 bg-gray-950' : 'text-white'} hover:bg-gray-950`}>
+                                <div className={`bg-yellow-500${webtoonName!==webtoon ? '/0' : ''} mr-4 h-full w-1`} />
+                                <Link key={index} to={`/${webtoon}/assets`} className={`pb-1 w-full flex ${webtoonName===webtoon ? 'text-yellow-500 bg-gray-950' : 'text-white'}`} ><p className="text-left my-auto  text-md">{webtoon}</p></Link>
+                                <div className="flex h-full ml-auto w-5 justify-center"><DeleteMenu subject={{webtoonName: webtoon}}/></div>
+                            </div>)}}
+                        </Await>
+                </Suspense>  */}
         </div>
 
         <button

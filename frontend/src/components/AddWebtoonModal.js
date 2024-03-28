@@ -1,13 +1,16 @@
-import { useRef, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { postWebtoon } from "../util/http.js";
-import ErrorMessage from "./ErrorMessage.js";
+import { useRef, useEffect, useState} from 'react';
+import { useNavigate} from 'react-router-dom'
+import { postWebtoon} from '../util/http.js';
+import ErrorMessage from './ErrorMessage.js';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 const AddWebtoonModal = function Modal({ open, handleClose }) {
   const dialog = useRef();
   const navigate = useNavigate();
   const [error, setError] = useState();
-  const [name, setName] = useState("");
+  const [name, setName] = useState('');
+  const queryClient = useQueryClient();
+
 
   useEffect(() => {
     if (open) dialog.current.showModal();
@@ -18,19 +21,30 @@ const AddWebtoonModal = function Modal({ open, handleClose }) {
     }
   }, [open]);
 
-  async function handleSubmit(e) {
+  },[open]);
+
+  const {mutate} = useMutation({
+    mutationFn: (data)=>{
+        return postWebtoon(data);
+    },
+    onSuccess:(data)=>{
+        queryClient.invalidateQueries(['webtoons']);
+        handleClose();
+        navigate(`/${name.trim()}/assets`);
+    },
+    onError:(error)=>{
+      setError(error.error);
+    }
+});
+
+
+  async function handleSubmit(e){
     e.preventDefault();
     const data = {
       webtoonName: name.trim(),
-    };
-    const result = await postWebtoon(data);
-
-    if (!result.error) {
-      handleClose();
-      navigate(`/${data.webtoonName}/assets`);
-    } else {
-      setError(result.error);
     }
+
+    mutate(data);
   }
 
   return (
