@@ -21,7 +21,6 @@ import PoseTransfer, {
 } from "./page/PoseTransfer.js";
 import CreateNew from "./page/CreateNew.js";
 import Train from "./page/Train.js";
-import { loader as isTrainedLoader } from "./components/Panel.js";
 import AssetList, { loader as assetsLoader } from "./components/AssetList.js";
 import AssetDetail, {
   loader as assetDetailLoder,
@@ -53,8 +52,6 @@ const router = createBrowserRouter([
       {
         path: ":webtoonName",
         element: <WebtoonPage />,
-        id: "webtoonRoot",
-        loader: isTrainedLoader,
         children: [
           {
             path: "assets",

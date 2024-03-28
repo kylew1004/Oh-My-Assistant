@@ -6,13 +6,15 @@ import { validateExt } from '../util/util.js';
 import NotiContext from '../store/noti_context.js';
 
 
-import { useMutation } from "@tanstack/react-query";
-import { waitFunc } from "../util/http.js";
+import {useMutation, useQueryClient} from '@tanstack/react-query';
+import {waitFunc} from '../util/http.js';
 
 export default function TrainUpload({handleState}){
     const {addNoti} = useContext(NotiContext);
     const [files,setFiles] = useState([]);
     const {webtoonName} = useParams();
+    const queryClient = useQueryClient();
+
     const mutation = useMutation({
         mutationKey: ['train',webtoonName],
         mutationFn: (data)=>{
@@ -21,6 +23,7 @@ export default function TrainUpload({handleState}){
         }
         ,
         onSuccess:()=>{
+            queryClient.invalidateQueries(['train',webtoonName]);
             handleState(2);
             addNoti({
                 state:'success',
@@ -61,57 +64,35 @@ export default function TrainUpload({handleState}){
     });
   }
 
-  async function handleSubmit() {
-    if (files.length === 0) alert("Please upload at least one image!");
-    else {
-      const data = new FormData();
-      files.forEach((file) => {
-        data.append("images", file);
-      });
+    async function handleSubmit(){
+        if(files.length===0) alert("Please upload at least one image!");
+        else{
+            const data = new FormData();
+            files.forEach((file)=>{
+                data.append('images', file);
+            });
+            
+            handleState(1);
+            mutation.mutate(data);
 
-      handleState(1);
-      mutation.mutate(data);
-      // const result = await postModelTrain(webtoonName, data);
-      // if(result==='tokenError') redirect('/auth');
-      // if(result.status == 500) handleState(3);
-      // else handleState(2);
+        }
+        
+
     }
-  }
 
-  return (
-    <>
-      <div className="flex flex-row h-[7%] mb-3">
-        <BackButton />
-        <h1 className=" text-white font-bold text-2xl text-center mx-auto mb-6 pr-28">
-          Add your illustrations
-        </h1>
-      </div>
-      <p className="text-gray-400 text-md mx-auto">
-        해당 웹툰의 그림체, 채색 스타일이 잘 드러나는 웹툰 이미지를
-        업로드해주세요. 업로드 된 사진들은 모델 학습에 사용됩니다. <br /> **
-        허용 파일 확장자: jpg, jpeg, png &nbsp;/&nbsp; 이미지 수: 1 - 10장
-        사이로 업로드
-      </p>
 
-      <div className="flex flex-col h-full overflow-auto no-scrollbar">
-        <label
-          className={`mx-auto my-4 rounded-full px-10 ${
-            files.length > 9
-              ? "text-gray-700 bg-gray-500"
-              : "text-[#342C5A] bg-gradient-to-r from-[#F6C443] to-[#F3AC58] font-bold cursor-pointer"
-          }`}
-        >
-          <input
-            className="hidden"
-            type="file"
-            id="input"
-            name="input"
-            multiple
-            onChange={handleChange}
-            disabled={files.length > 9}
-          />
-          <p className="mx-1 my-2">Upload Image</p>
-        </label>
+    return <>
+        <div className="flex flex-row h-[7%] mb-3">
+            <BackButton />
+            <h1 className=" text-white font-bold text-2xl text-center mx-auto mb-6 pr-28">Add your illustrations</h1>
+        </div>
+        <p className="text-gray-400 text-md mx-auto">해당 웹툰의 그림체, 채색 스타일이 잘 드러나는 웹툰 이미지를 업로드해주세요. 업로드 된 사진들은 모델 학습에 사용됩니다. <br /> ** 허용 파일 확장자: jpg, jpeg, png  &nbsp;/&nbsp; 이미지 수: 1 - 10장 사이로 업로드</p>
+        
+        <div className="flex flex-col h-full overflow-auto no-scrollbar">
+            <label className={`mx-auto my-4 rounded-full px-10 ${files.length>9 ? "text-gray-700 bg-gray-500" : "text-[#342C5A] bg-gradient-to-r from-[#F6C443] to-[#F3AC58] font-bold cursor-pointer"}`}>
+                <input className="hidden" type="file" id="input" name="input" multiple onChange={handleChange} disabled={files.length>9}/>
+                <p className="mx-1 my-2">Upload Image</p>
+            </label>
 
         <div className="flex flex-row mt-3 mb-3">
           <h2 className="text-white font-bold text-2xl text-center ml-12 w-[90%]">
