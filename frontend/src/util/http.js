@@ -527,7 +527,11 @@ export async function postStyleTransfer(file, prompt, webtoonName, model) {
         response = await fetch(
           `${URL}/api/background/txt2img/${webtoonName}?prompt=${encodeURIComponent(
             prompt
-          )}`,
+          )}&model_type=${
+            model === "Lora"
+              ? encodeURIComponent("LORA")
+              : encodeURIComponent("DREAMSTYLER")
+          }`,
           {
             method: "POST",
             headers: {
@@ -545,7 +549,11 @@ export async function postStyleTransfer(file, prompt, webtoonName, model) {
         response = await fetch(
           `${URL}/api/background/img2img/${webtoonName}?prompt=${encodeURIComponent(
             prompt
-          )}`,
+          )}&model_type=${
+            model === "Lora"
+              ? encodeURIComponent("LORA")
+              : encodeURIComponent("DREAMSTYLER")
+          }`,
           {
             method: "POST",
             headers: {
