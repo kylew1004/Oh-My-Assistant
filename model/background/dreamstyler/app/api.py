@@ -25,14 +25,11 @@ router = APIRouter()
 
 @router.post("/api/model/background/train")
 def background_train(style_images: List[UploadFile] = File(...)) -> None:
-    # check training server is busy, 사전에 cli_lora_pti.py를 수정해야 합니다.
     if len(state_running_process) > 0:
         return TrainResponse(
             result = False,
             model_path = ""
         )
-
-    # 모델 돌리는 중에 다른 모델을 돌리지 못하게 하는 코드 구현
     
     # set unique model name
     model_name = f"{uuid.uuid4()}"
@@ -111,7 +108,7 @@ def background_train(style_images: List[UploadFile] = File(...)) -> None:
     )
     
     # convert to response format
-    generated_result = TrainResult(result = os.path.join("./outputs", model_name, f"{file_name}").split('/')[-1])
+    generated_result = TrainResult(result = model_name)
     
     # if we don't use train images, run this code.
     # shutil.rmtree(os.path.join(train_config.data_dir, model_name), ignore_errors=True) 

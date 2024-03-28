@@ -136,7 +136,8 @@ def img2img_generate(pipe, content_image, placeholder_token, num_stages,
     torch.manual_seed(seed) # 동일 조건 동일 결과 보장
     
     generated_images = []
-    
+    if prompt is None:
+        prompt = "a painting"
     prompt = prompt + " in the style of {}"
     pos_prompt = [prompt.format(f"{placeholder_token}-T{t}") for t in range(num_stages)]
     print(pos_prompt)
@@ -178,6 +179,8 @@ def txt2img_generate(pipe,
         " normal quality, blurry image, artifact"
     )
 
+    if prompt is None:
+        prompt = "a painting"
     prompt = prompt + " in the style of {}"
     pos_prompt = [prompt.format(f"{placeholder_token}-T{t}") for t in range(num_stages)]
     print(prompt)
