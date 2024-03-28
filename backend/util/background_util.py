@@ -3,6 +3,7 @@ import os
 import boto3
 import uuid
 from fastapi import UploadFile, File, HTTPException, Form
+from fastapi import UploadFile, File, HTTPException, Form
 from sqlalchemy.orm import Session
 from typing import List
 import requests
@@ -57,7 +58,7 @@ def background_train(webtoon_name: str, db: Session, userId: int, images: List[U
                 db.rollback()
                 raise HTTPException(status_code=500, detail="Internal Server Error")
 
-def background_img2img(webtoon_name: str, model_type: str, file: UploadFile, db: Session, userId: int, prompt: str):
+def background_img2img(webtoon_name: str, file: UploadFile, db: Session, userId: int, prompt: str = Form(...)):
     if db.query(models.User).filter(models.User.id == userId).first() is None:
         raise HTTPException(status_code=404, detail="User not found")
     
@@ -74,12 +75,8 @@ def background_img2img(webtoon_name: str, model_type: str, file: UploadFile, db:
         raise HTTPException(status_code=404, detail="Model not found")
     files = {'content_image': (file_name, file_content, file_content_type), 'prompt': (None, prompt)}
     print(files)
-    if model_type == "LORA":
-        response = requests.post(f"{os.environ.get('LORA_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
-    elif model_type == "DREAMSTYLER":
-        response = requests.post(f"{os.environ.get('DREAMSTYLER_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
-    else:
-        raise HTTPException(status_code=400, detail="Bad Request: Model Type not found")
+    response = requests.post(f"{os.environ.get('BACKGROUND_MODEL_SERVER')}/api/model/background/img2img/{model_path}", files=files)
+    
     if response.status_code != 200:
         raise HTTPException(status_code=500, detail="Failed to inference style model")
     else:

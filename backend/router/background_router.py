@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Form, UploadFile, File
+from fastapi import APIRouter, Depends, Form, UploadFile, File
 from schemas import user_schemas
 from util.user_util import pwd_context
 from auth.oauth import get_current_user
@@ -23,9 +24,9 @@ def background_train(webtoon_name:str, images: List[UploadFile] = File(...),  db
 
 
 @api_background.post('/img2img/{webtoon_name}')
-def background_inference(webtoon_name: str, model_type: str, prompt: str, image: UploadFile, db: Session = Depends(get_db),
-                         current_user: user_schemas.User = Depends(get_current_user)):
-    return background_util.background_img2img(webtoon_name, model_type, image, db, current_user['userId'],prompt)
+def background_inference(webtoon_name: str, image: UploadFile, db: Session = Depends(get_db),
+                         current_user: user_schemas.User = Depends(get_current_user), prompt: str = Form(...)):
+    return background_util.background_img2img(webtoon_name, image, db, current_user['userId'],prompt)
 
 
 @api_background.post('/txt2img/{webtoon_name}')
