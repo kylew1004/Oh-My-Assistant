@@ -29,6 +29,7 @@ import AssetDetail, {
 } from "./components/AssetDetail.js";
 import InitialPage from "./page/InitialPage.js";
 import PageNotFound from "./components/PageNotFound.js";
+import WebtoonPage from "./page/WebtoonPage.js";
 
 const queryClient = new QueryClient();
 
@@ -42,6 +43,8 @@ const router = createBrowserRouter([
       {
         path: ":webtoonName",
         element: <WebtoonPage />,
+        id: "webtoonRoot",
+        loader: isTrainedLoader,
         children: [
           {
             path: "assets",
