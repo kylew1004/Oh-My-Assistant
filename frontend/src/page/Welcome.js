@@ -44,6 +44,9 @@ export default function Welcome() {
           </div> */}
 
         <div className="min-h-[260px] w-full flex flex-col">
+{/* 
+          <p className="text-red-700 text-center bg-red-500/20 p-1.5 w-11/12 rounded-lg mx-auto">3/28 오후 10:00까지 점검 예정입니다.</p> */}
+
           <h2 className="text-3xl text-gray-800 mx-auto mb-1 ">Welcome!</h2>
           <p className="text-2xl text-gray-700 mx-auto mb-10">
             Sign up to start the service.
