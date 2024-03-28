@@ -46,6 +46,7 @@ services:
       - ./frontend/:/frontend/
     expose:
       - 3000
+    env_file: frontend/.env
 
 volumes:
   mysql_data_dev: null
