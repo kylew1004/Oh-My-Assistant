@@ -31,23 +31,30 @@ function PoseTransfer() {
     };
 
     function handleCharacter(e) {
-      const currFile = e.target.files[0];
-      if(validateExt(currFile)){
-        setCharacter(currFile);
-        setErrorFetching(null);
-        setIsFetching(false);
-        setOutputs(null);   
-      }else alert('The file must have jpg, jpeg or png extension!');
+      if(e.target.files.length>0){
+        const currFile = e.target.files[0];
+        if(validateExt(currFile)){
+          setCharacter(currFile);
+          setErrorFetching(null);
+          setIsFetching(false);
+          setOutputs(null);   
+        }else alert('The file must have jpg, jpeg or png extension!');
+      }
+      
     }
 
     function handlePose(e) {
-      const currFile = e.target.files[0];
-      if(validateExt(currFile)){
-        setPose(currFile);
-        setErrorFetching(null);
-        setIsFetching(false);
-        setOutputs(null);   
-      }else alert('The file must have jpg, jpeg or png extension!');
+      if(e.target.files.length>0){
+        const currFile = e.target.files[0];
+        if(validateExt(currFile)){
+          setPose(currFile);
+          setErrorFetching(null);
+          setIsFetching(false);
+          setOutputs(null);   
+        }else alert('The file must have jpg, jpeg or png extension!');
+
+      }
+      
   }
 
     async function handleSubmit(){

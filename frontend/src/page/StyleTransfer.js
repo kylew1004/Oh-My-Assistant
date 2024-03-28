@@ -25,14 +25,16 @@ function StyleTransfer() {
   }
 
   function handleChange(e) {
-    const currFile = e.target.files[0];
-    if (validateExt(currFile)) {
-      setPrompt("");
-      setFile(currFile);
-      setErrorFetching(null);
-      setIsFetching(false);
-      setOutputs(null);
-    } else alert("The file must have jpg, jpeg or png extension!");
+    if (e.target.files.length > 0) {
+      const currFile = e.target.files[0];
+      if (validateExt(currFile)) {
+        setPrompt("");
+        setFile(currFile);
+        setErrorFetching(null);
+        setIsFetching(false);
+        setOutputs(null);
+      } else alert("The file must have jpg, jpeg or png extension!");
+    }
   }
 
   function handlePromptChange(e) {
