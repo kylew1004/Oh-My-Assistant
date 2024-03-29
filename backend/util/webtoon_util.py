@@ -58,7 +58,7 @@ def delete_webtoon(db: Session, webtoon_name: str, user_id: int):
     if db_webtoon:
         db_content_img = db.query(models.ContentImg).filter(models.ContentImg.webtoonId == db_webtoon.id).all()
         db_pose_img = db.query(models.PoseImg).filter(models.PoseImg.webtoonId == db_webtoon.id).all()
-        db_model = db.query(models.Model).filter(models.Model.webtoonId == db_webtoon.id).first()
+        db_model = db.query(models.Model).filter(models.Model.webtoonId == db_webtoon.id).all()
         if db_content_img:
             for db_content_imgs in db_content_img:
                 background_util.delete_content_asset(webtoon_name=webtoon_name, asset_name=db_content_imgs.assetName, db=db, user_id=user_id)
@@ -67,7 +67,8 @@ def delete_webtoon(db: Session, webtoon_name: str, user_id: int):
                 pose_util.delete_pose_asset(webtoon_name=webtoon_name, asset_name=db_pose_imgs.assetName, db=db, user_id=user_id)
         if db_model:
             try:
-                db.delete(db_model)
+                for db_models in db_model:
+                    db.delete(db_models)
                 db.commit()
             except Exception as e:
                 db.rollback()
