@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Outlet, useSubmit } from "react-router-dom";
+import { Outlet, useSubmit, redirect } from "react-router-dom";
 
 import Menu from "./Menu.js";
 import ExpiredModal from "./ExpiredModal.js";
-import { getAuthToken, getTokenDuration } from "../util/auth.js";
+import { getAuthToken, getTokenDuration,tokenLoader } from "../util/auth.js";
 
 function RootLayout() {
   const token = getAuthToken();
@@ -37,6 +37,15 @@ function RootLayout() {
       </div>
     </div>
   );
+}
+
+export function loader(){
+  const token = tokenLoader();
+  if (token == "EXPIRED") {
+    localStorage.removeItem("token");
+  }
+  if (!token) return redirect("/auth");
+  return null;
 }
 
 export default RootLayout;

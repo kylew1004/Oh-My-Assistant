@@ -12,7 +12,7 @@ import Welcome, {
   loader as authLoader,
 } from "./page/Welcome.js";
 import { action as logoutAction } from "./page/Logout.js";
-import RootLayout from "./components/Root.js";
+import RootLayout, {loader as rootLoader} from "./components/Root.js";
 import StyleTransfer, {
   action as saveBackgroundAssetAction,
 } from "./page/StyleTransfer.js";
@@ -28,6 +28,7 @@ import AssetDetail, {
 import InitialPage from "./page/InitialPage.js";
 import PageNotFound from "./components/PageNotFound.js";
 import WebtoonPage from "./page/WebtoonPage.js";
+import { tokenLoader } from "./util/auth.js";
 
 import { NotiProvider } from "./store/noti_context.js";
 
@@ -46,6 +47,7 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <RootLayout />,
+    loader: rootLoader,
     // errorElement: <ErrorPage />,
     children: [
       { index: true, element: <InitialPage /> },
@@ -101,7 +103,7 @@ const router = createBrowserRouter([
     element: <Welcome />,
     // errorElement: <ErrorPage />,
     action: authAction,
-    loader: authLoader,
+    loader: authLoader(),
   },
   {
     path: "*",
