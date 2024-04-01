@@ -21,6 +21,9 @@ origins = [
     "http://"+os.environ.get('HOSTNAME'),
     "http://"+os.environ.get('HOSTNAME')+":8000",
     "http://"+os.environ.get('HOSTNAME')+":3000",
+    "http://"+os.environ.get('SERVER_IP'),
+    "http://"+os.environ.get('SERVER_IP')+":3000",
+    "http://"+os.environ.get('SERVER_IP')+":8000",
 ]
 
 app.add_middleware(
