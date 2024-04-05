@@ -33,6 +33,7 @@ jobs:
           username: ${{ secrets.SERVER_USER_NAME }}
           key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
           script: |
+            docker-compose down
             docker rmi gangyub/doraemon_web-frontend
             docker rmi gangyub/doraemon_web-backend
             docker-compose up -d
