@@ -47,10 +47,7 @@ https://github.com/kylew1004/doraemon_web/assets/20416616/59ba6d9f-e47d-4781-a62
 |:--:|:--:|:--:|:--:|:--:|:--:|
 |<a href='https://github.com/uowol'><img src='https://avatars.githubusercontent.com/u/20416616?v=4' width='100px'/></a>|<a href='https://github.com/nhw2417'><img src='https://avatars.githubusercontent.com/u/103584775?s=88&v=4' width='100px'/></a>|<a href='https://github.com/kylew1004'><img src='https://avatars.githubusercontent.com/u/5775698?s=88&v=4' width='100px'/></a>|<a href='https://github.com/9sub'><img src='https://avatars.githubusercontent.com/u/113101019?s=88&v=4' width='100px'/></a>|<a href='https://github.com/solee328'><img src='https://avatars.githubusercontent.com/u/22787039?s=88&v=4' width='100px'/></a>|<a href='https://github.com/jh7316'><img src='https://avatars.githubusercontent.com/u/95545960?s=88&v=4' width='100px'/></a>|
 |Modeling|Modeling|Backend|Backend|Modeling|Frontend|
-|Background<br>Image<br>Generate|Background<br>Image<br>Generate|PL<br>Infra<br>Serving|Implement BE|Pose<br>Image<br>Generate|UI/UX Design<br>Implement FE |
-|[detail]()|[detail]()|[detail]()|[detail]()|[detail]()|[detail]()|    
-- 프로필 사진을 누르면 개인 Github 프로필로 넘어갑니다.
-- detail 페이지에서 개인이 공헌한 내용에 대해 더 자세한 정보를 열람하실 수 있습니다.
+|Background<br>Image<br>Generate|Background<br>Image<br>Generate|PL<br>Infra<br>Serving|Implement BE|Pose<br>Image<br>Generate|UI/UX Design<br>Implement FE |  
 
 ## Project Timeline <a id = 'Timeline'></a>
 
