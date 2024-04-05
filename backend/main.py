@@ -27,6 +27,12 @@ origins = [
     "http://"+os.environ.get('SERVER_IP'),
     "http://"+os.environ.get('SERVER_IP')+":3000",
     "http://"+os.environ.get('SERVER_IP')+":8000",
+    
+    "http://"+os.environ.get('DOMAIN_NAME')+".tiangolo.com",
+    "https://"+os.environ.get('DOMAIN_NAME')+".tiangolo.com",
+    "http://"+os.environ.get('DOMAIN_NAME'),
+    "http://"+os.environ.get('DOMAIN_NAME')+":3000",
+    "http://"+os.environ.get('DOMAIN_NAME')+":8000",
 ]
 
 app.add_middleware(
