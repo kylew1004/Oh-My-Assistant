@@ -11,7 +11,7 @@ export default function HelpModal({open, handleCloseModal}){
     
     
     return <div onClick={handleCloseModal}>
-        <dialog class="rounded-lg max-w-[50%]" ref={mod} >
+        <dialog className="rounded-lg max-w-[50%]" ref={mod} >
             <div className="flex flex-col p-6 gap-4 bg-gray-100" onClick={e => e.stopPropagation()}>
                 <div className="flex flex-row">
                     <div className="my-auto border-2 border-yellow-600 rounded-full px-1.5 text-yellow-600 text-sm mr-2">?</div>

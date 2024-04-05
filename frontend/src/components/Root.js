@@ -1,52 +1,51 @@
-import {useEffect} from 'react';
-import { Outlet, useLoaderData, defer, redirect, useSubmit } from 'react-router-dom';
-import {getUser, getWebtoons, postWebtoon} from '../util/http.js';
+import { useEffect, useState } from "react";
+import { Outlet, useSubmit, redirect } from "react-router-dom";
 
 import Menu from "./Menu.js";
-import {getAuthToken, getTokenDuration} from '../util/auth.js';
+import ExpiredModal from "./ExpiredModal.js";
+import { getAuthToken, getTokenDuration,tokenLoader } from "../util/auth.js";
 
 function RootLayout() {
-  const token = useLoaderData();
+  const token = getAuthToken();
   const submit = useSubmit();
+  const [isModal, setIsModal] = useState(false);
 
-  useEffect(()=>{
-    if(!token){
-      return null;
-    }
-    if(token==="EXPIRED"){
-      submit(null,{action:'/logout', method:'post'})
-      return null ;
-
+  useEffect(() => {
+    // if(!token){
+    //   return null;
+    // }
+    if (token === "EXPIRED") {
+      setIsModal(true);
+      // submit(null,{action:'/logout', method:'post'})
+      // return null ;
     }
     const tokenDuration = getTokenDuration();
 
-    setTimeout(()=>{
-      submit(null,{action:'/logout', method:'post'})
-
-    },tokenDuration);
-
-  },[token, submit])
+    setTimeout(() => {
+      // submit(null,{action:'/logout', method:'post'})
+      setIsModal(true);
+    }, tokenDuration);
+  }, [token]);
 
   return (
-    <div className="flex flex-row w-full">
+    <div className="flex flex-row w-full h-full">
+      {isModal && <ExpiredModal open={isModal} />}
       <Menu />
       <div className="flex flex-col w-full h-screen overflow-hidden no-scrollbar">
-         {/* {navigation.state === 'loading' && <p>Loading...</p>} */}
+        {/* {navigation.state === 'loading' && <p>Loading...</p>} */}
         <Outlet />
       </div>
     </div>
   );
 }
 
-export default RootLayout;
-
 export function loader(){
-  const token = getAuthToken();
-  if(!token || token=='EXPIRED') return redirect('/auth');
-  
-
-  return defer({
-    userInfo: getUser(),
-    webtoons: getWebtoons()
-  });
+  const token = tokenLoader();
+  if (token == "EXPIRED") {
+    localStorage.removeItem("token");
+  }
+  if (!token) return redirect("/auth");
+  return null;
 }
+
+export default RootLayout;

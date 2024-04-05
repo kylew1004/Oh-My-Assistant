@@ -1,0 +1,39 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{secrets.DOCKERHUB_USERNAME}}
+          password: ${{secrets.DOCKERHUB_PASSWORD}}
+      - name: Build docker file and setting deploy files
+        run: |
+          cd backend
+          docker build -t gangyub/doraemon_web-backend:latest .
+          cd ../frontend
+          docker build -t gangyub/doraemon_web-frontend:latest .
+          cd ..
+          docker push gangyub/doraemon_web-frontend
+          docker push gangyub/doraemon_web-backend
+
+      - name: executing docker-compose up on EC2 server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER_NAME }}
+          key: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            docker-compose down
+            docker rmi gangyub/doraemon_web-frontend
+            docker rmi gangyub/doraemon_web-backend
+            docker-compose up -d

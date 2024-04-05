@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, UploadFile, File
+from fastapi import APIRouter, Depends, Form, UploadFile, File, BackgroundTasks
 from schemas import user_schemas
 from util.user_util import pwd_context
 from auth.oauth import get_current_user
@@ -17,21 +17,21 @@ from util import user_util
 api_background = APIRouter(prefix="/api/background")
 
 @api_background.post('/train/{webtoon_name}')
-def background_train(webtoon_name:str, images: List[UploadFile] = File(...),  db: Session = Depends(get_db), 
+async def background_train(webtoon_name:str, images: List[UploadFile] = File(...),  db: Session = Depends(get_db), 
                      current_user: user_schemas.User = Depends(get_current_user)):
-    return background_util.background_train(webtoon_name, db, current_user['userId'], images)
+    return await background_util.background_train(webtoon_name, db, current_user['userId'], images)
 
 
 @api_background.post('/img2img/{webtoon_name}')
-def background_inference(webtoon_name: str, image: UploadFile, db: Session = Depends(get_db),
+def background_inference(webtoon_name: str, model_type: str, prompt: str, image: UploadFile, db: Session = Depends(get_db),
                          current_user: user_schemas.User = Depends(get_current_user)):
-    return background_util.background_img2img(webtoon_name, image, db, current_user['userId'])
+    return background_util.background_img2img(webtoon_name, model_type, image, db, current_user['userId'],prompt)
 
 
 @api_background.post('/txt2img/{webtoon_name}')
-def background_txt2img(webtoon_name: str, prompt: str, db: Session = Depends(get_db),
+def background_txt2img(webtoon_name: str, model_type:str, prompt: str, db: Session = Depends(get_db),
                          current_user: user_schemas.User = Depends(get_current_user)):
-    return background_util.background_txt2img(webtoon_name, prompt, db, current_user['userId'])
+    return background_util.background_txt2img(webtoon_name, model_type, prompt, db, current_user['userId'])
 
 
 

@@ -30,7 +30,7 @@ export default function AssetDetail(){
 
     return <Suspense fallback={<img className="h-[5%] w-auto m-auto" src={generalLoading}/>}>
                         <Await resolve={asset} >
-                                {(loadedAsset) =>  loadedAsset && <div className="flex flex-col h-[89%]">
+                                {(loadedAsset) =>  loadedAsset && <>
                                 <div className="flex flex-row h-[10%] py-2 ml-10">
                                     <BackButton />
                                 </div>
@@ -89,7 +89,7 @@ export default function AssetDetail(){
                             </div>
 
 
-                        </div>
+                        </>
                                 }
                 </Await>
         </Suspense>
