@@ -28,7 +28,7 @@
 
 
 ## Live Demo <a id = 'Demo'></a>
-- 다음 [링크](http://223.130.131.6:3000)에서 직접 실행해보실 수 있습니다.
+- 다음 [링크](http://www.gangyub.site)에서 직접 실행해보실 수 있습니다.
 
 ### Background Image Generator
 https://github.com/kylew1004/doraemon_web/assets/20416616/1b37ceaf-63a6-4d03-8aa5-eb76818fd304
@@ -47,7 +47,7 @@ https://github.com/kylew1004/doraemon_web/assets/20416616/59ba6d9f-e47d-4781-a62
 |:--:|:--:|:--:|:--:|:--:|:--:|
 |<a href='https://github.com/uowol'><img src='https://avatars.githubusercontent.com/u/20416616?v=4' width='100px'/></a>|<a href='https://github.com/nhw2417'><img src='https://avatars.githubusercontent.com/u/103584775?s=88&v=4' width='100px'/></a>|<a href='https://github.com/kylew1004'><img src='https://avatars.githubusercontent.com/u/5775698?s=88&v=4' width='100px'/></a>|<a href='https://github.com/9sub'><img src='https://avatars.githubusercontent.com/u/113101019?s=88&v=4' width='100px'/></a>|<a href='https://github.com/solee328'><img src='https://avatars.githubusercontent.com/u/22787039?s=88&v=4' width='100px'/></a>|<a href='https://github.com/jh7316'><img src='https://avatars.githubusercontent.com/u/95545960?s=88&v=4' width='100px'/></a>|
 |Modeling|Modeling|Backend|Backend|Modeling|Frontend|
-|Background<br>Image<br>Generate|Background<br>Image<br>Generate|Implement BE|Implement BE|Pose<br>Image<br>Generate|UI/UX Design<br>Implement FE |
+|Background<br>Image<br>Generate|Background<br>Image<br>Generate|PL<br>Infra<br>Serving|Implement BE|Pose<br>Image<br>Generate|UI/UX Design<br>Implement FE |
 |[detail]()|[detail]()|[detail]()|[detail]()|[detail]()|[detail]()|    
 - 프로필 사진을 누르면 개인 Github 프로필로 넘어갑니다.
 - detail 페이지에서 개인이 공헌한 내용에 대해 더 자세한 정보를 열람하실 수 있습니다.
@@ -76,7 +76,7 @@ https://github.com/kylew1004/doraemon_web/assets/20416616/59ba6d9f-e47d-4781-a62
 ## Service Architecture <a id = 'Service'></a>
 
 <p align='center'>
-    <img src="https://github.com/kylew1004/doraemon_web/assets/113101019/3a432c39-8e4d-46b0-b988-f8244f172ef1" width="80%">
+    <img src="https://github.com/kylew1004/doraemon_web/assets/5775698/254a54c9-9f83-4f00-a26d-e73a57ac4bb5" width="80%>
 </p>
 
 - 서비스 간의 상호 의존도를 낮추기 위해 웹 서버와 모델 서버를분리하였습니다. 
